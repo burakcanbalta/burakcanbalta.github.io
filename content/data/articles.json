@@ -26,27 +26,16 @@
     "readTime": "8 dk"
   },
   {
-    "slug": "active-directory-privesc",
-    "title": "Active Directory Privilege Escalation Yöntemleri",
-    "date": "2026-07-22",
+    "slug": "xss-101",
+    "title": "Cross-Site Scripting (XSS) 101",
+    "date": "2026-08-18",
     "tags": [
-      "active-directory",
-      "redteam",
-      "privesc"
+      "web",
+      "xss",
+      "owasp",
+      "pentest"
     ],
-    "excerpt": "AD ortamlarında sık karşılaşılan yetki yükseltme teknikleri: Kerberoasting, ACL abuse, GPO abuse ve tespit yöntemleri.",
-    "readTime": "12 dk"
-  },
-  {
-    "slug": "htb-writeup-forest",
-    "title": "HTB Writeup: Forest (Easy / Windows)",
-    "date": "2026-06-30",
-    "tags": [
-      "writeup",
-      "htb",
-      "windows"
-    ],
-    "excerpt": "Hack The Box Forest makinesinin enumeration'dan Domain Admin'e kadar adım adım çözümü.",
+    "excerpt": "Cross-Site Scripting (XSS) saldırılarının temelleri, türleri, tespit yöntemleri, saldırı teknikleri ve savunma mekanizmalarını ele alan kapsamlı rehber.",
     "readTime": "10 dk"
   }
 ]
