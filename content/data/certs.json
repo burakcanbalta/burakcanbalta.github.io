@@ -4,48 +4,48 @@
     "issuer": "TryHackMe",
     "date": "Ağu 2026 — Ağu 2036",
     "status": "aktif",
-    "link": "",
-    "image": ""
+    "link": "public/certificates/Offensive Pentesting.pdf",
+    "image": "assets/img/certs/offensive-pentesting.png"
   },
   {
     "name": "Junior SOC Analyst",
     "issuer": "CyberExam | Certification",
     "date": "Ağu 2026 — Ağu 2036",
     "status": "aktif",
-    "link": "",
-    "image": ""
+    "link": "public/certificates/Junior-SOC-Analyst.pdf",
+    "image": "assets/img/certs/junior-soc-analyst.png"
   },
   {
     "name": "Web Red Team Analyst (Web-RTA)",
     "issuer": "CyberWarFare Labs",
     "date": "Ağu 2026 — Ağu 2036",
     "status": "aktif",
-    "link": "",
-    "image": ""
+    "link": "public/certificates/Web-RTA.pdf",
+    "image": "assets/img/certs/web-rta.png"
   },
   {
     "name": "API Red Team Analyst (API-RTA)",
     "issuer": "CyberWarFare Labs",
     "date": "Ağu 2026 — Ağu 2036",
     "status": "aktif",
-    "link": "",
-    "image": ""
+    "link": "public/certificates/API-RTA.pdf",
+    "image": "assets/img/certs/api-rta.png"
   },
   {
     "name": "Jr Penetration Tester",
     "issuer": "TryHackMe",
     "date": "Ağu 2026 — Ağu 2036",
     "status": "aktif",
-    "link": "",
-    "image": ""
+    "link": "public/certificates/Jr Penetration Tester.pdf",
+    "image": "assets/img/certs/jr-pentester.png"
   },
   {
     "name": "Red Teaming",
     "issuer": "TryHackMe",
     "date": "Tem 2026 — Tem 2036",
     "status": "aktif",
-    "link": "",
-    "image": ""
+    "link": "public/certificates/Red Teaming.pdf",
+    "image": "assets/img/certs/red-teaming.png"
   },
   {
     "name": "Siber Vatan — Katılım Sertifikası",
@@ -76,16 +76,16 @@
     "issuer": "TryHackMe",
     "date": "Şub 2026 — Şub 2029",
     "status": "aktif",
-    "link": "",
-    "image": ""
+    "link": "public/certificates/CompTIA.pdf",
+    "image": "assets/img/certs/comptia.png"
   },
   {
     "name": "Web Application Pentesting",
     "issuer": "TryHackMe",
     "date": "Şub 2026 — Şub 2029",
     "status": "aktif",
-    "link": "",
-    "image": ""
+    "link": "public/certificates/Web Application Pentesting.pdf",
+    "image": "assets/img/certs/web-application-pentesting.png"
   },
   {
     "name": "Certified Associate Penetration Tester (CAPT)",
@@ -100,8 +100,8 @@
     "issuer": "TryHackMe",
     "date": "Eki 2025 — Şub 2029",
     "status": "aktif",
-    "link": "",
-    "image": ""
+    "link": "public/certificates/Jr Penetration Tester.pdf",
+    "image": "assets/img/certs/jr-pentester.png"
   },
   {
     "name": "Web Fundamentals",
