@@ -1,0 +1,498 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); color: var(--color-text-primary); }
+.container { padding: 1rem 0; }
+.nav { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.nav button { font-size: 13px; padding: 6px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-secondary); color: var(--color-text-secondary); cursor: pointer; transition: all 0.15s; }
+.nav button.active { background: var(--color-background-primary); color: var(--color-text-primary); border-color: var(--color-border-primary); font-weight: 500; }
+.section { display: none; }
+.section.active { display: block; }
+.step-row { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 1.25rem; }
+.step-num { width: 28px; height: 28px; border-radius: 50%; background: #EEEDFE; color: #3C3489; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+.step-content { flex: 1; }
+.step-title { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+.step-desc { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+.code-block { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 10px 14px; font-family: var(--font-mono); font-size: 12px; color: var(--color-text-primary); margin-top: 8px; white-space: pre; overflow-x: auto; line-height: 1.7; }
+.badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: var(--border-radius-md); margin-left: 6px; vertical-align: middle; }
+.badge-win { background: #E6F1FB; color: #0C447C; }
+.badge-linux { background: #EAF3DE; color: #27500A; }
+.badge-ps { background: #EEEDFE; color: #3C3489; }
+.badge-danger { background: #FCEBEB; color: #791F1F; }
+.badge-ok { background: #E1F5EE; color: #085041; }
+.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+.card-title { font-size: 14px; font-weight: 500; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1rem; }
+.compare-card { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 12px 14px; }
+.compare-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 6px; }
+.compare-val { font-size: 13px; font-weight: 500; line-height: 1.5; }
+.arrow-down { text-align: center; color: var(--color-text-secondary); font-size: 18px; margin: 4px 0; }
+.flow-box { border-radius: var(--border-radius-md); padding: 10px 14px; margin-bottom: 4px; font-size: 13px; line-height: 1.5; }
+.flow-box.purple { background: #EEEDFE; color: #3C3489; }
+.flow-box.teal { background: #E1F5EE; color: #085041; }
+.flow-box.amber { background: #FAEEDA; color: #633806; }
+.flow-box.coral { background: #FAECE7; color: #711B13; }
+.flow-box.blue { background: #E6F1FB; color: #0C447C; }
+.flow-box.red { background: #FCEBEB; color: #791F1F; }
+.flow-label { font-size: 11px; opacity: 0.75; display: block; margin-bottom: 2px; }
+.section-title { font-size: 16px; font-weight: 500; margin-bottom: 1rem; }
+.divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 1.25rem 0; }
+.cmd-row { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.cmd-row:last-child { border-bottom: none; }
+.cmd-purpose { font-size: 12px; color: var(--color-text-secondary); min-width: 130px; flex-shrink: 0; padding-top: 2px; }
+.cmd-codes { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.cmd-code { font-family: var(--font-mono); font-size: 12px; background: var(--color-background-secondary); padding: 3px 8px; border-radius: 4px; display: inline-block; }
+.quiz-btn { width: 100%; text-align: left; padding: 10px 14px; margin-bottom: 8px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-secondary); font-size: 13px; cursor: pointer; color: var(--color-text-primary); transition: all 0.15s; }
+.quiz-btn:hover { border-color: var(--color-border-primary); }
+.quiz-btn.correct { background: #E1F5EE; border-color: #1D9E75; color: #085041; }
+.quiz-btn.wrong { background: #FCEBEB; border-color: #E24B4A; color: #791F1F; }
+.quiz-feedback { font-size: 13px; margin-top: 8px; padding: 10px 14px; border-radius: var(--border-radius-md); display: none; line-height: 1.6; }
+.quiz-feedback.show { display: block; }
+.quiz-feedback.ok { background: #E1F5EE; color: #085041; }
+.quiz-feedback.fail { background: #FCEBEB; color: #791F1F; }
+.next-q-btn { margin-top: 10px; font-size: 13px; padding: 7px 16px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); cursor: pointer; color: var(--color-text-primary); }
+</style>
+
+<div class="container">
+  <h2 class="sr-only">Windows ve Active Directory güvenlik konuları — adım adım rehber</h2>
+  <div class="nav">
+    <button class="active" onclick="show('kerberos')">1 — Kerberos akışı</button>
+    <button onclick="show('golden')">2 — Golden Ticket</button>
+    <button onclick="show('silver')">3 — Silver Ticket</button>
+    <button onclick="show('commands')">4 — Win vs Linux komutlar</button>
+    <button onclick="show('quiz')">5 — Test et kendini</button>
+  </div>
+
+  <!-- KERBEROS -->
+  <div class="section active" id="s-kerberos">
+    <p class="section-title">Kerberos nasıl çalışır — normal akış</p>
+    <p style="font-size:13px; color:var(--color-text-secondary); margin-bottom:1.25rem; line-height:1.6;">Aşağıdaki her adım sırayla gerçekleşir. Bir domain'e giriş yaptığında arka planda bunlar döner.</p>
+
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">AS-REQ — Kimlik doğrulama isteği</div>
+        <div class="step-desc">Kullanıcı (sen) Domain Controller'a gidip "benim Burak" diyorsun. Şifreni doğrudan göndermiyor — şifrenden üretilen hash ile şifrelenmiş bir mesaj gönderiyorsun.</div>
+        <div class="flow-box purple" style="margin-top:8px"><span class="flow-label">istemci → KDC</span>Burak + zaman damgası (hash ile şifrelenmiş)</div>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">AS-REP — TGT gelir</div>
+        <div class="step-desc">KDC seni doğrularsa <strong style="font-weight:500">TGT (Ticket Granting Ticket)</strong> verir. Bu bilet "sen Burak'sın" diyen imzalı bir belgedir. <strong style="font-weight:500">krbtgt</strong> hash'i ile şifrelenir — sen içini okuyamazsın.</div>
+        <div class="flow-box teal" style="margin-top:8px"><span class="flow-label">KDC → istemci</span>TGT (krbtgt hash'i ile imzalı, 10 saat geçerli)</div>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">TGS-REQ — Servise erişmek istiyorum</div>
+        <div class="step-desc">Bir sunucuya (örn: dosya sunucusu) erişmek istiyorsun. TGT'ni KDC'ye götürüp "şu sunucu için bilet ver" diyorsun.</div>
+        <div class="flow-box amber" style="margin-top:8px"><span class="flow-label">istemci → KDC</span>TGT + "FileServer'a erişmek istiyorum"</div>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">TGS-REP — TGS gelir</div>
+        <div class="step-desc">KDC sana o servise özel bir bilet verir: <strong style="font-weight:500">TGS (Ticket Granting Service)</strong>. Bu bilet servis hesabının hash'i ile şifrelenir.</div>
+        <div class="flow-box blue" style="margin-top:8px"><span class="flow-label">KDC → istemci</span>TGS (servis hesabı hash'i ile şifrelenmiş)</div>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <div class="step-title">AP-REQ — Servise git</div>
+        <div class="step-desc">TGS'yi alıp doğrudan hedef sunucuya götürüyorsun. Sunucu bunu kendi hash'i ile açıyor ve seni içeri alıyor.</div>
+        <div class="flow-box teal" style="margin-top:8px"><span class="flow-label">istemci → hedef sunucu</span>TGS → "buyur, gir"</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:0.5rem">
+      <div class="card-title">Aklında kalsın</div>
+      <div style="font-size:13px; line-height:1.8; color:var(--color-text-secondary)">
+        TGT = "sen kimsin" bileti → <strong style="font-weight:500; color:var(--color-text-primary)">krbtgt</strong> hash'i ile imzalı<br>
+        TGS = "şu servise girebilirsin" bileti → <strong style="font-weight:500; color:var(--color-text-primary)">servis hesabı</strong> hash'i ile imzalı<br>
+        Saldırı = bu imza anahtarlarını çalmak
+      </div>
+    </div>
+  </div>
+
+  <!-- GOLDEN TICKET -->
+  <div class="section" id="s-golden">
+    <p class="section-title">Golden Ticket saldırısı</p>
+
+    <div class="card">
+      <div class="card-title"><span class="badge badge-danger">tehlike seviyesi: maksimum</span></div>
+      <div style="font-size:13px; color:var(--color-text-secondary); line-height:1.6">
+        Normal akışta TGT'yi KDC üretiyor ve <strong style="font-weight:500; color:var(--color-text-primary)">krbtgt</strong> hash'i ile imzalıyor. Sen bu hash'i ele geçirirsen, TGT'yi <em>kendin</em> üretebilirsin. KDC'ye gitmen gerekmiyor.
+      </div>
+    </div>
+
+    <p style="font-size:14px; font-weight:500; margin-bottom:10px">Adım adım nasıl yapılır</p>
+
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Domain Admin yetkisi al</div>
+        <div class="step-desc">Önce yeterli yetki lazım. Genellikle başka bir saldırı vektörüyle (phishing, exploit vs) DC'ye ya da Domain Admin hesabına erişim sağlanır.</div>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">krbtgt hash'ini çal — DCSync</div>
+        <div class="step-desc">mimikatz ile DC'den krbtgt hash'ini çekiyorsun. DC'ye fiziksel erişim gerekmez — Domain Admin yetkisi yeterli.</div>
+        <div class="code-block">mimikatz # lsadump::dcsync /user:krbtgt
+<span style="color:#1D9E75">[*] krbtgt NTLM hash: a9fdfa038c4b75ebc76dc855dd74f0da</span></div>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Sahte TGT üret</div>
+        <div class="step-desc">Artık istediğin kullanıcı adına, istediğin yetkiyle, istediğin süreyle TGT üretebilirsin. Kullanıcı silinmiş bile olsa çalışır.</div>
+        <div class="code-block">mimikatz # kerberos::golden /user:BurakAdmin /domain:zerone.local
+         /sid:S-1-5-21-... /krbtgt:a9fdfa038c... /ptt
+<span style="color:#1D9E75">[*] Golden Ticket oluşturuldu ve belleğe yüklendi</span></div>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">Domain'de istediğin yere gir</div>
+        <div class="step-desc">Artık tüm domain'de Domain Admin yetkisiyle hareket edebilirsin. Şifre değişse de, hesap silinse de bilet geçerli kalır (varsayılan: 10 yıl).</div>
+        <div class="code-block">dir \\DC01\C$
+<span style="color:#1D9E75">Bağlantı başarılı — Domain Controller C: sürücüsü</span></div>
+      </div>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card">
+        <div class="compare-label">Lazım olan</div>
+        <div class="compare-val"><strong style="font-weight:500">krbtgt</strong> NTLM hash'i</div>
+      </div>
+      <div class="compare-card">
+        <div class="compare-label">Üretilen</div>
+        <div class="compare-val">Sahte <strong style="font-weight:500">TGT</strong></div>
+      </div>
+      <div class="compare-card">
+        <div class="compare-label">Erişim</div>
+        <div class="compare-val">Tüm domain — her servis</div>
+      </div>
+      <div class="compare-card">
+        <div class="compare-label">Tespit edilebilirlik</div>
+        <div class="compare-val">Zor — DC'ye normal trafik gibi görünür</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Neden "game over" deniyor?</div>
+      <div style="font-size:13px; color:var(--color-text-secondary); line-height:1.7">
+        krbtgt hash'ini değiştirmek işe yarar — ama <strong style="font-weight:500; color:var(--color-text-primary)">iki kez üst üste</strong> değiştirmen gerekir (eski hash önbellekte kalır). Savunma için çok geç kalınmış olabilir. Bu yüzden krbtgt hash'inin ele geçirilmesi tam domain compromise sayılır.
+      </div>
+    </div>
+  </div>
+
+  <!-- SILVER TICKET -->
+  <div class="section" id="s-silver">
+    <p class="section-title">Silver Ticket saldırısı</p>
+
+    <div class="card">
+      <div class="card-title"><span class="badge badge-ok">daha sessiz</span><span class="badge badge-danger">hedefe özel</span></div>
+      <div style="font-size:13px; color:var(--color-text-secondary); line-height:1.6">
+        Golden Ticket'ta TGT taklit ediliyordu. Silver Ticket'ta ise doğrudan <strong style="font-weight:500; color:var(--color-text-primary)">TGS</strong> taklit edilir. KDC'ye hiç gidilmez — bu yüzden daha sessizdir.
+      </div>
+    </div>
+
+    <p style="font-size:14px; font-weight:500; margin-bottom:10px">Adım adım nasıl yapılır</p>
+
+    <div class="step-row">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Hedef servisi belirle</div>
+        <div class="step-desc">Hangi servise erişmek istiyorsun? SQL Server, IIS, dosya sunucusu vs. Her servisin bir servis hesabı (service account) var.</div>
+        <div class="flow-box amber" style="margin-top:8px"><span class="flow-label">hedef örneği</span>SQL Server → servis hesabı: svc_sql</div>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Servis hesabının NTLM hash'ini çal</div>
+        <div class="step-desc">krbtgt yerine sadece o servisin hesabının hash'i lazım. Bu daha kolay elde edilebilir — o sunucuya erişim yeterli.</div>
+        <div class="code-block">mimikatz # sekurlsa::logonpasswords
+<span style="color:#1D9E75">[*] svc_sql NTLM: 3b72e...4af91c</span></div>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Sahte TGS üret</div>
+        <div class="step-desc">O servis hesabının hash'i ile istediğin kullanıcı adına TGS üretiyorsun. KDC'ye tek paket bile gitmez.</div>
+        <div class="code-block">mimikatz # kerberos::silver /user:BurakAdmin /target:sqlserver.zerone.local
+         /service:MSSQLSvc /rc4:3b72e...4af91c /ptt</div>
+      </div>
+    </div>
+
+    <div class="step-row">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">Sadece o servise gir</div>
+        <div class="step-desc">SQL Server'a Domain Admin olarak bağlanırsın. Ama başka bir servise bu biletle giremezsin — bilet o servise özel.</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p style="font-size:14px; font-weight:500; margin-bottom:12px">Golden vs Silver — yan yana</p>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <div class="compare-card">
+        <div class="compare-label" style="color:#633806">Golden Ticket</div>
+        <div style="font-size:12px; line-height:1.8; margin-top:6px; color:var(--color-text-secondary)">
+          Lazım: <strong style="font-weight:500; color:var(--color-text-primary)">krbtgt hash</strong><br>
+          Üretir: sahte TGT<br>
+          Erişim: tüm domain<br>
+          Sessizlik: az (DC trafiği var)<br>
+          Önkoşul: DC compromise
+        </div>
+      </div>
+      <div class="compare-card">
+        <div class="compare-label" style="color:#085041">Silver Ticket</div>
+        <div style="font-size:12px; line-height:1.8; margin-top:6px; color:var(--color-text-secondary)">
+          Lazım: <strong style="font-weight:500; color:var(--color-text-primary)">servis hesabı hash</strong><br>
+          Üretir: sahte TGS<br>
+          Erişim: sadece o servis<br>
+          Sessizlik: yüksek (DC'ye trafik yok)<br>
+          Önkoşul: servis sunucusuna erişim
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMMANDS -->
+  <div class="section" id="s-commands">
+    <p class="section-title">Windows vs Linux — komut karşılaştırması</p>
+    <p style="font-size:13px; color:var(--color-text-secondary); margin-bottom:1.25rem">Her satırda: amaç — CMD — PowerShell — Linux</p>
+
+    <div class="card">
+      <div class="card-title">Process ve sistem</div>
+      <div class="cmd-row">
+        <div class="cmd-purpose">Processleri listele</div>
+        <div class="cmd-codes">
+          <span class="cmd-code"><span class="badge badge-win">CMD</span> tasklist</span>
+          <span class="cmd-code"><span class="badge badge-ps">PS</span> Get-Process</span>
+          <span class="cmd-code"><span class="badge badge-linux">Linux</span> ps aux</span>
+        </div>
+      </div>
+      <div class="cmd-row">
+        <div class="cmd-purpose">Process öldür</div>
+        <div class="cmd-codes">
+          <span class="cmd-code"><span class="badge badge-win">CMD</span> taskkill /PID 1234 /F</span>
+          <span class="cmd-code"><span class="badge badge-ps">PS</span> Stop-Process -Id 1234</span>
+          <span class="cmd-code"><span class="badge badge-linux">Linux</span> kill -9 1234</span>
+        </div>
+      </div>
+      <div class="cmd-row">
+        <div class="cmd-purpose">Kim benim</div>
+        <div class="cmd-codes">
+          <span class="cmd-code"><span class="badge badge-win">CMD</span> whoami /priv</span>
+          <span class="cmd-code"><span class="badge badge-linux">Linux</span> whoami / id</span>
+        </div>
+      </div>
+      <div class="cmd-row">
+        <div class="cmd-purpose">Servisler</div>
+        <div class="cmd-codes">
+          <span class="cmd-code"><span class="badge badge-win">CMD</span> sc query</span>
+          <span class="cmd-code"><span class="badge badge-ps">PS</span> Get-Service</span>
+          <span class="cmd-code"><span class="badge badge-linux">Linux</span> systemctl list-units</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Ağ</div>
+      <div class="cmd-row">
+        <div class="cmd-purpose">Ağ bağlantıları</div>
+        <div class="cmd-codes">
+          <span class="cmd-code"><span class="badge badge-win">CMD</span> netstat -ano</span>
+          <span class="cmd-code"><span class="badge badge-ps">PS</span> Get-NetTCPConnection</span>
+          <span class="cmd-code"><span class="badge badge-linux">Linux</span> netstat -tulnp / ss -tulnp</span>
+        </div>
+      </div>
+      <div class="cmd-row">
+        <div class="cmd-purpose">Ağdaki makineler</div>
+        <div class="cmd-codes">
+          <span class="cmd-code"><span class="badge badge-win">CMD</span> net view</span>
+          <span class="cmd-code"><span class="badge badge-linux">Linux</span> arp -a / nmap -sn</span>
+        </div>
+      </div>
+      <div class="cmd-row">
+        <div class="cmd-purpose">DNS sorgu</div>
+        <div class="cmd-codes">
+          <span class="cmd-code"><span class="badge badge-win">CMD</span> nslookup / Resolve-DnsName</span>
+          <span class="cmd-code"><span class="badge badge-linux">Linux</span> nslookup / dig</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Kullanıcı ve gruplar</div>
+      <div class="cmd-row">
+        <div class="cmd-purpose">Kullanıcıları listele</div>
+        <div class="cmd-codes">
+          <span class="cmd-code"><span class="badge badge-win">CMD</span> net user</span>
+          <span class="cmd-code"><span class="badge badge-ps">PS</span> Get-LocalUser</span>
+          <span class="cmd-code"><span class="badge badge-linux">Linux</span> cat /etc/passwd</span>
+        </div>
+      </div>
+      <div class="cmd-row">
+        <div class="cmd-purpose">Gruplar</div>
+        <div class="cmd-codes">
+          <span class="cmd-code"><span class="badge badge-win">CMD</span> net localgroup</span>
+          <span class="cmd-code"><span class="badge badge-ps">PS</span> Get-LocalGroup</span>
+          <span class="cmd-code"><span class="badge badge-linux">Linux</span> cat /etc/group</span>
+        </div>
+      </div>
+      <div class="cmd-row">
+        <div class="cmd-purpose">Domain kullanıcısı</div>
+        <div class="cmd-codes">
+          <span class="cmd-code"><span class="badge badge-win">CMD</span> net user burak /domain</span>
+          <span class="cmd-code"><span class="badge badge-ps">PS</span> Get-ADUser burak</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Pentest sırasında kritikler</div>
+      <div class="cmd-row">
+        <div class="cmd-purpose">Kayıtlı credlar</div>
+        <div class="cmd-codes">
+          <span class="cmd-code"><span class="badge badge-win">CMD</span> cmdkey /list</span>
+        </div>
+      </div>
+      <div class="cmd-row">
+        <div class="cmd-purpose">Scheduled tasks</div>
+        <div class="cmd-codes">
+          <span class="cmd-code"><span class="badge badge-win">CMD</span> schtasks /query</span>
+          <span class="cmd-code"><span class="badge badge-ps">PS</span> Get-ScheduledTask</span>
+          <span class="cmd-code"><span class="badge badge-linux">Linux</span> crontab -l</span>
+        </div>
+      </div>
+      <div class="cmd-row">
+        <div class="cmd-purpose">Özel yetkiler</div>
+        <div class="cmd-codes">
+          <span class="cmd-code"><span class="badge badge-win">CMD</span> whoami /priv</span>
+          <span class="cmd-code"><span class="badge badge-linux">Linux</span> sudo -l</span>
+        </div>
+      </div>
+      <div class="cmd-row">
+        <div class="cmd-purpose">Dosyada şifre ara</div>
+        <div class="cmd-codes">
+          <span class="cmd-code"><span class="badge badge-win">CMD</span> dir /s *pass* *cred*</span>
+          <span class="cmd-code"><span class="badge badge-linux">Linux</span> grep -r "password" /home/</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="section" id="s-quiz">
+    <p class="section-title">Mülakat simülasyonu</p>
+    <p style="font-size:13px; color:var(--color-text-secondary); margin-bottom:1.25rem">Doğru cevabı seç — açıklama gelecek.</p>
+    <div id="quiz-container"></div>
+  </div>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('s-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+const questions = [
+  {
+    q: "Golden Ticket saldırısı için ne gerekir?",
+    opts: ["TGT bileti", "krbtgt NTLM hash'i", "Servis hesabı hash'i", "TGS bileti"],
+    correct: 1,
+    explanation: "Doğru! Golden Ticket = sahte TGT üretmek. TGT'yi imzalayan krbtgt hash'i gerekir. Bunu ele geçirince TGT'yi kendin üretirsin — KDC'ye gitmen gerekmez."
+  },
+  {
+    q: "Silver Ticket, Golden Ticket'tan neden daha sessizdir?",
+    opts: ["Daha az yetki kullanır", "DC'ye hiç trafik gitmez", "Şifreleme kullanmaz", "Sadece 1 saat geçerlidir"],
+    correct: 1,
+    explanation: "Doğru! Silver Ticket doğrudan TGS taklit eder. Normal akışta TGS almak için KDC'ye gidilir, ama Silver Ticket'ta bu adım atlanır. DC loglarında iz kalmaz."
+  },
+  {
+    q: "Windows'ta çalışan processleri görmek için hangi komut kullanılır?",
+    opts: ["ps aux", "tasklist", "netstat -ano", "whoami /priv"],
+    correct: 1,
+    explanation: "Doğru! 'tasklist' Windows CMD komutudur. 'ps aux' ise Linux/Unix komutudur. PowerShell'de 'Get-Process' kullanılır."
+  },
+  {
+    q: "Kerberoasting saldırısında ne hedef alınır?",
+    opts: ["krbtgt hash'i", "Kullanıcı şifresi", "TGS hash'i (servis hesabı)", "Domain Controller IP'si"],
+    correct: 2,
+    explanation: "Doğru! Kerberoasting'de servis hesabı TGS'i alınır ve offline kırılmaya çalışılır. SPN (Service Principal Name) kayıtlı hesaplar hedef alınır — bunlar genellikle zayıf şifreli servis hesaplarıdır."
+  },
+  {
+    q: "Windows'ta domain'deki bir kullanıcının bilgilerini görmek için hangi komut kullanılır?",
+    opts: ["cat /etc/passwd", "id burak", "net user burak /domain", "whoami burak"],
+    correct: 2,
+    explanation: "Doğru! 'net user burak /domain' Windows CMD komutudur ve domain'deki kullanıcı bilgilerini gösterir. PowerShell'de 'Get-ADUser burak' kullanılır. 'cat /etc/passwd' Linux komutudur."
+  }
+];
+
+let current = 0;
+let answered = false;
+
+function renderQuestion() {
+  const qc = document.getElementById('quiz-container');
+  if (current >= questions.length) {
+    qc.innerHTML = '<div class="card"><div class="card-title">Tebrikler, bitti! 🎯</div><div style="font-size:13px;color:var(--color-text-secondary);line-height:1.7">Tüm soruları geçtin. Yarın mülakatta rahat ol — bu konular kafana oturdu.</div></div>';
+    return;
+  }
+  const q = questions[current];
+  qc.innerHTML = `
+    <div style="font-size:13px;color:var(--color-text-secondary);margin-bottom:8px">Soru ${current+1} / ${questions.length}</div>
+    <div style="font-size:14px;font-weight:500;margin-bottom:14px;line-height:1.5">${q.q}</div>
+    ${q.opts.map((o,i) => `<button class="quiz-btn" id="opt-${i}" onclick="answer(${i})">${o}</button>`).join('')}
+    <div class="quiz-feedback" id="feedback"></div>
+    <button class="next-q-btn" id="next-btn" style="display:none" onclick="nextQ()">Sonraki soru →</button>
+  `;
+  answered = false;
+}
+
+function answer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  const fb = document.getElementById('feedback');
+  document.querySelectorAll('.quiz-btn').forEach((b,i) => {
+    if (i === q.correct) b.classList.add('correct');
+    else if (i === idx && idx !== q.correct) b.classList.add('wrong');
+    b.disabled = true;
+  });
+  fb.textContent = q.explanation;
+  fb.className = 'quiz-feedback show ' + (idx === q.correct ? 'ok' : 'fail');
+  document.getElementById('next-btn').style.display = 'inline-block';
+}
+
+function nextQ() {
+  current++;
+  renderQuestion();
+}
+
+renderQuestion();
+</script>
