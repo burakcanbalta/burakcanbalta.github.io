@@ -9,8 +9,9 @@ const FEEDS = [
   { name: 'Dark Reading', url: 'https://www.darkreading.com/rss.xml' },
 ];
 
-const CACHE_KEY = 'sp_news_cache_v1';
+const CACHE_KEY = 'sp_news_cache_v2';
 const CACHE_TTL = 30 * 60 * 1000; // 30 dk
+const DAYS_WINDOW = 2; // son N gün
 
 let allItems = [];
 let activeFilter = 'all';
@@ -47,8 +48,15 @@ async function loadNews() {
 
     if (items.length === 0) throw new Error('no live items');
 
-    items.sort((a, b) => new Date(b.date) - new Date(a.date));
-    allItems = items.slice(0, 40);
+    const cutoff = Date.now() - DAYS_WINDOW * 24 * 60 * 60 * 1000;
+    const recent = items.filter(i => {
+      const t = new Date(i.date).getTime();
+      return !isNaN(t) && t >= cutoff;
+    });
+
+    const finalItems = recent.length > 0 ? recent : items; // hiç son 2 günlük haber yoksa, en güncel olanları göster
+    finalItems.sort((a, b) => new Date(b.date) - new Date(a.date));
+    allItems = finalItems.slice(0, 40);
     setCache(allItems);
   } catch (err) {
     allItems = await loadFallback();
@@ -62,7 +70,7 @@ async function fetchFeed(feed) {
   if (!res.ok) throw new Error('feed fetch failed: ' + feed.name);
   const data = await res.json();
   if (data.status !== 'ok') throw new Error('feed status not ok: ' + feed.name);
-  return (data.items || []).slice(0, 10).map(it => ({
+  return (data.items || []).slice(0, 15).map(it => ({
     title: it.title,
     link: it.link,
     date: it.pubDate,

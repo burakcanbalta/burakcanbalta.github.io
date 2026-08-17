@@ -246,6 +246,12 @@ section{padding:70px 0;}
 @media(max-width:520px){.cert-grid{grid-template-columns:1fr;}}
 .cert-card{border:1px solid var(--border);border-radius:var(--radius);padding:18px;background:var(--surface);display:flex;flex-direction:column;gap:8px;}
 .cert-card .cert-status{font-family:var(--mono);font-size:10.5px;color:var(--green);letter-spacing:1px;}
+.cert-thumb{width:100%;height:120px;object-fit:cover;border-radius:6px;border:1px solid var(--border);margin-bottom:4px;}
+.cert-thumb-placeholder{
+  display:flex;align-items:center;justify-content:center;
+  background:var(--surface-hi);border:1px dashed var(--border-hi);
+  font-size:28px;color:var(--text-faint);
+}
 .cert-card .cert-name{font-weight:700;font-size:15px;}
 .cert-card .cert-issuer{color:var(--text-dim);font-size:13px;}
 .cert-card .cert-date{font-family:var(--mono);color:var(--text-faint);font-size:11.5px;margin-top:auto;}

@@ -1,10 +1,11 @@
-// CVE sayfası — güncel zafiyetler
+// CVE sayfası — güncel zafiyetler (son 2 gün)
 // Canlı veri: CIRCL CVE-Search API (CORS destekli, anahtar gerekmez).
-// Başarısız olursa content/data/cve-fallback.json kullanılır.
+// Başarısız olursa veya hiç geçerli kayıt bulunamazsa content/data/cve-fallback.json kullanılır.
 
 const CVE_API = 'https://cve.circl.lu/api/last';
-const CACHE_KEY = 'sp_cve_cache_v1';
+const CACHE_KEY = 'sp_cve_cache_v2';
 const CACHE_TTL = 20 * 60 * 1000; // 20 dk
+const DAYS_WINDOW = 2; // son N gün
 
 let allCves = [];
 let activeSev = 'all';
@@ -24,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function loadCves() {
   const listEl = document.getElementById('cve-list');
-  listEl.innerHTML = `<p class="state-msg">// CVE veritabanı sorgulanıyor...</p>`;
+  listEl.innerHTML = `<p class="state-msg">// CVE veritabanı sorgulanıyor (son ${DAYS_WINDOW} gün)...</p>`;
 
   const cached = getCache();
   if (cached) { allCves = cached; renderCves(); return; }
@@ -32,10 +33,18 @@ async function loadCves() {
   try {
     const res = await fetch(CVE_API);
     if (!res.ok) throw new Error('cve api failed');
-    const data = await res.json();
-    if (!Array.isArray(data) || data.length === 0) throw new Error('empty cve data');
+    const raw = await res.json();
+    if (!Array.isArray(raw) || raw.length === 0) throw new Error('empty cve data');
 
-    allCves = data.slice(0, 40).map(normalizeCircl);
+    const cutoff = Date.now() - DAYS_WINDOW * 24 * 60 * 60 * 1000;
+
+    allCves = raw
+      .map(normalizeCircl)
+      .filter(isValidRecord)
+      .filter(i => new Date(i.date).getTime() >= cutoff)
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    if (allCves.length === 0) throw new Error('no cves in window');
     setCache(allCves);
   } catch (err) {
     allCves = await loadFallback();
@@ -43,16 +52,51 @@ async function loadCves() {
   renderCves();
 }
 
+// CIRCL /api/last bazı kayıtlarda farklı şemalar (klasik cve-search alanları ya da
+// CVE Services 5.0 / cveMetadata+containers şeması) döndürebiliyor. İkisini de dener.
 function normalizeCircl(item) {
-  const score = item.cvss || (item.cvss3 && item.cvss3.baseScore) || null;
+  const id =
+    item.id ||
+    item.cveMetadata?.cveId ||
+    item.cveID ||
+    null;
+
+  const summary =
+    item.summary ||
+    item.containers?.cna?.descriptions?.find(d => d.lang === 'en')?.value ||
+    item.containers?.cna?.descriptions?.[0]?.value ||
+    null;
+
+  const date =
+    item.Published ||
+    item.published ||
+    item.cveMetadata?.datePublished ||
+    item.datePublished ||
+    null;
+
+  const score = item.cvss || item.cvss3 || (item.metrics?.cvssMetricV31?.[0]?.cvssData?.baseScore) || null;
+
   return {
-    id: item.id || item.cveID || item.cveMetadata?.cveId || 'CVE-UNKNOWN',
-    summary: item.summary || item.containers?.cna?.descriptions?.[0]?.value || 'Açıklama mevcut değil.',
-    date: item.Published || item.published || item.datePublished || new Date().toISOString(),
-    score: score,
+    id,
+    summary,
+    date,
+    score,
     severity: scoreToSeverity(score),
-    link: item.id ? `https://nvd.nist.gov/vuln/detail/${item.id}` : '#',
+    link: buildLink(id),
   };
+}
+
+// id ve açıklaması olmayan (henüz "reserved"/boş) kayıtları listeye hiç almıyoruz.
+function isValidRecord(i) {
+  return !!i.id && !!i.summary && !!i.date && !isNaN(new Date(i.date).getTime());
+}
+
+function buildLink(id) {
+  if (!id) return '#';
+  if (/^CVE-/i.test(id)) return `https://nvd.nist.gov/vuln/detail/${id}`;
+  if (/^PYSEC-/i.test(id)) return `https://osv.dev/vulnerability/${id}`;
+  if (/^GHSA-/i.test(id)) return `https://github.com/advisories/${id}`;
+  return `https://osv.dev/vulnerability/${id}`;
 }
 
 function scoreToSeverity(score) {

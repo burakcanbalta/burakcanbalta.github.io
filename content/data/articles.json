@@ -1,9 +1,27 @@
 [
   {
+    "slug": "thm-alfred",
+    "title": "TryHackMe — Alfred Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "writeup",
+      "thm",
+      "windows",
+      "jenkins",
+      "privesc"
+    ],
+    "excerpt": "Jenkins Script Console üzerinden Groovy reverse shell ile RCE, SeImpersonatePrivilege ve process migration ile SYSTEM yetkisine yükseldiğim THM Alfred makinesinin adım adım çözümü.",
+    "readTime": "12 dk"
+  },
+  {
     "slug": "sql-injection-101",
     "title": "SQL Injection 101: Temelden İleri Seviyeye",
     "date": "2026-08-10",
-    "tags": ["web", "pentest", "owasp"],
+    "tags": [
+      "web",
+      "pentest",
+      "owasp"
+    ],
     "excerpt": "SQL injection saldırılarının mantığı, tespit yöntemleri, union-based / blind / time-based teknikler ve önleme stratejileri.",
     "readTime": "8 dk"
   },
@@ -11,7 +29,11 @@
     "slug": "active-directory-privesc",
     "title": "Active Directory Privilege Escalation Yöntemleri",
     "date": "2026-07-22",
-    "tags": ["active-directory", "redteam", "privesc"],
+    "tags": [
+      "active-directory",
+      "redteam",
+      "privesc"
+    ],
     "excerpt": "AD ortamlarında sık karşılaşılan yetki yükseltme teknikleri: Kerberoasting, ACL abuse, GPO abuse ve tespit yöntemleri.",
     "readTime": "12 dk"
   },
@@ -19,7 +41,11 @@
     "slug": "htb-writeup-forest",
     "title": "HTB Writeup: Forest (Easy / Windows)",
     "date": "2026-06-30",
-    "tags": ["writeup", "htb", "windows"],
+    "tags": [
+      "writeup",
+      "htb",
+      "windows"
+    ],
     "excerpt": "Hack The Box Forest makinesinin enumeration'dan Domain Admin'e kadar adım adım çözümü.",
     "readTime": "10 dk"
   }

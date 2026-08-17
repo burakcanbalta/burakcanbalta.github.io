@@ -1,18 +1,130 @@
 [
-  { "name": "Offensive Pentesting", "issuer": "TryHackMe", "date": "Ağu 2026 — Ağu 2036", "status": "aktif", "link": "" },
-  { "name": "Junior SOC Analyst", "issuer": "CyberExam | Certification", "date": "Ağu 2026 — Ağu 2036", "status": "aktif", "link": "" },
-  { "name": "Web Red Team Analyst (Web-RTA)", "issuer": "CyberWarFare Labs", "date": "Ağu 2026 — Ağu 2036", "status": "aktif", "link": "" },
-  { "name": "API Red Team Analyst (API-RTA)", "issuer": "CyberWarFare Labs", "date": "Ağu 2026 — Ağu 2036", "status": "aktif", "link": "" },
-  { "name": "Jr Penetration Tester", "issuer": "TryHackMe", "date": "Ağu 2026 — Ağu 2036", "status": "aktif", "link": "" },
-  { "name": "Red Teaming", "issuer": "TryHackMe", "date": "Tem 2026 — Tem 2036", "status": "aktif", "link": "" },
-  { "name": "Siber Vatan — Katılım Sertifikası", "issuer": "Türkiye Siber Güvenlik Kümelenmesi", "date": "Haz 2026 — Haz 2036", "status": "aktif", "link": "" },
-  { "name": "Active Directory Güvenliği Temelleri", "issuer": "Sparta Siber Güvenlik", "date": "May 2026", "status": "aktif", "link": "" },
-  { "name": "Certified Web Security Expert (CWSE)", "issuer": "Hackviser", "date": "Mar 2026", "status": "aktif", "link": "" },
-  { "name": "CompTIA Pentest+", "issuer": "TryHackMe", "date": "Şub 2026 — Şub 2029", "status": "aktif", "link": "" },
-  { "name": "Web Application Pentesting", "issuer": "TryHackMe", "date": "Şub 2026 — Şub 2029", "status": "aktif", "link": "" },
-  { "name": "Certified Associate Penetration Tester (CAPT)", "issuer": "Hackviser", "date": "Kas 2025 — Ara 2029", "status": "aktif", "link": "" },
-  { "name": "Jr Penetration Tester", "issuer": "TryHackMe", "date": "Eki 2025 — Şub 2029", "status": "aktif", "link": "" },
-  { "name": "Web Fundamentals", "issuer": "TryHackMe", "date": "Eyl 2025 — Şub 2029", "status": "aktif", "link": "" },
-  { "name": "Cyber Security 101", "issuer": "TryHackMe", "date": "Mar 2025 — Şub 2029", "status": "aktif", "link": "" },
-  { "name": "Pre Security", "issuer": "TryHackMe", "date": "Mar 2025 — Şub 2029", "status": "aktif", "link": "" }
+  {
+    "name": "Offensive Pentesting",
+    "issuer": "TryHackMe",
+    "date": "Ağu 2026 — Ağu 2036",
+    "status": "aktif",
+    "link": "",
+    "image": ""
+  },
+  {
+    "name": "Junior SOC Analyst",
+    "issuer": "CyberExam | Certification",
+    "date": "Ağu 2026 — Ağu 2036",
+    "status": "aktif",
+    "link": "",
+    "image": ""
+  },
+  {
+    "name": "Web Red Team Analyst (Web-RTA)",
+    "issuer": "CyberWarFare Labs",
+    "date": "Ağu 2026 — Ağu 2036",
+    "status": "aktif",
+    "link": "",
+    "image": ""
+  },
+  {
+    "name": "API Red Team Analyst (API-RTA)",
+    "issuer": "CyberWarFare Labs",
+    "date": "Ağu 2026 — Ağu 2036",
+    "status": "aktif",
+    "link": "",
+    "image": ""
+  },
+  {
+    "name": "Jr Penetration Tester",
+    "issuer": "TryHackMe",
+    "date": "Ağu 2026 — Ağu 2036",
+    "status": "aktif",
+    "link": "",
+    "image": ""
+  },
+  {
+    "name": "Red Teaming",
+    "issuer": "TryHackMe",
+    "date": "Tem 2026 — Tem 2036",
+    "status": "aktif",
+    "link": "",
+    "image": ""
+  },
+  {
+    "name": "Siber Vatan — Katılım Sertifikası",
+    "issuer": "Türkiye Siber Güvenlik Kümelenmesi",
+    "date": "Haz 2026 — Haz 2036",
+    "status": "aktif",
+    "link": "",
+    "image": ""
+  },
+  {
+    "name": "Active Directory Güvenliği Temelleri",
+    "issuer": "Sparta Siber Güvenlik",
+    "date": "May 2026",
+    "status": "aktif",
+    "link": "",
+    "image": ""
+  },
+  {
+    "name": "Certified Web Security Expert (CWSE)",
+    "issuer": "Hackviser",
+    "date": "Mar 2026",
+    "status": "aktif",
+    "link": "",
+    "image": ""
+  },
+  {
+    "name": "CompTIA Pentest+",
+    "issuer": "TryHackMe",
+    "date": "Şub 2026 — Şub 2029",
+    "status": "aktif",
+    "link": "",
+    "image": ""
+  },
+  {
+    "name": "Web Application Pentesting",
+    "issuer": "TryHackMe",
+    "date": "Şub 2026 — Şub 2029",
+    "status": "aktif",
+    "link": "",
+    "image": ""
+  },
+  {
+    "name": "Certified Associate Penetration Tester (CAPT)",
+    "issuer": "Hackviser",
+    "date": "Kas 2025 — Ara 2029",
+    "status": "aktif",
+    "link": "",
+    "image": ""
+  },
+  {
+    "name": "Jr Penetration Tester",
+    "issuer": "TryHackMe",
+    "date": "Eki 2025 — Şub 2029",
+    "status": "aktif",
+    "link": "",
+    "image": ""
+  },
+  {
+    "name": "Web Fundamentals",
+    "issuer": "TryHackMe",
+    "date": "Eyl 2025 — Şub 2029",
+    "status": "aktif",
+    "link": "",
+    "image": ""
+  },
+  {
+    "name": "Cyber Security 101",
+    "issuer": "TryHackMe",
+    "date": "Mar 2025 — Şub 2029",
+    "status": "aktif",
+    "link": "",
+    "image": ""
+  },
+  {
+    "name": "Pre Security",
+    "issuer": "TryHackMe",
+    "date": "Mar 2025 — Şub 2029",
+    "status": "aktif",
+    "link": "",
+    "image": ""
+  }
 ]

@@ -52,3 +52,18 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:#5c6962;font:500 .6
 .terminal{position:fixed;right:25px;bottom:90px;width:min(520px,calc(100% - 30px));background:#020503;border:1px solid var(--green);box-shadow:0 0 35px rgba(0,255,102,.15);z-index:41;font:500 .78rem "JetBrains Mono"}.terminal-head{padding:10px 13px;border-bottom:1px solid var(--line);color:var(--green)}.terminal-head button{float:right;background:none;border:0;color:var(--muted);cursor:pointer}.terminal-body{padding:16px;min-height:190px}.prompt-line{display:flex;gap:8px;margin-top:16px}.prompt-line input{background:none;border:0;outline:0;color:white;flex:1;font:inherit}
 @media(max-width:900px){.nav-links{display:none}.socials{margin-left:auto}.menu{display:block}.cards{grid-template-columns:repeat(2,1fr)}.about-grid{grid-template-columns:1fr}.photo-placeholder{height:280px}.cert-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:620px){.socials{display:none}.hero{min-height:610px;background-position:center top}.lead{font-size:.78rem}.sub{line-height:1.8;padding:0 15px}.hero-buttons{flex-direction:column;padding:0 30px}.cards,.cert-grid{grid-template-columns:1fr}.card{min-height:190px}.section{padding:55px 0}.footer-inner{flex-direction:column}}
+
+/* data-driven certificate cards (used on homepage, rendered by certs.js) */
+.cert-card{
+  background:var(--panel);border:1px solid rgba(255,255,255,.08);padding:15px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.cert-thumb{width:100%;height:150px;object-fit:cover;border:1px solid var(--line);}
+.cert-thumb-placeholder{
+  height:150px;display:grid;place-items:center;background:#050806;
+  border:1px dashed var(--line);font-size:30px;color:#526158;
+}
+.cert-card .cert-status{font:600 .62rem "JetBrains Mono";color:var(--green);letter-spacing:.08em;}
+.cert-card .cert-name{font:600 .95rem "JetBrains Mono";}
+.cert-card .cert-issuer{font:500 .7rem "JetBrains Mono";color:var(--muted);}
+.cert-card .cert-date{font:500 .65rem "JetBrains Mono";color:#526158;margin-top:auto;}
