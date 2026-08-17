@@ -52,24 +52,24 @@
     "issuer": "Türkiye Siber Güvenlik Kümelenmesi",
     "date": "Haz 2026 — Haz 2036",
     "status": "aktif",
-    "link": "",
-    "image": ""
+    "link": "public/certificates/sibervatan.jpg",
+    "image": "public/certificates/sibervatan.jpg"
   },
   {
     "name": "Active Directory Güvenliği Temelleri",
     "issuer": "Sparta Siber Güvenlik",
     "date": "May 2026",
     "status": "aktif",
-    "link": "",
-    "image": ""
+    "link": "public/certificates/activedirectory.jpg",
+    "image": "public/certificates/activedirectory.jpg"
   },
   {
     "name": "Certified Web Security Expert (CWSE)",
     "issuer": "Hackviser",
     "date": "Mar 2026",
     "status": "aktif",
-    "link": "",
-    "image": ""
+    "link": "public/certificates/cwse-1.png",
+    "image": "public/certificates/cwse-1.png"
   },
   {
     "name": "CompTIA Pentest+",
@@ -92,39 +92,39 @@
     "issuer": "Hackviser",
     "date": "Kas 2025 — Ara 2029",
     "status": "aktif",
-    "link": "",
-    "image": ""
+    "link": "public/certificates/capt-1.png",
+    "image": "public/certificates/capt-1.png"
   },
   {
     "name": "Jr Penetration Tester",
     "issuer": "TryHackMe",
     "date": "Eki 2025 — Şub 2029",
     "status": "aktif",
-    "link": "",
-    "image": ""
+    "link": "public/certificates/Jr%20Penetration%20Tester%20legacy-1.png",
+    "image": "public/certificates/Jr%20Penetration%20Tester%20legacy-1.png"
   },
   {
     "name": "Web Fundamentals",
     "issuer": "TryHackMe",
     "date": "Eyl 2025 — Şub 2029",
     "status": "aktif",
-    "link": "",
-    "image": ""
+    "link": "public/certificates/Web%20Fundamentals-1.png",
+    "image": "public/certificates/Web%20Fundamentals-1.png"
   },
   {
     "name": "Cyber Security 101",
     "issuer": "TryHackMe",
     "date": "Mar 2025 — Şub 2029",
     "status": "aktif",
-    "link": "",
-    "image": ""
+    "link": "public/certificates/Cyber%20Security%20101-1.png",
+    "image": "public/certificates/Cyber%20Security%20101-1.png"
   },
   {
     "name": "Pre Security",
     "issuer": "TryHackMe",
     "date": "Mar 2025 — Şub 2029",
     "status": "aktif",
-    "link": "",
-    "image": ""
+    "link": "public/certificates/Pre%20Security-1.png",
+    "image": "public/certificates/Pre%20Security-1.png"
   }
 ]
