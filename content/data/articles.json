@@ -1,5 +1,206 @@
 [
   {
+    "slug": "alfred",
+    "title": "TryHackMe — Alfred Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "writeup",
+      "thm",
+      "windows",
+      "jenkins",
+      "privesc"
+    ],
+    "excerpt": "Jenkins Script Console üzerinden Groovy reverse shell ile RCE, SeImpersonatePrivilege ve process migration ile SYSTEM yetkisine yükseldiğim THM Alfred makinesinin adım adım çözümü.",
+    "readTime": "12 dk"
+  },
+  {
+    "slug": "domino",
+    "title": "TryHackMe — Domino Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "writeup",
+      "thm",
+      "web",
+      "xss",
+      "rce",
+      "privesc"
+    ],
+    "excerpt": "IDOR, Blind XSS ile session hijacking, JWT alg:none bypass, RFI üzerinden RCE, credential reuse ve cron tabanlı privilege escalation tekniklerini içeren Domino makinesinin adım adım çözümü.",
+    "readTime": "15 dk"
+  },
+  {
+    "slug": "gridloy-news",
+    "title": "TryHackMe — Gridloy News Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "writeup",
+      "thm",
+      "wordpress",
+      "cve",
+      "web",
+      "privesc"
+    ],
+    "excerpt": "WordPress enumeration, Royal Elementor Addons üzerindeki CVE-2023-5360 ile unauthenticated file upload, web shell, credential discovery ve root privilege escalation adımlarını içeren Gridloy News çözümü.",
+    "readTime": "12 dk"
+  },
+  {
+    "slug": "interceptor",
+    "title": "TryHackMe — Interceptor Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "writeup",
+      "thm",
+      "web",
+      "pentest"
+    ],
+    "excerpt": "Interceptor makinesinin enumeration, web uygulaması analizi, exploitation ve privilege escalation aşamalarını içeren adım adım TryHackMe çözümü.",
+    "readTime": "12 dk"
+  },
+  {
+    "slug": "jump",
+    "title": "TryHackMe — Jump Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "writeup",
+      "thm",
+      "windows",
+      "privesc"
+    ],
+    "excerpt": "Jump makinesinde enumeration, initial access ve privilege escalation adımlarını içeren TryHackMe çözümü.",
+    "readTime": "12 dk"
+  },
+  {
+    "slug": "kenobi",
+    "title": "TryHackMe — Kenobi Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "writeup",
+      "thm",
+      "linux",
+      "smb",
+      "ftp",
+      "privesc"
+    ],
+    "excerpt": "Kenobi makinesinde Nmap enumeration, SMB ve FTP servislerinin keşfi, ProFTPD üzerinden initial access ve SUID tabanlı privilege escalation adımlarını içeren çözüm.",
+    "readTime": "12 dk"
+  },
+  {
+    "slug": "mrrobot",
+    "title": "TryHackMe — Mr Robot Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "writeup",
+      "thm",
+      "linux",
+      "wordpress",
+      "web",
+      "privesc"
+    ],
+    "excerpt": "Mr Robot makinesinde web enumeration, WordPress keşfi, credential discovery, reverse shell ve SUID üzerinden root privilege escalation adımlarını içeren TryHackMe çözümü.",
+    "readTime": "15 dk"
+  },
+  {
+    "slug": "operation-coldstart",
+    "title": "TryHackMe — Operation Coldstart Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "writeup",
+      "thm",
+      "windows",
+      "redteam"
+    ],
+    "excerpt": "Operation Coldstart makinesinde gerçekleştirilen enumeration, exploitation ve privilege escalation adımlarını içeren TryHackMe writeup.",
+    "readTime": "12 dk"
+  },
+  {
+    "slug": "operation-promotion",
+    "title": "TryHackMe — Operation Promotion Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "writeup",
+      "thm",
+      "windows",
+      "active-directory",
+      "redteam"
+    ],
+    "excerpt": "Operation Promotion makinesinde Windows ve Active Directory ortamının keşfi, saldırı yollarının belirlenmesi ve privilege escalation adımlarını içeren TryHackMe çözümü.",
+    "readTime": "15 dk"
+  },
+  {
+    "slug": "recruit",
+    "title": "TryHackMe — Recruit Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "writeup",
+      "thm",
+      "web",
+      "lfi",
+      "sqli"
+    ],
+    "excerpt": "Recruitment portalını simüle eden Recruit makinesinde LFI ve SQL Injection zafiyetlerinin kullanıldığı, makinenin baştan sona ele geçirildiği TryHackMe çözümü.",
+    "readTime": "10 dk"
+  },
+  {
+    "slug": "silent-monitor",
+    "title": "TryHackMe — Silent Monitor Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "writeup",
+      "thm",
+      "linux",
+      "sqli",
+      "command-injection",
+      "privesc"
+    ],
+    "excerpt": "SQL Injection ile internal portala giriş, command injection üzerinden secret.config dosyasından credential discovery, SSH erişimi, KeePass veritabanının crack edilmesi ve root hesabına geçiş adımlarını içeren Silent Monitor çözümü.",
+    "readTime": "15 dk"
+  },
+  {
+    "slug": "support",
+    "title": "TryHackMe — Support Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "writeup",
+      "thm",
+      "web",
+      "lfi",
+      "idor",
+      "command-injection"
+    ],
+    "excerpt": "Kurumsal bir helpdesk panelini simüle eden Support makinesinde zayıf kimlik doğrulama, LFI, IDOR ve Command Injection zafiyetlerinin kullanıldığı TryHackMe çözümü.",
+    "readTime": "12 dk"
+  },
+  {
+    "slug": "thompson",
+    "title": "TryHackMe — Thompson Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "writeup",
+      "thm",
+      "linux",
+      "tomcat",
+      "ghostcat",
+      "cve",
+      "privesc"
+    ],
+    "excerpt": "Apache Tomcat 8.5.5 ve AJP 8009 servisi üzerinden Ghostcat CVE-2020-1938 istismarı, credential discovery, Tomcat Manager üzerinden WAR reverse shell ve cron tabanlı privilege escalation adımlarını içeren Thompson çözümü.",
+    "readTime": "15 dk"
+  },
+  {
+    "slug": "windows-jump",
+    "title": "TryHackMe — Windows Jump Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "writeup",
+      "thm",
+      "windows",
+      "privesc",
+      "redteam"
+    ],
+    "excerpt": "Guest seviyesinden başlayarak thmuser, notadmin ve svcadmin hesapları üzerinden ilerleyip Windows Jump makinesinde SYSTEM yetkisine ulaşma sürecini anlatan TryHackMe writeup.",
+    "readTime": "12 dk"
+  },
+  {
     "slug": "thm-alfred",
     "title": "TryHackMe — Alfred Writeup",
     "date": "2026-08-18",
@@ -35,7 +236,7 @@
       "owasp",
       "pentest"
     ],
-    "excerpt": "Cross-Site Scripting (XSS) saldırılarının temelleri, türleri, tespit yöntemleri, saldırı teknikleri ve savunma mekanizmalarını ele alan kapsamlı rehber.",
-    "readTime": "10 dk"
+    "excerpt": "Cross-Site Scripting saldırılarının temelleri, Reflected, Stored ve DOM-based XSS türleri, payload mantığı, tespit yöntemleri ve savunma teknikleri.",
+    "readTime": "8 dk"
   }
 ]
