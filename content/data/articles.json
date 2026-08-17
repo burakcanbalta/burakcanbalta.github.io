@@ -1,6 +1,6 @@
 [
   {
-    "slug": "alfred",
+    "slug": "Alfred",
     "title": "TryHackMe — Alfred Writeup",
     "date": "2026-08-18",
     "tags": [
@@ -14,7 +14,7 @@
     "readTime": "12 dk"
   },
   {
-    "slug": "domino",
+    "slug": "Domino",
     "title": "TryHackMe — Domino Writeup",
     "date": "2026-08-18",
     "tags": [
@@ -29,7 +29,7 @@
     "readTime": "15 dk"
   },
   {
-    "slug": "gridloy-news",
+    "slug": "Gridloy-News",
     "title": "Hackviser — Gridloy News Writeup",
     "date": "2026-08-18",
     "tags": [
@@ -44,7 +44,7 @@
     "readTime": "12 dk"
   },
   {
-    "slug": "interceptor",
+    "slug": "Interceptor",
     "title": "TryHackMe — Interceptor Writeup",
     "date": "2026-08-18",
     "tags": [
@@ -53,11 +53,11 @@
       "web",
       "pentest"
     ],
-    "excerpt": "Interceptor makinesinin enumeration, web uygulaması analizi, exploitation ve privilege escalation aşamalarını içeren adım adım TryHackMe çözümü.",
+    "excerpt": "Interceptor makinesinin enumeration, exploitation ve privilege escalation aşamalarını içeren TryHackMe çözümü.",
     "readTime": "12 dk"
   },
   {
-    "slug": "jump",
+    "slug": "Jump",
     "title": "TryHackMe — Jump Writeup",
     "date": "2026-08-18",
     "tags": [
@@ -70,7 +70,7 @@
     "readTime": "12 dk"
   },
   {
-    "slug": "kenobi",
+    "slug": "Kenobi",
     "title": "TryHackMe — Kenobi Writeup",
     "date": "2026-08-18",
     "tags": [
@@ -85,7 +85,7 @@
     "readTime": "12 dk"
   },
   {
-    "slug": "mrrobot",
+    "slug": "MrRobot",
     "title": "TryHackMe — Mr Robot Writeup",
     "date": "2026-08-18",
     "tags": [
@@ -100,7 +100,7 @@
     "readTime": "15 dk"
   },
   {
-    "slug": "operation-coldstart",
+    "slug": "OperationColdstart",
     "title": "TryHackMe — Operation Coldstart Writeup",
     "date": "2026-08-18",
     "tags": [
@@ -113,7 +113,7 @@
     "readTime": "12 dk"
   },
   {
-    "slug": "operation-promotion",
+    "slug": "OperationPromotion",
     "title": "TryHackMe — Operation Promotion Writeup",
     "date": "2026-08-18",
     "tags": [
@@ -127,7 +127,7 @@
     "readTime": "15 dk"
   },
   {
-    "slug": "recruit",
+    "slug": "Recruit",
     "title": "TryHackMe — Recruit Writeup",
     "date": "2026-08-18",
     "tags": [
@@ -141,7 +141,7 @@
     "readTime": "10 dk"
   },
   {
-    "slug": "silent-monitor",
+    "slug": "SilentMonitor",
     "title": "TryHackMe — Silent Monitor Writeup",
     "date": "2026-08-18",
     "tags": [
@@ -156,7 +156,7 @@
     "readTime": "15 dk"
   },
   {
-    "slug": "support",
+    "slug": "Support",
     "title": "TryHackMe — Support Writeup",
     "date": "2026-08-18",
     "tags": [
@@ -171,7 +171,7 @@
     "readTime": "12 dk"
   },
   {
-    "slug": "thompson",
+    "slug": "Thompson",
     "title": "TryHackMe — Thompson Writeup",
     "date": "2026-08-18",
     "tags": [
@@ -187,7 +187,7 @@
     "readTime": "15 dk"
   },
   {
-    "slug": "windows-jump",
+    "slug": "WindowsJump",
     "title": "TryHackMe — Windows Jump Writeup",
     "date": "2026-08-18",
     "tags": [
@@ -199,6 +199,18 @@
     ],
     "excerpt": "Guest seviyesinden başlayarak thmuser, notadmin ve svcadmin hesapları üzerinden ilerleyip Windows Jump makinesinde SYSTEM yetkisine ulaşma sürecini anlatan TryHackMe writeup.",
     "readTime": "12 dk"
+  },
+  {
+    "slug": "sql-injection-101",
+    "title": "SQL Injection 101: Temelden İleri Seviyeye",
+    "date": "2026-08-10",
+    "tags": [
+      "web",
+      "pentest",
+      "owasp"
+    ],
+    "excerpt": "SQL injection saldırılarının mantığı, tespit yöntemleri, union-based / blind / time-based teknikler ve önleme stratejileri.",
+    "readTime": "8 dk"
   },
   {
     "slug": "thm-alfred",
@@ -213,18 +225,6 @@
     ],
     "excerpt": "Jenkins Script Console üzerinden Groovy reverse shell ile RCE, SeImpersonatePrivilege ve process migration ile SYSTEM yetkisine yükseldiğim THM Alfred makinesinin adım adım çözümü.",
     "readTime": "12 dk"
-  },
-  {
-    "slug": "sql-injection-101",
-    "title": "SQL Injection 101: Temelden İleri Seviyeye",
-    "date": "2026-08-10",
-    "tags": [
-      "web",
-      "pentest",
-      "owasp"
-    ],
-    "excerpt": "SQL injection saldırılarının mantığı, tespit yöntemleri, union-based / blind / time-based teknikler ve önleme stratejileri.",
-    "readTime": "8 dk"
   },
   {
     "slug": "xss-101",
