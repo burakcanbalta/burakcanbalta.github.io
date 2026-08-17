@@ -1,6 +1,5 @@
 // =========================================================
 // SIBERPORTAL — CERTIFICATIONS
-// content/data/certs.json üzerinden otomatik render
 // =========================================================
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -9,15 +8,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!grid) return;
 
   try {
-    const response = await fetch('content/data/certs.json', {
+    const res = await fetch('content/data/certs.json', {
       cache: 'no-cache'
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
     }
 
-    let certs = await response.json();
+    let certs = await res.json();
 
     const limit = parseInt(grid.dataset.limit || '0', 10);
 
@@ -25,27 +24,25 @@ document.addEventListener('DOMContentLoaded', async () => {
       certs = certs.slice(0, limit);
     }
 
-    renderCertificates(certs, grid);
+    renderCerts(certs, grid);
 
   } catch (error) {
+
     console.error('Certificate loading error:', error);
 
     grid.innerHTML = `
       <p class="state-msg error">
-        // sertifikalar yüklenirken hata oluştu
+        // sertifikalar yüklenemedi
       </p>
     `;
   }
 });
 
 
-// =========================================================
-// RENDER
-// =========================================================
-
-function renderCertificates(certs, grid) {
+function renderCerts(certs, grid) {
 
   if (!Array.isArray(certs) || certs.length === 0) {
+
     grid.innerHTML = `
       <p class="state-msg">
         // henüz sertifika eklenmedi
@@ -55,6 +52,7 @@ function renderCertificates(certs, grid) {
     return;
   }
 
+
   grid.innerHTML = certs.map(cert => {
 
     const statusLabel =
@@ -63,72 +61,74 @@ function renderCertificates(certs, grid) {
         : '● AKTİF';
 
 
-    // -----------------------------------------------------
-    // Certificate thumbnail
-    // -----------------------------------------------------
+    /*
+     * Sertifika görseli
+     */
 
-    let thumbnail;
+    const thumbnail = cert.image
+      ? `
+        <div class="cert-image-wrap">
 
-    if (cert.image && cert.image.trim() !== '') {
-
-      thumbnail = `
-        <div class="cert-thumb-wrap">
           <img
             class="cert-thumb"
             src="${escapeAttr(cert.image)}"
             alt="${escapeAttr(cert.name)}"
             loading="lazy"
-            onerror="this.style.display='none'; this.parentElement.classList.add('cert-image-error');"
+            onerror="this.style.display='none'; this.parentElement.classList.add('image-error');"
           >
 
-          <div class="cert-thumb-fallback">
-            🛡
+          <div class="cert-image-fallback">
+            <span>🛡</span>
+            <small>PREVIEW UNAVAILABLE</small>
           </div>
+
+        </div>
+      `
+      : `
+        <div class="cert-image-wrap no-image">
+
+          <div class="cert-thumb-placeholder">
+            <span>🛡</span>
+          </div>
+
         </div>
       `;
 
-    } else {
 
-      thumbnail = `
-        <div class="cert-thumb-wrap cert-thumb-placeholder">
-          <div class="cert-thumb-fallback visible">
-            🛡
-          </div>
-        </div>
-      `;
-    }
-
-
-    // -----------------------------------------------------
-    // Card content
-    // -----------------------------------------------------
+    /*
+     * Kart içeriği
+     */
 
     const inner = `
       ${thumbnail}
 
-      <span class="cert-status">
-        ${statusLabel}
-      </span>
+      <div class="cert-info">
 
-      <span class="cert-name">
-        ${escapeHtml(cert.name)}
-      </span>
+        <span class="cert-status">
+          ${statusLabel}
+        </span>
 
-      <span class="cert-issuer">
-        ${escapeHtml(cert.issuer)}
-      </span>
+        <span class="cert-name">
+          ${escapeHtml(cert.name)}
+        </span>
 
-      <span class="cert-date">
-        ${escapeHtml(cert.date || '')}
-      </span>
+        <span class="cert-issuer">
+          ${escapeHtml(cert.issuer)}
+        </span>
+
+        <span class="cert-date">
+          ${escapeHtml(cert.date || '')}
+        </span>
+
+      </div>
     `;
 
 
-    // -----------------------------------------------------
-    // Clickable certificate
-    // -----------------------------------------------------
+    /*
+     * Link varsa kart komple tıklanabilir.
+     */
 
-    if (cert.link && cert.link.trim() !== '') {
+    if (cert.link) {
 
       return `
         <a
@@ -155,22 +155,23 @@ function renderCertificates(certs, grid) {
 }
 
 
-// =========================================================
-// HTML ESCAPE
-// =========================================================
+/*
+ * HTML escaping
+ */
 
 function escapeHtml(value = '') {
 
   return String(value).replace(
     /[&<>"']/g,
-    character => ({
+    char => ({
       '&': '&amp;',
       '<': '&lt;',
       '>': '&gt;',
       '"': '&quot;',
       "'": '&#39;'
-    })[character]
+    }[char])
   );
+
 }
 
 
