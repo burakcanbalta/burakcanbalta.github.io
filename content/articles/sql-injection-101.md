@@ -1,47 +1,677 @@
-## Giriş
+# SQL Injection
 
-SQL Injection (SQLi), bir uygulamanın kullanıcıdan aldığı girdiyi doğrudan SQL sorgusuna eklemesi sonucu ortaya çıkan, hâlâ OWASP Top 10 listesinde yer alan klasik ama tehlikeli bir zafiyet sınıfıdır. Bu yazıda temel mantığı, tespit yöntemlerini ve önleme stratejilerini ele alıyorum.
+## SQL Injection Nedir?
 
-> Not: Bu içerik yalnızca eğitim amaçlıdır. Yalnızca izin verilen (authorized) ortamlarda test yapın.
+SQL Injection, bir web uygulamasının kullanıcıdan aldığı verileri **doğrudan SQL sorgusu içine eklemesi** sonucu ortaya çıkan kritik bir güvenlik açığıdır.
 
-## Zafiyetin Mantığı
+Bu açık sayesinde saldırgan:
 
-Aşağıdaki gibi bir sorgu düşünelim:
+* Yetkisiz verilere erişebilir
+* Kimlik doğrulamayı atlatabilir
+* Verileri silebilir veya değiştirebilir
+* Bazı durumlarda veritabanı üzerinden sisteme daha derin erişim elde edebilir
+
+SQL Injection, **OWASP Top 10** listesinde yıllardır yer alan ve pratikte hâlâ sıkça karşılaşılan bir zafiyettir. Bunun sebebi, hatanın genellikle kodun “çalışıyor” görünmesine rağmen **mantıksal olarak yanlış** olmasıdır.
+
+---
+
+## SQL Injection Gerçek Hayatta Nerelerde Çıkar?
+
+Yeni başlayanların en çok sorduğu soru şudur:
+
+> “Tamam anladım ama ben bunu nerede görürüm?”
+
+Cevap net:
+
+**Kullanıcıdan veri alıp veritabanına gönderen her yer potansiyel hedeftir.**
+
+En sık görülen alanlar:
+
+* Login formları (username / password)
+* Arama kutuları (`?q=`)
+* URL parametreleri (`?id=1`)
+* Filtreleme ve sıralama alanları (`?sort=price`)
+* API endpoint’leri
+* API body parametreleri (JSON içindeki alanlar)
+* Admin panelleri
+* Raporlama, export/import, CSV işleme bölümleri
+
+Kısaca:
+**Input SQL’e gidiyorsa, SQL Injection ihtimali vardır.**
+
+Bu bakış açısı konunun zihinde yerine oturmasını sağlar.
+
+---
+
+## SQL Injection Nasıl Çalışır?
+
+Tipik bir login sorgusu:
 
 ```sql
-SELECT * FROM users WHERE username = '$input' AND password = '$pass'
+SELECT * FROM users 
+WHERE username = 'kullanici' AND password = 'sifre';
 ```
 
-Eğer `$input` değeri doğrulanmadan sorguya ekleniyorsa, bir saldırgan şu girdiyi kullanabilir:
+Sorun şudur:
 
-```
+> **Kullanıcıdan gelen veri, hiçbir ayrıştırma yapılmadan SQL sorgusunun parçası hâline gelmiştir.**
+
+Saldırgan şu payload’u gönderirse:
+
+```text
 ' OR '1'='1
 ```
 
-Sonuç sorgu şu hale gelir:
+Gerçek sorgu şuna dönüşür:
 
 ```sql
-SELECT * FROM users WHERE username = '' OR '1'='1' AND password = ''
+SELECT * FROM users 
+WHERE username = '' OR '1'='1' AND password = '';
 ```
 
-Bu, `WHERE` koşulunu her zaman doğru yaparak kimlik doğrulamayı atlatabilir.
+`'1'='1'` her zaman **true** olduğu için parola kontrolü devre dışı kalır.
 
-## Tespit Teknikleri
+Sonuç: **Login bypass**
 
-| Teknik | Açıklama |
-|---|---|
-| Error-based | Veritabanı hata mesajlarından bilgi sızdırma |
-| Union-based | `UNION SELECT` ile ek veri çekme |
-| Blind (boolean) | Doğru/yanlış davranış farkına göre çıkarım |
-| Time-based | `SLEEP()` gibi fonksiyonlarla gecikme ölçümü |
+---
 
-## Önleme
+## SQL Injection Türleri
 
-- **Parametreli sorgular (prepared statements)** kullanın — asla string concatenation yapmayın.
-- Girdi doğrulama (allow-list) uygulayın.
-- En az yetki prensibiyle veritabanı kullanıcıları tanımlayın.
-- WAF katmanını ek savunma olarak kullanın, tek başına yeterli görmeyin.
+### 1. In-Band SQL Injection
 
-## Kapanış
+Uygulama:
 
-SQLi hâlâ gerçek dünyada en çok karşılaşılan zafiyetlerden biri. Kod inceleme süreçlerine parametreli sorgu kontrolünü eklemek, çoğu vakayı en baştan engeller.
+* SQL hatalarını gösterir
+* Sorgu sonucunu kullanıcıya basar
+
+Örnek payload:
+
+```sql
+' OR 1=1 --
+```
+
+Özellikleri:
+
+* En hızlı exploit edilen türdür
+* Tespiti kolaydır
+* Güncel sistemlerde daha az ama hâlâ görülür
+
+---
+
+### 2. UNION Based SQL Injection
+
+Başka tablolardan veri çekmek için kullanılır.
+
+```sql
+' UNION SELECT username, password FROM users --
+```
+
+Amaç:
+
+* Kolon sayısını öğrenmek
+* Hangi kolonların ekrana basıldığını tespit etmek
+* Hassas verileri çekmek
+
+#### ORDER BY Neden Denir?
+
+Yeni başlayanların en çok kaçırdığı nokta burasıdır.
+
+`ORDER BY` burada veri sıralamak için **kullanılmaz**.
+Amaç **kolon sayısını bulmaktır**.
+
+```sql
+' ORDER BY 1 --
+' ORDER BY 2 --
+' ORDER BY 3 --
+```
+
+* Hata yoksa → o kadar kolon vardır
+* Hata aldığın yerde → kolon sayısını aşmışsındır
+
+Bu bilgi olmadan UNION yapmak **ezber** olur, mantık oturmaz.
+
+---
+
+### 3. Blind SQL Injection
+
+Uygulama:
+
+* Hata mesajlarını gizler
+* Sorgu sonucunu kullanıcıya göstermez
+
+#### “Hiçbir şey görünmüyorsa saldırı nasıl yapılır?”
+
+Blind SQL Injection’da saldırgan **veriyi değil**,
+**uygulamanın davranışını** gözlemler.
+
+Örnek gözlemler:
+
+* Sayfa içeriği değişiyor mu?
+* HTTP response süresi uzuyor mu?
+* HTTP status code farklı mı?
+
+Alt türleri:
+
+* Boolean-Based
+* Time-Based
+* Out-of-Band (OAST)
+
+#### Time-Based Örnek
+
+```sql
+' OR IF(1=1, SLEEP(5), 0) --
+```
+
+Sayfa 5 saniye gecikirse → SQL Injection vardır.
+
+---
+
+## SQL Mantığı Nasıl Bozulur?
+
+SQL Injection’ın özü **SQL mantığını kırmaktır**.
+
+Kritik karakterler:
+
+* `'` → String kapatır
+* `--` → Sorgunun kalanını yorum satırı yapar
+* `OR` → Koşulu her zaman true yapabilir
+
+Yanlış kullanıldığında sorgu geliştiricinin amacından tamamen çıkar.
+
+---
+
+## Zafiyetli Flask + MySQL Uygulaması
+
+❌ **GÜVENSİZ KOD**
+
+```python
+from flask import Flask, request
+import mysql.connector
+
+app = Flask(__name__)
+
+db = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="root",
+    database="testdb"
+)
+
+@app.route("/login", methods=["POST"])
+def login():
+    username = request.form["username"]
+    password = request.form["password"]
+
+    cursor = db.cursor()
+    query = f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'"
+    cursor.execute(query)
+
+    if cursor.fetchone():
+        return "Giriş başarılı"
+    return "Hatalı bilgiler"
+
+app.run(debug=True)
+```
+
+### Bu Kod Nerede Açık?
+
+Red team gözüyle bakarsak:
+
+```python
+query = f"SELECT * FROM users WHERE username = '{username}' AND password = '{password}'"
+```
+
+Burada olan şey şudur:
+
+* SQL sorgusu **string olarak birleştiriliyor**
+* Kullanıcı girdisi sorgunun **bir parçası hâline geliyor**
+* Saldırgan sadece veri değil, **SQL mantığı gönderiyor**
+
+Bu noktada saldırgan:
+
+* `'` ile string kapatır
+* `OR` ile koşulu değiştirir
+* `--` ile password kontrolünü iptal eder
+
+Uygulama şunu ayırt edemez:
+
+> “Bu gelen şey kullanıcı adı mı, SQL mi?”
+
+---
+
+## Secure Versiyon (Prepared Statement)
+
+✅ **GÜVENLİ KOD**
+
+```python
+@app.route("/login", methods=["POST"])
+def secure_login():
+    username = request.form["username"]
+    password = request.form["password"]
+
+    cursor = db.cursor(prepared=True)
+    query = "SELECT * FROM users WHERE username = %s AND password = %s"
+    cursor.execute(query, (username, password))
+
+    if cursor.fetchone():
+        return "Giriş başarılı"
+    return "Hatalı bilgiler"
+```
+
+### Burada Ne Değişti?
+
+* SQL sorgusu **önceden tanımlı ve sabit**
+* Kullanıcı girdisi SQL’in **yapısına karışamaz**
+* Veritabanı input’u **sadece veri** olarak işler
+
+Saldırgan şunu gönderse bile:
+
+```text
+' OR 1=1 --
+```
+
+Veritabanı bunu:
+
+> “Bu bir string, SQL değil”
+
+olarak algılar.
+
+**SQL Injection kapanmıştır.**
+
+---
+
+## ORM Kullanımı
+## ORM Nedir?
+
+<img width="856" height="445" alt="orm" src="https://github.com/user-attachments/assets/30bc2a2e-d175-4d57-8029-a3897021c12f" />
+
+
+ORM (Object Relational Mapping), **veritabanı tablolarını uygulama içindeki nesnelere (class)** dönüştüren bir yaklaşımdır.
+
+Yani ORM şunu yapar:
+
+* Veritabanı Tablosu → Class
+* Tablo Satırı → Object
+* Kolon → Object Attribute
+
+Geliştirici SQL yazmak yerine **nesnelerle çalışır**, ORM arka planda güvenli SQL sorgularını üretir.
+
+---
+
+### SQL Yazmadan Veri Çekme Mantığı
+
+Klasik SQL ile:
+
+```sql
+SELECT * FROM users WHERE username = 'admin';
+```
+
+ORM ile aynı işlem:
+
+```python
+user = User.query.filter_by(username="admin").first()
+```
+
+Burada geliştirici SQL yazmaz.
+ORM bunu **parametrized** ve güvenli bir SQL sorgusuna çevirir.
+
+---
+
+### ORM Neden SQL Injection’a Karşı Güvenlidir?
+
+* SQL string olarak birleştirilmez
+* Parametre binding otomatik yapılır
+* Kullanıcı girdisi SQL mantığına karışamaz
+* `' OR 1=1 --` gibi payload’lar **sadece string** olarak algılanır
+
+Bu yüzden ORM doğru kullanıldığında SQL Injection riski **pratikte yoktur**.
+
+---
+
+### ORM Ne Zaman Tehlikelidir?
+
+ORM kullanılıyor olması **tek başına yeterli değildir**.
+
+Aşağıdaki kullanım **tehlikelidir**:
+
+```python
+db.session.execute(
+    f"SELECT * FROM users WHERE username = '{username}'"
+)
+```
+
+Bu noktada:
+
+* ORM bypass edilir
+* SQL tekrar string olarak birleştirilir
+* SQL Injection riski **geri gelir**
+
+---
+
+ORM (Object Relational Mapping):
+
+* Tablo → Class
+* Satır → Object
+* Kolon → Attribute
+
+```python
+user = User.query.filter_by(username=username).first()
+```
+
+ORM bunu arka planda güvenli SQL’e çevirir:
+
+```sql
+SELECT * FROM users WHERE username = %s LIMIT 1;
+```
+
+### ORM Ne Zaman Risklidir?
+
+```python
+db.session.execute(
+    f"SELECT * FROM users WHERE username = '{username}'"
+)
+```
+
+Burada ORM bypass edilir ve **SQL Injection geri gelir**.
+
+---
+
+## SQL Injection Nasıl Anlaşılır?
+
+### In-Band
+
+* SQL hatası görünür
+* Veri ekrana basılır
+
+### UNION-Based
+
+* ORDER BY ile kolon sayısı bulunur
+* UNION çalışıyorsa veri çekilir
+
+### Blind
+
+* Sayfa davranışı değişir
+* Gecikme oluşur
+
+---
+
+## Ne Yapılmalı / Ne İşe Yaramaz
+
+### İşe Yarar
+
+* Prepared Statements
+* Parametrized Queries
+* ORM (doğru kullanım)
+* Minimal DB yetkileri
+* WAF (ek katman)
+
+### ❌ Ne İşe Yaramaz
+
+* Sadece input validation
+* `'` engellemek
+* `OR` silmek
+
+**Gerçek çözüm SQL mimarisini güvenli kurmaktır.**
+
+---
+## Veritabanı Türlerine Göre SQL Injection Davranışları
+
+SQL Injection’ın temel mantığı **her veritabanında aynıdır**:
+Kullanıcı girdisi SQL sorgusunun yapısına karışıyorsa zafiyet vardır.
+
+Ancak **payload’ların çalışması, kullanılan veritabanına göre değişir.**
+Bu yüzden körü körüne payload denemek yerine, hedef DBMS’i anlamak gerekir.
+
+---
+
+### MySQL / MariaDB
+
+Web uygulamalarında **en sık karşılaşılan** veritabanıdır.
+
+**Öne çıkan özellikler:**
+
+* `SLEEP()` fonksiyonu vardır
+* `IF(condition, true, false)` kullanılabilir
+* `information_schema` aktif şekilde kullanılır
+
+**Örnek Time-Based payload:**
+
+```sql
+' OR IF(1=1, SLEEP(5), 0) --
+```
+
+**Davranış:**
+
+* Sayfa 5 saniye gecikirse SQL Injection vardır
+* Blind SQLi testlerinde çok yaygındır
+
+---
+
+### MSSQL (Microsoft SQL Server)
+
+Genelde **.NET uygulamalarda** karşımıza çıkar.
+
+**Öne çıkan farklar:**
+
+* `SLEEP()` yoktur
+* `WAITFOR DELAY` kullanılır
+* Hata mesajları genelde daha ayrıntılıdır (yanlış yapılandırmada)
+
+**Örnek Time-Based payload:**
+
+```sql
+' IF (1=1) WAITFOR DELAY '00:00:05' --
+```
+
+**Davranış:**
+
+* Gecikme varsa SQLi vardır
+* Boolean-based testler de sık kullanılır
+
+---
+
+### PostgreSQL
+
+Daha modern ve güvenlik odaklı projelerde tercih edilir.
+
+**Öne çıkan özellikler:**
+
+* `pg_sleep()` fonksiyonu kullanılır
+* Hata mesajları genelde gizlidir (Blind SQLi sık görülür)
+
+**Örnek payload:**
+
+```sql
+' OR pg_sleep(5) --
+```
+
+**Davranış:**
+
+* Çoğu zaman Blind SQL Injection şeklinde karşımıza çıkar
+* Time-based testler daha etkilidir
+
+---
+
+### MongoDB (NoSQL) – Neden Farklı?
+
+MongoDB **SQL kullanmaz**, ama bu **Injection olmadığı anlamına gelmez**.
+
+Burada karşılaşılan şey:
+
+> ❌ SQL Injection değil
+> ✔ NoSQL Injection
+
+**Zafiyetli örnek (Node.js):**
+
+```js
+db.users.find({ username: req.body.username })
+```
+
+Eğer input kontrol edilmezse saldırgan şunu gönderebilir:
+
+```json
+{ "$ne": null }
+```
+
+**Sonuç:**
+
+* Tüm kullanıcılar döner
+* Authentication bypass olabilir
+
+**Önemli not:**
+Mantık aynı → *kullanıcı girdisi sorgu mantığına karışıyor*
+Dil farklı → *SQL değil JSON query*
+
+---
+
+## Framework’lerde SQL Injection Nasıl Ortaya Çıkar?
+
+Framework’ler genelde **güvenlidir**,
+ama geliştirici yanlış kullanırsa zafiyet kaçınılmaz olur.
+
+---
+
+### Django (Python)
+
+**Güvenli kullanım:**
+
+```python
+User.objects.filter(username=username)
+```
+
+**Riskli kullanım:**
+
+```python
+User.objects.raw(
+    f"SELECT * FROM users WHERE username = '{username}'"
+)
+```
+
+**Neden?**
+
+* ORM bypass edilir
+* SQL string olarak birleştirilir
+* SQL Injection geri gelir
+
+---
+
+### Flask (Python)
+
+Flask **tek başına ORM sunmaz**.
+
+**Riskli kullanım:**
+
+```python
+query = f"SELECT * FROM users WHERE username = '{username}'"
+```
+
+**Güvenli kullanım:**
+
+```python
+cursor.execute(
+    "SELECT * FROM users WHERE username = %s",
+    (username,)
+)
+```
+
+**Özet:**
+
+* Flask güvenli veya güvensiz değildir
+* Güvenlik tamamen geliştiriciye bağlıdır
+
+---
+
+### Express (Node.js)
+
+**Riskli kullanım:**
+
+```js
+db.query(
+  "SELECT * FROM users WHERE username = '" + username + "'"
+)
+```
+
+**Güvenli kullanım:**
+
+```js
+db.query(
+  "SELECT * FROM users WHERE username = ?",
+  [username]
+)
+```
+
+**Davranış:**
+
+* Parametrization varsa SQL Injection yok
+* String birleştirme varsa risk vardır
+
+---
+
+### PHP (PDO / MySQLi)
+
+**Riskli kullanım:**
+
+```php
+$query = "SELECT * FROM users WHERE username = '$username'";
+```
+
+**Güvenli kullanım (PDO):**
+
+```php
+$stmt = $pdo->prepare(
+  "SELECT * FROM users WHERE username = ?"
+);
+$stmt->execute([$username]);
+```
+
+**Not:**
+
+* Eski `mysql_*` fonksiyonları ciddi risklidir
+* PDO + prepared statement standarttır
+
+---
+
+### .NET (C#)
+
+**Güvenli kullanım:**
+
+* Entity Framework
+* `SqlParameter`
+
+**Riskli kullanım:**
+
+```csharp
+string query =
+  "SELECT * FROM users WHERE username = '" + username + "'";
+```
+
+**Özet:**
+
+* EF güvenlidir
+* `ExecuteSqlRaw` dikkatle kullanılmalıdır
+
+---
+
+## Genel Kural 
+
+> SQL Injection framework problemi değil,
+> **yanlış kullanım problemidir.**
+
+* Parametrized query → güvenli
+* ORM → güvenli
+* Raw SQL + string concat → riskli
+---
+
+
+## Yaygın Senaryolar
+
+* Login bypass
+  `admin' --`
+
+* Tüm kayıtları çekme
+  `' OR 1=1 --`
+
+* Tablo keşfi
+  `' UNION SELECT table_name, null FROM information_schema.tables --`
+
+---
