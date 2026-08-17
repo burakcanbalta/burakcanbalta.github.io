@@ -1,45 +1,179 @@
-// Sertifikalar — content/data/certs.json içindeki listeye göre otomatik render edilir.
-// Yeni sertifika eklemek için: certs.json'a { "name", "issuer", "date", "status", "link", "image" } formatında satır ekle.
-// status: "aktif" | "devam" (devam ediyor / henüz tamamlanmadı)
-// image: (opsiyonel) sertifika görselinin yolu, örn. "assets/img/certs/oscp.png". Boş bırakılırsa ikon gösterilir.
-// #cert-grid elementine data-limit="6" verirsen (örn. ana sayfada) sadece ilk N sertifika gösterilir.
+// =========================================================
+// SIBERPORTAL — CERTIFICATIONS
+// content/data/certs.json üzerinden otomatik render
+// =========================================================
 
 document.addEventListener('DOMContentLoaded', async () => {
   const grid = document.getElementById('cert-grid');
+
   if (!grid) return;
+
   try {
-    const res = await fetch('content/data/certs.json');
-    let certs = await res.json();
+    const response = await fetch('content/data/certs.json', {
+      cache: 'no-cache'
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    let certs = await response.json();
+
     const limit = parseInt(grid.dataset.limit || '0', 10);
-    if (limit > 0) certs = certs.slice(0, limit);
-    render(certs, grid);
-  } catch (e) {
-    grid.innerHTML = `<p class="state-msg error">// sertifikalar yüklenemedi</p>`;
+
+    if (limit > 0) {
+      certs = certs.slice(0, limit);
+    }
+
+    renderCertificates(certs, grid);
+
+  } catch (error) {
+    console.error('Certificate loading error:', error);
+
+    grid.innerHTML = `
+      <p class="state-msg error">
+        // sertifikalar yüklenirken hata oluştu
+      </p>
+    `;
   }
 });
 
-function render(certs, grid) {
-  if (!certs.length) {
-    grid.innerHTML = `<p class="state-msg">// henüz sertifika eklenmedi</p>`;
+
+// =========================================================
+// RENDER
+// =========================================================
+
+function renderCertificates(certs, grid) {
+
+  if (!Array.isArray(certs) || certs.length === 0) {
+    grid.innerHTML = `
+      <p class="state-msg">
+        // henüz sertifika eklenmedi
+      </p>
+    `;
+
     return;
   }
-  grid.innerHTML = certs.map(c => {
-    const statusLabel = c.status === 'devam' ? '◐ DEVAM EDİYOR' : '● AKTİF';
-    const thumb = c.image
-      ? `<img class="cert-thumb" src="${escapeAttr(c.image)}" alt="${escapeAttr(c.name)}">`
-      : `<div class="cert-thumb cert-thumb-placeholder">🛡</div>`;
+
+  grid.innerHTML = certs.map(cert => {
+
+    const statusLabel =
+      cert.status === 'devam'
+        ? '◐ DEVAM EDİYOR'
+        : '● AKTİF';
+
+
+    // -----------------------------------------------------
+    // Certificate thumbnail
+    // -----------------------------------------------------
+
+    let thumbnail;
+
+    if (cert.image && cert.image.trim() !== '') {
+
+      thumbnail = `
+        <div class="cert-thumb-wrap">
+          <img
+            class="cert-thumb"
+            src="${escapeAttr(cert.image)}"
+            alt="${escapeAttr(cert.name)}"
+            loading="lazy"
+            onerror="this.style.display='none'; this.parentElement.classList.add('cert-image-error');"
+          >
+
+          <div class="cert-thumb-fallback">
+            🛡
+          </div>
+        </div>
+      `;
+
+    } else {
+
+      thumbnail = `
+        <div class="cert-thumb-wrap cert-thumb-placeholder">
+          <div class="cert-thumb-fallback visible">
+            🛡
+          </div>
+        </div>
+      `;
+    }
+
+
+    // -----------------------------------------------------
+    // Card content
+    // -----------------------------------------------------
+
     const inner = `
-      ${thumb}
-      <span class="cert-status">${statusLabel}</span>
-      <span class="cert-name">${escapeHtml(c.name)}</span>
-      <span class="cert-issuer">${escapeHtml(c.issuer)}</span>
-      <span class="cert-date">${escapeHtml(c.date || '')}</span>
+      ${thumbnail}
+
+      <span class="cert-status">
+        ${statusLabel}
+      </span>
+
+      <span class="cert-name">
+        ${escapeHtml(cert.name)}
+      </span>
+
+      <span class="cert-issuer">
+        ${escapeHtml(cert.issuer)}
+      </span>
+
+      <span class="cert-date">
+        ${escapeHtml(cert.date || '')}
+      </span>
     `;
-    return c.link
-      ? `<a class="cert-card" href="${escapeAttr(c.link)}" target="_blank" rel="noopener">${inner}</a>`
-      : `<div class="cert-card">${inner}</div>`;
+
+
+    // -----------------------------------------------------
+    // Clickable certificate
+    // -----------------------------------------------------
+
+    if (cert.link && cert.link.trim() !== '') {
+
+      return `
+        <a
+          class="cert-card"
+          href="${escapeAttr(cert.link)}"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="${escapeAttr(cert.name)} — sertifikayı aç"
+        >
+          ${inner}
+        </a>
+      `;
+
+    }
+
+
+    return `
+      <div class="cert-card">
+        ${inner}
+      </div>
+    `;
+
   }).join('');
 }
 
-function escapeHtml(s='') { return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-function escapeAttr(s='') { return escapeHtml(s); }
+
+// =========================================================
+// HTML ESCAPE
+// =========================================================
+
+function escapeHtml(value = '') {
+
+  return String(value).replace(
+    /[&<>"']/g,
+    character => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    })[character]
+  );
+}
+
+
+function escapeAttr(value = '') {
+  return escapeHtml(value);
+}
