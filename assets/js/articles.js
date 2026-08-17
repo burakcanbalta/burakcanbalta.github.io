@@ -1,67 +1,228 @@
-// Makaleler sayfası — content/data/articles.json içindeki meta verilere göre listeler.
-// Yeni makale eklemek için: content/articles/ altına .md dosyası koy + articles.json'a satır ekle.
+// ============================================================
+// SİBERPORTAL — MAKALELER
+// content/data/articles.json üzerinden makaleleri listeler.
+// ============================================================
 
 let ALL_ARTICLES = [];
-let activeTag = 'all';
 
-document.addEventListener('DOMContentLoaded', async () => {
-  const listEl = document.getElementById('article-list');
-  try {
-    const res = await fetch('content/data/articles.json');
-    ALL_ARTICLES = await res.json();
-    ALL_ARTICLES.sort((a, b) => new Date(b.date) - new Date(a.date));
-    buildTagFilters();
-    render();
-  } catch (e) {
-    listEl.innerHTML = `<p class="state-msg error">// makaleler yüklenemedi</p>`;
-  }
-  document.getElementById('article-search')?.addEventListener('input', render);
+document.addEventListener("DOMContentLoaded", async () => {
+    const listEl = document.getElementById("article-list");
+    const searchEl = document.getElementById("article-search");
+
+    if (!listEl) return;
+
+    try {
+        const response = await fetch(
+            "./content/data/articles.json?v=" + Date.now(),
+            {
+                cache: "no-store"
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                "articles.json yüklenemedi: HTTP " + response.status
+            );
+        }
+
+        ALL_ARTICLES = await response.json();
+
+        if (!Array.isArray(ALL_ARTICLES)) {
+            throw new Error("articles.json geçerli bir JSON array değil");
+        }
+
+        // En yeni makaleler üstte
+        ALL_ARTICLES.sort((a, b) => {
+            return new Date(b.date) - new Date(a.date);
+        });
+
+        renderArticles();
+
+        if (searchEl) {
+            searchEl.addEventListener("input", renderArticles);
+        }
+
+    } catch (error) {
+
+        console.error("Makale sistemi hatası:", error);
+
+        listEl.innerHTML = `
+            <div class="state-msg error">
+                // makaleler yüklenemedi
+                <br>
+                // ${escapeHtml(error.message)}
+            </div>
+        `;
+    }
 });
 
-function buildTagFilters() {
-  const tags = new Set();
-  ALL_ARTICLES.forEach(a => (a.tags || []).forEach(t => tags.add(t)));
-  const bar = document.getElementById('tag-filters');
-  if (!bar) return;
-  bar.innerHTML = `<button class="filter-btn active" data-tag="all">tümü</button>` +
-    [...tags].map(t => `<button class="filter-btn" data-tag="${t}">${t}</button>`).join('');
-  bar.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      activeTag = btn.dataset.tag;
-      bar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      render();
-    });
-  });
+
+function renderArticles() {
+
+    const listEl = document.getElementById("article-list");
+
+    if (!listEl) return;
+
+    const searchEl = document.getElementById("article-search");
+
+    const query = (
+        searchEl?.value || ""
+    ).trim().toLowerCase();
+
+
+    let articles = ALL_ARTICLES;
+
+
+    // --------------------------------------------------------
+    // SEARCH
+    // --------------------------------------------------------
+
+    if (query) {
+
+        articles = articles.filter(article => {
+
+            const title = article.title || "";
+            const excerpt = article.excerpt || "";
+            const tags = Array.isArray(article.tags)
+                ? article.tags.join(" ")
+                : "";
+
+            const searchableText = (
+                title + " " +
+                excerpt + " " +
+                tags
+            ).toLowerCase();
+
+            return searchableText.includes(query);
+        });
+    }
+
+
+    // --------------------------------------------------------
+    // SONUÇ YOK
+    // --------------------------------------------------------
+
+    if (articles.length === 0) {
+
+        listEl.innerHTML = `
+            <p class="state-msg">
+                // eşleşen makale bulunamadı
+            </p>
+        `;
+
+        return;
+    }
+
+
+    // --------------------------------------------------------
+    // MAKALELER
+    // --------------------------------------------------------
+
+    listEl.innerHTML = articles.map(article => {
+
+        const slug = article.slug || "";
+        const title = article.title || slug;
+        const excerpt = article.excerpt || "";
+        const readTime = article.readTime || "";
+
+        const tags = Array.isArray(article.tags)
+            ? article.tags
+            : [];
+
+
+        return `
+            <div class="row">
+
+                <div class="row-main">
+
+                    <p class="row-meta">
+
+                        <span>
+                            ${formatDate(article.date)}
+                        </span>
+
+                        <span>
+                            ${escapeHtml(readTime)}
+                        </span>
+
+                    </p>
+
+
+                    <h3 class="row-title">
+
+                        <a
+                            href="makale.html?slug=${encodeURIComponent(slug)}"
+                        >
+                            ${escapeHtml(title)}
+                        </a>
+
+                    </h3>
+
+
+                    <p class="row-desc">
+                        ${escapeHtml(excerpt)}
+                    </p>
+
+
+                    <div class="tags">
+
+                        ${tags.map(tag => `
+                            <span class="chip">
+                                ${escapeHtml(tag)}
+                            </span>
+                        `).join("")}
+
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+    }).join("");
 }
 
-function render() {
-  const listEl = document.getElementById('article-list');
-  const q = (document.getElementById('article-search')?.value || '').toLowerCase();
 
-  let items = ALL_ARTICLES;
-  if (activeTag !== 'all') items = items.filter(a => (a.tags || []).includes(activeTag));
-  if (q) items = items.filter(a => (a.title + ' ' + a.excerpt).toLowerCase().includes(q));
+// ============================================================
+// TARİH
+// ============================================================
 
-  if (items.length === 0) {
-    listEl.innerHTML = `<p class="state-msg">// eşleşen makale bulunamadı</p>`;
-    return;
-  }
+function formatDate(date) {
 
-  listEl.innerHTML = items.map(a => `
-    <div class="row">
-      <div class="row-main">
-        <p class="row-meta">
-          <span>${formatDate(a.date)}</span>
-          <span>${a.readTime || ''}</span>
-        </p>
-        <h3 class="row-title"><a href="makale.html?slug=${encodeURIComponent(a.slug)}">${escapeHtml(a.title)}</a></h3>
-        <p class="row-desc">${escapeHtml(a.excerpt || '')}</p>
-        <div class="tags">${(a.tags || []).map(t => `<span class="chip">${t}</span>`).join('')}</div>
-      </div>
-    </div>
-  `).join('');
+    if (!date) return "";
+
+    try {
+
+        return new Date(date).toLocaleDateString(
+            "tr-TR",
+            {
+                day: "2-digit",
+                month: "short",
+                year: "numeric"
+            }
+        );
+
+    } catch {
+
+        return date;
+    }
 }
 
-function formatDate(d) { try { return new Date(d).toLocaleDateString('tr-TR', { day:'2-digit', month:'short', year:'numeric' }); } catch { return d; } }
-function escapeHtml(s='') { return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+// ============================================================
+// HTML ESCAPE
+// ============================================================
+
+function escapeHtml(value = "") {
+
+    return String(value).replace(
+        /[&<>"']/g,
+        char => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        }[char])
+    );
+}
