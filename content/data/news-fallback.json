@@ -1,0 +1,30 @@
+[
+  {
+    "title": "Canlı haber akışı şu anda kullanılamıyor",
+    "link": "https://thehackernews.com/",
+    "date": "2026-08-17T00:00:00Z",
+    "source": "SiberPortal",
+    "desc": "Tarayıcı canlı RSS kaynaklarına ulaşamadı. Güncel haberler için The Hacker News, BleepingComputer veya Krebs on Security'yi doğrudan ziyaret edebilirsin. Bu sayfa bağlantı kurulabildiğinde otomatik güncellenir."
+  },
+  {
+    "title": "The Hacker News — Güncel Siber Güvenlik Haberleri",
+    "link": "https://thehackernews.com/",
+    "date": "2026-08-16T00:00:00Z",
+    "source": "The Hacker News",
+    "desc": "Zero-day zafiyetler, fidye yazılımı kampanyaları ve tehdit istihbaratı üzerine güncel haberler."
+  },
+  {
+    "title": "BleepingComputer — Güvenlik ve Teknoloji Haberleri",
+    "link": "https://www.bleepingcomputer.com/",
+    "date": "2026-08-15T00:00:00Z",
+    "source": "BleepingComputer",
+    "desc": "Fidye yazılımı, veri sızıntıları ve yazılım güvenlik açıkları hakkında derinlemesine haberler."
+  },
+  {
+    "title": "Krebs on Security — Derinlemesine Siber Güvenlik Analizi",
+    "link": "https://krebsonsecurity.com/",
+    "date": "2026-08-14T00:00:00Z",
+    "source": "Krebs on Security",
+    "desc": "Brian Krebs'in siber suç, dolandırıcılık ağları ve büyük veri ihlalleri üzerine araştırmacı gazeteciliği."
+  }
+]

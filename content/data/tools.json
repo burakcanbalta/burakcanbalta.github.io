@@ -1,0 +1,11 @@
+[
+  { "name": "Nmap", "category": "recon", "description": "Ağ keşfi ve port taraması için standart araç. Servis/versiyon tespiti ve script motoru (NSE) ile enumeration'ı hızlandırır.", "link": "https://nmap.org/" },
+  { "name": "Burp Suite", "category": "web", "description": "Web uygulama pentestinde proxy, repeater, intruder ve scanner modülleriyle vazgeçilmez araç seti.", "link": "https://portswigger.net/burp" },
+  { "name": "BloodHound", "category": "active-directory", "description": "Active Directory içindeki yetki ilişkilerini grafik olarak görselleştirip saldırı yollarını (attack path) ortaya çıkarır.", "link": "https://github.com/BloodHoundAD/BloodHound" },
+  { "name": "Impacket", "category": "active-directory", "description": "Python tabanlı, SMB/Kerberos/DCOM gibi Windows protokolleriyle çalışmak için kullanılan araç koleksiyonu (secretsdump, GetUserSPNs, vb.).", "link": "https://github.com/fortra/impacket" },
+  { "name": "Metasploit Framework", "category": "exploitation", "description": "Exploit geliştirme ve doğrulama için modüler pentest framework'ü.", "link": "https://www.metasploit.com/" },
+  { "name": "Wireshark", "category": "forensics", "description": "Paket yakalama ve derinlemesine trafik analizi için endüstri standardı araç.", "link": "https://www.wireshark.org/" },
+  { "name": "ffuf", "category": "web", "description": "Hızlı, Go tabanlı dizin/parametre/subdomain fuzzing aracı.", "link": "https://github.com/ffuf/ffuf" },
+  { "name": "Hashcat", "category": "exploitation", "description": "GPU hızlandırmalı parola/hash kırma aracı; Kerberoasting ve AS-REP roasting sonrası kritik.", "link": "https://hashcat.net/hashcat/" },
+  { "name": "CyberChef", "category": "forensics", "description": "Encode/decode, şifreleme ve veri dönüştürme işlemleri için tarayıcı tabanlı 'İsviçre çakısı'.", "link": "https://gchq.github.io/CyberChef/" }
+]

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Makaleler — SiberPortal</title>
+<meta name="description" content="Web güvenliği, Active Directory ve pentest üzerine markdown ile yazılmış teknik makaleler ve writeup'lar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">&gt;_</span>
+      <span><span class="bracket">[</span>SİBER<span style="color:var(--green)">PORTAL</span><span class="bracket">]</span></span>
+    </a>
+    <div class="navlinks">
+      <a href="index.html">Ana Sayfa</a>
+      <a href="haberler.html">Haberler</a>
+      <a href="cve.html">CVE</a>
+      <a href="makaleler.html" class="active">Makaleler</a>
+      <a href="araclar.html">SiberTools</a>
+      <a href="hakkimda.html">Hakkımda</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-primary" href="hakkimda.html">whoami →</a>
+      <button class="navtoggle" aria-label="Menü">☰</button>
+    </div>
+  </div>
+</nav>
+
+<section style="padding-top:56px;">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="tag">MARKDOWN ARŞİVİ</span>
+      <h2>Makaleler & Writeup'lar</h2>
+      <p>Teknik yazılar, pentest notları ve CTF/HTB çözümleri — düz markdown dosyalarından otomatik üretilir.</p>
+    </div>
+
+    <div class="toolbar">
+      <input type="text" id="article-search" placeholder="makalelerde ara...">
+    </div>
+    <div class="toolbar" id="tag-filters" style="margin-top:-14px;"></div>
+
+    <div class="rows" id="article-list"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-row">
+    <span class="footer-brand">&gt;_ burakcanbalta — © <span class="footer-year"></span></span>
+    <div class="footer-links">
+      <a href="https://github.com/burakcanbalta" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://www.linkedin.com/in/burak-balta-976a64261/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://www.youtube.com/@SiberPortal" target="_blank" rel="noopener">YouTube</a>
+      <a href="mailto:burakcanbalta@proton.me">E-posta</a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+<script src="assets/js/articles.js"></script>
+</body>
+</html>
