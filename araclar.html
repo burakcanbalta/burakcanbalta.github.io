@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 <link
-  href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+  href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap"
   rel="stylesheet"
 >
 
@@ -23,6 +23,10 @@
 </head>
 
 <body>
+
+<!-- =========================
+     NAVIGATION
+========================= -->
 
 <nav class="nav">
   <div class="wrap">
@@ -38,47 +42,87 @@
     </a>
 
     <div class="navlinks">
-      <a href="index.html">Ana Sayfa</a>
-      <a href="haberler.html">Haberler</a>
-      <a href="cve.html">CVE</a>
-      <a href="makaleler.html">Makaleler</a>
-      <a href="araclar.html" class="active">SiberTools</a>
-      <a href="hakkimda.html">Hakkımda</a>
+
+      <a href="index.html">
+        Ana Sayfa
+      </a>
+
+      <a href="haberler.html">
+        Haberler
+      </a>
+
+      <a href="cve.html">
+        CVE
+      </a>
+
+      <a href="makaleler.html">
+        Makaleler
+      </a>
+
+      <a href="araclar.html" class="active">
+        SiberTools
+      </a>
+
+      <a href="hakkimda.html">
+        Hakkımda
+      </a>
+
     </div>
 
     <div class="nav-cta">
-      <a class="btn btn-primary" href="hakkimda.html">
+
+      <a
+        class="btn btn-primary"
+        href="hakkimda.html"
+      >
         whoami →
       </a>
 
-      <button class="navtoggle" aria-label="Menü">
+      <button
+        class="navtoggle"
+        aria-label="Menü"
+      >
         ☰
       </button>
+
     </div>
 
   </div>
 </nav>
 
 
+<!-- =========================
+     TOOLS SECTION
+========================= -->
+
 <section style="padding-top:56px;">
 
   <div class="wrap">
 
+    <!-- HEADER -->
+
     <div class="section-head">
 
-      <span class="tag">ARAÇ KUTUSU</span>
+      <span class="tag">
+        ARAÇ KUTUSU
+      </span>
 
-      <h2>SiberTools</h2>
+      <h2>
+        SiberTools
+      </h2>
 
       <p>
-        Pentest, Red Team, Active Directory, Web Security,
-        Linux, Windows, OSINT ve DFIR araçları.
+        Pentest, Red Team, Active Directory,
+        Web Security, Linux, Windows, OSINT
+        ve DFIR araçları.
       </p>
 
     </div>
 
 
-    <!-- SEARCH -->
+    <!-- =========================
+         SEARCH
+    ========================== -->
 
     <div class="toolbar">
 
@@ -87,12 +131,15 @@
         id="tools-search"
         placeholder="araç, kategori veya teknoloji ara..."
         autocomplete="off"
+        spellcheck="false"
       >
 
     </div>
 
 
-    <!-- CATEGORY FILTERS -->
+    <!-- =========================
+         CATEGORY FILTERS
+    ========================== -->
 
     <div
       class="toolbar"
@@ -101,21 +148,9 @@
     ></div>
 
 
-    <!-- STATS -->
-
-    <div
-      id="tools-stats"
-      class="tools-stats"
-      style="
-        display:grid;
-        grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-        gap:14px;
-        margin:24px 0;
-      "
-    ></div>
-
-
-    <!-- TOOLS -->
+    <!-- =========================
+         TOOLS GRID
+    ========================== -->
 
     <div
       class="grid grid-3"
@@ -126,6 +161,10 @@
 
 </section>
 
+
+<!-- =========================
+     FOOTER
+========================= -->
 
 <footer>
 
@@ -141,7 +180,7 @@
       <a
         href="https://github.com/burakcanbalta"
         target="_blank"
-        rel="noopener"
+        rel="noopener noreferrer"
       >
         GitHub
       </a>
@@ -149,7 +188,7 @@
       <a
         href="https://www.linkedin.com/in/burak-balta-976a64261/"
         target="_blank"
-        rel="noopener"
+        rel="noopener noreferrer"
       >
         LinkedIn
       </a>
@@ -157,12 +196,14 @@
       <a
         href="https://www.youtube.com/@SiberPortal"
         target="_blank"
-        rel="noopener"
+        rel="noopener noreferrer"
       >
         YouTube
       </a>
 
-      <a href="mailto:burakcanbalta@proton.me">
+      <a
+        href="mailto:burakcanbalta@proton.me"
+      >
         E-posta
       </a>
 
@@ -172,6 +213,10 @@
 
 </footer>
 
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
 
 <script src="assets/js/main.js"></script>
 <script src="assets/js/tools.js"></script>
