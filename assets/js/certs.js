@@ -1,180 +1,178 @@
-// =========================================================
-// SIBERPORTAL — CERTIFICATIONS
-// =========================================================
+// ============================================================
+// SiberPortal — Certifications
+// content/data/certs.json -> görselli sertifika kartları
+// ============================================================
 
-document.addEventListener('DOMContentLoaded', async () => {
-  const grid = document.getElementById('cert-grid');
+document.addEventListener("DOMContentLoaded", loadCertificates);
 
-  if (!grid) return;
+async function loadCertificates() {
+  const container = document.getElementById("certs-grid");
+
+  if (!container) return;
 
   try {
-    const res = await fetch('content/data/certs.json', {
-      cache: 'no-cache'
+    const response = await fetch("content/data/certs.json", {
+      cache: "no-store"
     });
 
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
     }
 
-    let certs = await res.json();
+    const certificates = await response.json();
 
-    const limit = parseInt(grid.dataset.limit || '0', 10);
-
-    if (limit > 0) {
-      certs = certs.slice(0, limit);
+    if (!Array.isArray(certificates) || certificates.length === 0) {
+      container.innerHTML = `
+        <p class="state-msg">
+          // sertifika bulunamadı
+        </p>
+      `;
+      return;
     }
 
-    renderCerts(certs, grid);
+    renderCertificates(container, certificates);
 
   } catch (error) {
+    console.error("Certificate loading error:", error);
 
-    console.error('Certificate loading error:', error);
-
-    grid.innerHTML = `
+    container.innerHTML = `
       <p class="state-msg error">
         // sertifikalar yüklenemedi
       </p>
     `;
   }
-});
-
-
-function renderCerts(certs, grid) {
-
-  if (!Array.isArray(certs) || certs.length === 0) {
-
-    grid.innerHTML = `
-      <p class="state-msg">
-        // henüz sertifika eklenmedi
-      </p>
-    `;
-
-    return;
-  }
-
-
-  grid.innerHTML = certs.map(cert => {
-
-    const statusLabel =
-      cert.status === 'devam'
-        ? '◐ DEVAM EDİYOR'
-        : '● AKTİF';
-
-
-    /*
-     * Sertifika görseli
-     */
-
-    const thumbnail = cert.image
-      ? `
-        <div class="cert-image-wrap">
-
-          <img
-            class="cert-thumb"
-            src="${escapeAttr(cert.image)}"
-            alt="${escapeAttr(cert.name)}"
-            loading="lazy"
-            onerror="this.style.display='none'; this.parentElement.classList.add('image-error');"
-          >
-
-          <div class="cert-image-fallback">
-            <span>🛡</span>
-            <small>PREVIEW UNAVAILABLE</small>
-          </div>
-
-        </div>
-      `
-      : `
-        <div class="cert-image-wrap no-image">
-
-          <div class="cert-thumb-placeholder">
-            <span>🛡</span>
-          </div>
-
-        </div>
-      `;
-
-
-    /*
-     * Kart içeriği
-     */
-
-    const inner = `
-      ${thumbnail}
-
-      <div class="cert-info">
-
-        <span class="cert-status">
-          ${statusLabel}
-        </span>
-
-        <span class="cert-name">
-          ${escapeHtml(cert.name)}
-        </span>
-
-        <span class="cert-issuer">
-          ${escapeHtml(cert.issuer)}
-        </span>
-
-        <span class="cert-date">
-          ${escapeHtml(cert.date || '')}
-        </span>
-
-      </div>
-    `;
-
-
-    /*
-     * Link varsa kart komple tıklanabilir.
-     */
-
-    if (cert.link) {
-
-      return `
-        <a
-          class="cert-card"
-          href="${escapeAttr(cert.link)}"
-          target="_blank"
-          rel="noopener noreferrer"
-          title="${escapeAttr(cert.name)} — sertifikayı aç"
-        >
-          ${inner}
-        </a>
-      `;
-
-    }
-
-
-    return `
-      <div class="cert-card">
-        ${inner}
-      </div>
-    `;
-
-  }).join('');
 }
 
 
-/*
- * HTML escaping
- */
+// ============================================================
+// RENDER
+// ============================================================
 
-function escapeHtml(value = '') {
+function renderCertificates(container, certificates) {
+
+  container.innerHTML = certificates.map((cert, index) => {
+
+    const name = escapeHtml(cert.name || "Sertifika");
+    const issuer = escapeHtml(cert.issuer || "");
+    const date = escapeHtml(cert.date || "");
+    const status = escapeHtml(cert.status || "");
+
+    /*
+     * JSON'daki /public/... yollarını GitHub Pages için
+     * relative public/... yoluna çeviriyoruz.
+     */
+    const image = normalizePath(cert.image);
+    const link = normalizePath(cert.link || cert.image);
+
+    return `
+      <article class="cert-card">
+
+        <div class="cert-image-wrap">
+
+          <a
+            href="${escapeAttr(link)}"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="${name} — sertifikayı aç"
+          >
+
+            <img
+              class="cert-image"
+              src="${escapeAttr(image)}"
+              alt="${name}"
+              loading="${index < 4 ? "eager" : "lazy"}"
+              decoding="async"
+            >
+
+            <div class="cert-image-overlay">
+              <span>↗ SERTİFİKAYI AÇ</span>
+            </div>
+
+          </a>
+
+        </div>
+
+
+        <div class="cert-content">
+
+          <div class="cert-meta">
+
+            ${
+              status
+                ? `<span class="chip sev-low">● ${status.toUpperCase()}</span>`
+                : ""
+            }
+
+          </div>
+
+
+          <h3 class="cert-title">
+            ${name}
+          </h3>
+
+
+          <p class="cert-issuer">
+            ${issuer}
+          </p>
+
+
+          <p class="cert-date">
+            ${date}
+          </p>
+
+        </div>
+
+      </article>
+    `;
+
+  }).join("");
+}
+
+
+// ============================================================
+// PATH NORMALIZER
+// ============================================================
+
+function normalizePath(path = "") {
+
+  if (!path) return "";
+
+  /*
+   * JSON'daki:
+   *
+   * /public/certificates/file.png
+   *
+   * yerine:
+   *
+   * public/certificates/file.png
+   *
+   * kullanıyoruz.
+   */
+
+  return path.replace(/^\/+/, "");
+}
+
+
+// ============================================================
+// SECURITY
+// ============================================================
+
+function escapeHtml(value = "") {
 
   return String(value).replace(
     /[&<>"']/g,
     char => ({
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#39;'
-    }[char])
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[char]
   );
 
 }
 
 
-function escapeAttr(value = '') {
+function escapeAttr(value = "") {
   return escapeHtml(value);
 }
