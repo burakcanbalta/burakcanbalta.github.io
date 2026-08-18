@@ -1,11 +1,3 @@
-// ============================================================
-// SİBERPORTAL — CVE TAKİP SİSTEMİ
-// ============================================================
-// Canlı veri: CIRCL CVE API
-// Gösterim: Son 24 saatte yayınlanan CVE'ler
-// Fallback: content/data/cve-fallback.json
-// ============================================================
-
 const CVE_API = 'https://cve.circl.lu/api/last';
 
 // Cache
