@@ -926,6 +926,7 @@ document.addEventListener("DOMContentLoaded", function () {
     },
 
     certs: function () {
+
       const section = document.getElementById("sertifikalar");
 
       if (section) {
@@ -965,6 +966,7 @@ document.addEventListener("DOMContentLoaded", function () {
     },
 
     iletisim: function () {
+
       const section = document.getElementById("iletisim");
 
       if (section) {
@@ -1111,6 +1113,329 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+
+<!-- =========================================================
+     CERTIFICATES
+     SADECE SERTİFİKA YÜKLEME KISMI
+     ========================================================= -->
+
+<script>
+document.addEventListener("DOMContentLoaded", async function () {
+
+  const grid = document.getElementById("certs-grid");
+
+  if (!grid) {
+    return;
+  }
+
+  try {
+
+    const response = await fetch(
+      "content/data/certs.json",
+      {
+        cache: "no-cache"
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        "certs.json yüklenemedi: HTTP " + response.status
+      );
+    }
+
+    const data = await response.json();
+
+    let certificates = [];
+
+    if (Array.isArray(data)) {
+
+      certificates = data;
+
+    } else if (
+      data &&
+      Array.isArray(data.certificates)
+    ) {
+
+      certificates = data.certificates;
+
+    } else if (
+      data &&
+      Array.isArray(data.certs)
+    ) {
+
+      certificates = data.certs;
+
+    } else if (
+      data &&
+      Array.isArray(data.items)
+    ) {
+
+      certificates = data.items;
+
+    } else if (
+      data &&
+      Array.isArray(data.data)
+    ) {
+
+      certificates = data.data;
+
+    }
+
+    if (!certificates.length) {
+
+      grid.innerHTML = `
+        <p class="state-msg">
+          // sertifika bulunamadı
+        </p>
+      `;
+
+      return;
+    }
+
+    grid.innerHTML = certificates.map(function (cert) {
+
+      const name =
+        cert.name ||
+        cert.title ||
+        cert.certification ||
+        cert.certificate ||
+        "Sertifika";
+
+      const issuer =
+        cert.issuer ||
+        cert.organization ||
+        cert.provider ||
+        cert.platform ||
+        "";
+
+      const date =
+        cert.date ||
+        cert.issueDate ||
+        cert.issued ||
+        cert.issuedDate ||
+        "";
+
+      const image =
+        cert.image ||
+        cert.imageUrl ||
+        cert.thumbnail ||
+        cert.img ||
+        "";
+
+      const url =
+        cert.url ||
+        cert.link ||
+        cert.verify ||
+        cert.verification ||
+        cert.credentialUrl ||
+        "";
+
+      const description =
+        cert.description ||
+        cert.desc ||
+        "";
+
+      const status =
+        cert.status ||
+        "VERIFIED";
+
+      return `
+
+        <article class="cert-card">
+
+          ${
+            image
+              ? `
+                <div class="cert-image-wrap">
+
+                  <a
+                    href="${escapeCertAttr(url || image)}"
+                    ${
+                      url
+                        ? 'target="_blank" rel="noopener noreferrer"'
+                        : ""
+                    }
+                  >
+
+                    <img
+                      class="cert-thumb"
+                      src="${escapeCertAttr(image)}"
+                      alt="${escapeCertAttr(name)}"
+                      loading="lazy"
+                      onerror="
+                        this.parentElement.parentElement.classList.add('image-error')
+                      "
+                    >
+
+                    <div class="cert-image-overlay">
+
+                      <span>
+                        ${
+                          url
+                            ? "VIEW CERTIFICATE ↗"
+                            : "CERTIFICATE"
+                        }
+                      </span>
+
+                    </div>
+
+                    <div class="cert-image-fallback">
+
+                      <div class="cert-thumb-placeholder">
+
+                        <span>&gt;_</span>
+
+                        <small>
+                          CERTIFICATE
+                        </small>
+
+                      </div>
+
+                    </div>
+
+                  </a>
+
+                </div>
+              `
+              : `
+                <div class="cert-image-wrap">
+
+                  <div class="cert-thumb-placeholder">
+
+                    <span>&gt;_</span>
+
+                    <small>
+                      CERTIFICATE
+                    </small>
+
+                  </div>
+
+                </div>
+              `
+          }
+
+          <div class="cert-info">
+
+            <span class="cert-status">
+              ${escapeCertHtml(status)}
+            </span>
+
+            <span class="cert-name">
+              ${escapeCertHtml(name)}
+            </span>
+
+            ${
+              issuer
+                ? `
+                  <span class="cert-issuer">
+                    ${escapeCertHtml(issuer)}
+                  </span>
+                `
+                : ""
+            }
+
+            ${
+              description
+                ? `
+                  <span class="cert-issuer">
+                    ${escapeCertHtml(description)}
+                  </span>
+                `
+                : ""
+            }
+
+            ${
+              date
+                ? `
+                  <span class="cert-date">
+                    ${escapeCertHtml(date)}
+                  </span>
+                `
+                : ""
+            }
+
+            ${
+              url
+                ? `
+                  <a
+                    class="cert-open"
+                    href="${escapeCertAttr(url)}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    VIEW CERTIFICATE ↗
+                  </a>
+                `
+                : ""
+            }
+
+          </div>
+
+        </article>
+
+      `;
+
+    }).join("");
+
+  } catch (error) {
+
+    console.error(
+      "Certificate loading error:",
+      error
+    );
+
+    grid.innerHTML = `
+      <p class="state-msg error">
+        // sertifikalar yüklenemedi
+        <br>
+        // ${escapeCertHtml(error.message)}
+      </p>
+    `;
+
+  }
+
+  function escapeCertHtml(value) {
+
+    return String(value).replace(
+      /[&<>"']/g,
+      function (character) {
+
+        return {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        }[character];
+
+      }
+    );
+
+  }
+
+  function escapeCertAttr(value) {
+
+    return String(value).replace(
+      /[&<>"']/g,
+      function (character) {
+
+        return {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+        }[character];
+
+      }
+    );
+
+  }
+
+});
+</script>
+
+<script src="assets/js/certs.js"></script>
 <script src="assets/js/main.js"></script>
 
 </body>
