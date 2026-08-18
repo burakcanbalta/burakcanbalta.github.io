@@ -1,38 +1,39 @@
 // ============================================================
 // SİBERPORTAL — CVE TAKİP SİSTEMİ
 // ============================================================
-// Kaynak: NVD API 2.0
-// Son 3 günde yayınlanan CVE'leri getirir.
-// Arama + severity filtreleme + CVSS + NVD bağlantısı
+// Canlı veri: CIRCL CVE API
+// Gösterim: Son 24 saatte yayınlanan CVE'ler
+// Fallback: content/data/cve-fallback.json
 // ============================================================
 
-const NVD_API = 'https://services.nvd.nist.gov/rest/json/cves/2.0';
-
-const DAYS_WINDOW = 3;
+const CVE_API = 'https://cve.circl.lu/api/last';
 
 // Cache
-const CACHE_KEY = 'siberportal_cve_cache_v3';
-const CACHE_TTL = 10 * 60 * 1000; // 10 dakika
+const CACHE_KEY = 'sp_cve_cache_v3';
+const CACHE_TTL = 20 * 60 * 1000; // 20 dakika
+
+// Sadece son 24 saat
+const DAYS_WINDOW = 1;
 
 let allCves = [];
 let activeSev = 'all';
-let isLoading = false;
-
 
 // ============================================================
-// INIT
+// SAYFA BAŞLANGICI
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', () => {
+  loadCves();
 
-  const search = document.getElementById('cve-search');
+  // Arama
+  const searchInput = document.getElementById('cve-search');
 
-  if (search) {
-    search.addEventListener('input', renderCves);
+  if (searchInput) {
+    searchInput.addEventListener('input', renderCves);
   }
 
+  // Severity filtreleri
   document.querySelectorAll('[data-sev-filter]').forEach(btn => {
-
     btn.addEventListener('click', () => {
 
       activeSev = btn.dataset.sevFilter;
@@ -45,696 +46,349 @@ document.addEventListener('DOMContentLoaded', () => {
 
       renderCves();
     });
-
   });
-
-  loadCves();
-
 });
 
-
 // ============================================================
-// LOAD CVES
+// CVE VERİLERİNİ ÇEK
 // ============================================================
 
 async function loadCves() {
 
-  if (isLoading) return;
-
-  isLoading = true;
-
   const listEl = document.getElementById('cve-list');
 
-  if (!listEl) {
-    isLoading = false;
-    return;
-  }
+  if (!listEl) return;
 
   listEl.innerHTML = `
     <p class="state-msg">
-      // NVD CVE veritabanı sorgulanıyor...
-      <br>
-      // Son ${DAYS_WINDOW} günün zafiyetleri getiriliyor...
+      // CVE veritabanı sorgulanıyor (son 24 saat)...
     </p>
   `;
 
-
   // ----------------------------------------------------------
-  // CACHE
+  // CACHE KONTROLÜ
   // ----------------------------------------------------------
 
   const cached = getCache();
 
   if (cached && Array.isArray(cached) && cached.length > 0) {
 
-    allCves = cached;
+    // Cache'in de gerçekten son 24 saat olduğundan emin ol
+    const cutoff = Date.now() - (24 * 60 * 60 * 1000);
+
+    allCves = cached
+      .filter(item => {
+        const time = new Date(item.date).getTime();
+        return !isNaN(time) && time >= cutoff;
+      })
+      .sort((a, b) => {
+        return new Date(b.date) - new Date(a.date);
+      });
 
     renderCves();
-
-    isLoading = false;
-
     return;
   }
 
-
   // ----------------------------------------------------------
-  // DATE RANGE
+  // CANLI API
   // ----------------------------------------------------------
-
-  const now = new Date();
-
-  const start = new Date(
-    now.getTime() - DAYS_WINDOW * 24 * 60 * 60 * 1000
-  );
-
-  // NVD API ISO formatı
-  const pubStartDate = start.toISOString();
-  const pubEndDate = now.toISOString();
-
-
-  // ----------------------------------------------------------
-  // API URL
-  // ----------------------------------------------------------
-
-  const url =
-    `${NVD_API}?` +
-    `pubStartDate=${encodeURIComponent(pubStartDate)}` +
-    `&pubEndDate=${encodeURIComponent(pubEndDate)}` +
-    `&resultsPerPage=2000`;
-
 
   try {
 
-    console.log('[CVE] NVD sorgusu:', url);
-
-
-    const response = await fetch(url, {
+    const res = await fetch(CVE_API, {
       method: 'GET',
       headers: {
         'Accept': 'application/json'
-      }
+      },
+      cache: 'no-store'
     });
 
+    if (!res.ok) {
+      throw new Error(`CIRCL API HTTP ${res.status}`);
+    }
 
-    if (!response.ok) {
+    const raw = await res.json();
 
+    if (!Array.isArray(raw) || raw.length === 0) {
+      throw new Error('CIRCL API boş veri döndürdü');
+    }
+
+    // --------------------------------------------------------
+    // SON 24 SAAT
+    // --------------------------------------------------------
+
+    const cutoff =
+      Date.now() -
+      (DAYS_WINDOW * 24 * 60 * 60 * 1000);
+
+    allCves = raw
+      .map(normalizeCircl)
+      .filter(isValidRecord)
+      .filter(item => {
+
+        const publishedTime =
+          new Date(item.date).getTime();
+
+        return (
+          !isNaN(publishedTime) &&
+          publishedTime >= cutoff &&
+          publishedTime <= Date.now()
+        );
+      })
+      .sort((a, b) => {
+        return new Date(b.date) - new Date(a.date);
+      });
+
+    // --------------------------------------------------------
+    // HİÇ CVE YOKSA FALLBACK
+    // --------------------------------------------------------
+
+    if (allCves.length === 0) {
       throw new Error(
-        `NVD API HTTP ${response.status}`
+        'Son 24 saat içerisinde geçerli CVE bulunamadı'
       );
-
     }
 
-
-    const data = await response.json();
-
-
-    if (
-      !data ||
-      !Array.isArray(data.vulnerabilities)
-    ) {
-
-      throw new Error(
-        'NVD geçerli veri döndürmedi'
-      );
-
-    }
-
-
-    // --------------------------------------------------------
-    // NORMALIZE
-    // --------------------------------------------------------
-
-    allCves = data.vulnerabilities
-      .map(item => normalizeNVD(item))
-      .filter(Boolean)
-      .sort(
-        (a, b) =>
-          new Date(b.date) -
-          new Date(a.date)
-      );
-
-
-    // --------------------------------------------------------
-    // CACHE
-    // --------------------------------------------------------
-
-    if (allCves.length > 0) {
-
-      setCache(allCves);
-
-    }
-
-
-    console.log(
-      `[CVE] ${allCves.length} CVE bulundu.`
-    );
-
-
-    renderCves();
-
+    // Cache'e kaydet
+    setCache(allCves);
 
   } catch (error) {
 
     console.error(
-      '[CVE] API hatası:',
+      '[CVE] Canlı API hatası:',
       error
     );
-
-
-    // --------------------------------------------------------
-    // FALLBACK
-    // --------------------------------------------------------
 
     allCves = await loadFallback();
 
-    if (allCves.length > 0) {
-
-      renderCves();
-
-    } else {
-
-      listEl.innerHTML = `
-        <div class="state-msg">
-
-          <p>
-            // CVE veritabanına şu anda ulaşılamadı.
-          </p>
-
-          <p style="margin-top:10px;">
-            // NVD API bağlantısını kontrol et veya sayfayı yenile.
-          </p>
-
-          <a
-            href="https://nvd.nist.gov/vuln/search"
-            target="_blank"
-            rel="noopener"
-            style="
-              display:inline-block;
-              margin-top:15px;
-              color:var(--green);
-            "
-          >
-            → NVD CVE Database
-          </a>
-
-        </div>
-      `;
-
-    }
-
-  } finally {
-
-    isLoading = false;
-
   }
 
+  renderCves();
 }
 
-
 // ============================================================
-// NORMALIZE NVD RECORD
+// CIRCL VERİSİNİ NORMALIZE ET
 // ============================================================
 
-function normalizeNVD(item) {
+function normalizeCircl(item) {
 
-  try {
+  // ----------------------------------------------------------
+  // CVE ID
+  // ----------------------------------------------------------
 
-    const cve = item.cve;
+  const id =
+    item.id ||
+    item.cveMetadata?.cveId ||
+    item.cveID ||
+    item.cve?.id ||
+    null;
 
-    if (!cve) return null;
+  // ----------------------------------------------------------
+  // AÇIKLAMA
+  // ----------------------------------------------------------
 
+  const summary =
+    item.summary ||
+    item.description ||
+    item.cve?.description ||
+    item.containers?.cna?.descriptions
+      ?.find(d => d.lang === 'en')
+      ?.value ||
+    item.containers?.cna?.descriptions?.[0]?.value ||
+    null;
 
-    const id = cve.id;
+  // ----------------------------------------------------------
+  // YAYIN TARİHİ
+  // ----------------------------------------------------------
 
-    if (!id) return null;
+  const date =
+    item.Published ||
+    item.published ||
+    item.publishedDate ||
+    item.datePublished ||
+    item.cveMetadata?.datePublished ||
+    item.cve?.published ||
+    null;
 
+  // ----------------------------------------------------------
+  // CVSS
+  // ----------------------------------------------------------
 
-    // --------------------------------------------------------
-    // DESCRIPTION
-    // --------------------------------------------------------
+  let score =
+    item.cvss ||
+    item.cvss3 ||
+    item.cvssV3 ||
+    item.cvss_v3 ||
+    item.baseScore ||
+    null;
 
-    let description = '';
-
-    if (
-      Array.isArray(cve.descriptions)
-    ) {
-
-      const english =
-        cve.descriptions.find(
-          d => d.lang === 'en'
-        );
-
-      if (english) {
-
-        description = english.value;
-
-      } else if (
-        cve.descriptions[0]
-      ) {
-
-        description =
-          cve.descriptions[0].value;
-
-      }
-
-    }
-
-
-    // --------------------------------------------------------
-    // PUBLISHED
-    // --------------------------------------------------------
-
-    const date = cve.published;
-
-
-    // --------------------------------------------------------
-    // CVSS
-    // --------------------------------------------------------
-
-    const cvssData =
-      getCVSS(cve);
-
-
-    const score =
-      cvssData?.baseScore ?? null;
-
-
-    const severity =
-      cvssData?.baseSeverity
-        ? cvssData.baseSeverity.toLowerCase()
-        : scoreToSeverity(score);
-
-
-    // --------------------------------------------------------
-    // CWE
-    // --------------------------------------------------------
-
-    let cwe = '';
-
-    if (
-      Array.isArray(cve.weaknesses)
-    ) {
-
-      for (const weakness of cve.weaknesses) {
-
-        if (
-          Array.isArray(
-            weakness.description
-          )
-        ) {
-
-          const found =
-            weakness.description.find(
-              d => d.lang === 'en'
-            );
-
-          if (found) {
-
-            cwe = found.value;
-
-            break;
-
-          }
-
-        }
-
-      }
-
-    }
-
-
-    return {
-
-      id,
-
-      summary:
-        description ||
-        'Açıklama mevcut değil.',
-
-      date,
-
-      score,
-
-      severity,
-
-      cwe,
-
-      link:
-        `https://nvd.nist.gov/vuln/detail/${id}`
-
-    };
-
-
-  } catch (error) {
-
-    console.error(
-      '[CVE] Normalize error:',
-      error
-    );
-
-    return null;
-
+  // CVE Services 5.0
+  if (
+    !score &&
+    item.metrics?.cvssMetricV31?.length
+  ) {
+    score =
+      item.metrics.cvssMetricV31[0]
+        ?.cvssData
+        ?.baseScore;
   }
 
+  if (
+    !score &&
+    item.metrics?.cvssMetricV30?.length
+  ) {
+    score =
+      item.metrics.cvssMetricV30[0]
+        ?.cvssData
+        ?.baseScore;
+  }
+
+  // ----------------------------------------------------------
+  // SEVERITY
+  // ----------------------------------------------------------
+
+  let severity =
+    item.severity ||
+    item.cvssSeverity ||
+    null;
+
+  if (!severity) {
+    severity = scoreToSeverity(score);
+  }
+
+  // ----------------------------------------------------------
+  // KAYNAK
+  // ----------------------------------------------------------
+
+  const source =
+    item.source ||
+    item.sourceIdentifier ||
+    'CIRCL';
+
+  return {
+
+    id: id,
+
+    summary: summary,
+
+    date: date,
+
+    score: score,
+
+    severity:
+      String(severity).toLowerCase(),
+
+    source: source,
+
+    link: buildLink(id)
+
+  };
 }
 
-
 // ============================================================
-// GET CVSS
+// GEÇERLİ KAYIT KONTROLÜ
 // ============================================================
 
-function getCVSS(cve) {
+function isValidRecord(item) {
 
-  const metrics =
-    cve.metrics;
+  if (!item) return false;
 
-  if (!metrics) return null;
+  if (!item.id) return false;
 
+  if (!item.summary) return false;
 
-  // CVSS 4.0
-  if (
-    Array.isArray(
-      metrics.cvssMetricV40
-    ) &&
-    metrics.cvssMetricV40.length
-  ) {
+  if (!item.date) return false;
 
-    return (
-      metrics.cvssMetricV40[0]
-        .cvssData
-    );
+  const timestamp =
+    new Date(item.date).getTime();
 
+  if (isNaN(timestamp)) {
+    return false;
   }
 
-
-  // CVSS 3.1
+  // Sadece gerçek CVE kayıtları
   if (
-    Array.isArray(
-      metrics.cvssMetricV31
-    ) &&
-    metrics.cvssMetricV31.length
+    !/^CVE-\d{4}-\d+/i.test(item.id)
   ) {
-
-    return (
-      metrics.cvssMetricV31[0]
-        .cvssData
-    );
-
+    return false;
   }
 
-
-  // CVSS 3.0
-  if (
-    Array.isArray(
-      metrics.cvssMetricV30
-    ) &&
-    metrics.cvssMetricV30.length
-  ) {
-
-    return (
-      metrics.cvssMetricV30[0]
-        .cvssData
-    );
-
-  }
-
-
-  // CVSS 2.0
-  if (
-    Array.isArray(
-      metrics.cvssMetricV2
-    ) &&
-    metrics.cvssMetricV2.length
-  ) {
-
-    return (
-      metrics.cvssMetricV2[0]
-        .cvssData
-    );
-
-  }
-
-
-  return null;
-
+  return true;
 }
 
+// ============================================================
+// CVE LINK
+// ============================================================
+
+function buildLink(id) {
+
+  if (!id) {
+    return '#';
+  }
+
+  // CVE → NVD
+  if (/^CVE-/i.test(id)) {
+
+    return (
+      'https://nvd.nist.gov/vuln/detail/' +
+      encodeURIComponent(id)
+    );
+
+  }
+
+  // PYSEC
+  if (/^PYSEC-/i.test(id)) {
+
+    return (
+      'https://osv.dev/vulnerability/' +
+      encodeURIComponent(id)
+    );
+
+  }
+
+  // GHSA
+  if (/^GHSA-/i.test(id)) {
+
+    return (
+      'https://github.com/advisories/' +
+      encodeURIComponent(id)
+    );
+
+  }
+
+  // Diğerleri
+  return (
+    'https://osv.dev/vulnerability/' +
+    encodeURIComponent(id)
+  );
+}
 
 // ============================================================
-// SCORE → SEVERITY
+// CVSS → SEVERITY
 // ============================================================
 
 function scoreToSeverity(score) {
 
-  const s =
-    parseFloat(score);
-
+  const s = parseFloat(score);
 
   if (isNaN(s)) {
-
     return 'unknown';
-
   }
-
 
   if (s >= 9.0) {
-
     return 'critical';
-
   }
-
 
   if (s >= 7.0) {
-
     return 'high';
-
   }
-
 
   if (s >= 4.0) {
-
     return 'medium';
-
   }
-
 
   return 'low';
-
 }
-
-
-// ============================================================
-// RENDER
-// ============================================================
-
-function renderCves() {
-
-  const listEl =
-    document.getElementById(
-      'cve-list'
-    );
-
-  if (!listEl) return;
-
-
-  const searchInput =
-    document.getElementById(
-      'cve-search'
-    );
-
-
-  const query =
-    (
-      searchInput?.value || ''
-    )
-      .trim()
-      .toLowerCase();
-
-
-  let items =
-    [...allCves];
-
-
-  // ----------------------------------------------------------
-  // SEVERITY FILTER
-  // ----------------------------------------------------------
-
-  if (activeSev !== 'all') {
-
-    items =
-      items.filter(
-        cve =>
-          cve.severity ===
-          activeSev
-      );
-
-  }
-
-
-  // ----------------------------------------------------------
-  // SEARCH
-  // ----------------------------------------------------------
-
-  if (query) {
-
-    items =
-      items.filter(cve => {
-
-        const text =
-          `${cve.id} ${cve.summary} ${cve.cwe}`
-            .toLowerCase();
-
-        return text.includes(query);
-
-      });
-
-  }
-
-
-  // ----------------------------------------------------------
-  // EMPTY
-  // ----------------------------------------------------------
-
-  if (items.length === 0) {
-
-    listEl.innerHTML = `
-
-      <div class="state-msg">
-
-        // Eşleşen CVE bulunamadı.
-
-      </div>
-
-    `;
-
-    return;
-
-  }
-
-
-  // ----------------------------------------------------------
-  // RENDER
-  // ----------------------------------------------------------
-
-  listEl.innerHTML =
-    items
-      .map(renderCVE)
-      .join('');
-
-}
-
-
-// ============================================================
-// RENDER SINGLE CVE
-// ============================================================
-
-function renderCVE(cve) {
-
-  const severity =
-    (
-      cve.severity ||
-      'unknown'
-    ).toLowerCase();
-
-
-  const score =
-    cve.score !== null &&
-    cve.score !== undefined
-      ? Number(cve.score).toFixed(1)
-      : null;
-
-
-  return `
-
-    <article class="row">
-
-      <div class="row-main">
-
-        <p class="row-meta">
-
-          <span>
-            ${formatDate(cve.date)}
-          </span>
-
-          <span
-            class="chip sev-${escapeAttr(
-              severity
-            )}"
-          >
-            ${severity.toUpperCase()}
-            ${score ? ` · ${score}` : ''}
-          </span>
-
-          ${
-            cve.cwe
-              ? `
-                <span class="chip">
-                  ${escapeHtml(cve.cwe)}
-                </span>
-              `
-              : ''
-          }
-
-        </p>
-
-
-        <h3 class="row-title">
-
-          <a
-            href="${escapeAttr(cve.link)}"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            ${escapeHtml(cve.id)}
-          </a>
-
-        </h3>
-
-
-        <p class="row-desc">
-
-          ${escapeHtml(
-            cve.summary
-          )}
-
-        </p>
-
-
-        <div
-          style="
-            margin-top:12px;
-            font-family:'JetBrains Mono',monospace;
-            font-size:11px;
-            color:#64748b;
-          "
-        >
-
-          <span>
-            SOURCE: NVD
-          </span>
-
-          <span style="margin-left:15px;">
-            →
-            <a
-              href="${escapeAttr(cve.link)}"
-              target="_blank"
-              rel="noopener noreferrer"
-              style="color:var(--green);"
-            >
-              DETAYI GÖR
-            </a>
-          </span>
-
-        </div>
-
-      </div>
-
-    </article>
-
-  `;
-
-}
-
 
 // ============================================================
 // FALLBACK
@@ -744,7 +398,7 @@ async function loadFallback() {
 
   try {
 
-    const response =
+    const res =
       await fetch(
         'content/data/cve-fallback.json',
         {
@@ -752,84 +406,216 @@ async function loadFallback() {
         }
       );
 
-
-    if (!response.ok) {
-
-      return [];
-
+    if (!res.ok) {
+      throw new Error('Fallback bulunamadı');
     }
 
-
-    const data =
-      await response.json();
-
+    const data = await res.json();
 
     if (!Array.isArray(data)) {
-
       return [];
-
     }
 
+    // Fallback'i de son 24 saat ile sınırla
+    const cutoff =
+      Date.now() -
+      (DAYS_WINDOW * 24 * 60 * 60 * 1000);
 
     return data
-      .map(item => {
+      .map(normalizeCircl)
+      .filter(isValidRecord)
+      .filter(item => {
 
-        return {
+        const time =
+          new Date(item.date).getTime();
 
-          id:
-            item.id ||
-            item.cve_id,
-
-          summary:
-            item.summary ||
-            item.description ||
-            'Açıklama mevcut değil.',
-
-          date:
-            item.date ||
-            item.published,
-
-          score:
-            item.score ?? null,
-
-          severity:
-            item.severity ||
-            scoreToSeverity(
-              item.score
-            ),
-
-          cwe:
-            item.cwe || '',
-
-          link:
-            item.link ||
-            `https://nvd.nist.gov/vuln/detail/${
-              item.id ||
-              item.cve_id
-            }`
-
-        };
-
+        return (
+          !isNaN(time) &&
+          time >= cutoff &&
+          time <= Date.now()
+        );
       })
-      .filter(
-        item =>
-          item.id &&
-          item.summary
-      );
+      .sort((a, b) => {
+        return new Date(b.date) -
+               new Date(a.date);
+      });
 
   } catch (error) {
 
     console.error(
-      '[CVE] Fallback error:',
+      '[CVE] Fallback hatası:',
       error
     );
 
     return [];
+  }
+}
+
+// ============================================================
+// CVE LİSTESİNİ OLUŞTUR
+// ============================================================
+
+function renderCves() {
+
+  const listEl =
+    document.getElementById('cve-list');
+
+  if (!listEl) return;
+
+  const searchInput =
+    document.getElementById('cve-search');
+
+  const q =
+    (
+      searchInput?.value ||
+      ''
+    )
+      .trim()
+      .toLowerCase();
+
+  // ----------------------------------------------------------
+  // FİLTRELE
+  // ----------------------------------------------------------
+
+  let items = [...allCves];
+
+  // Severity
+  if (activeSev !== 'all') {
+
+    items =
+      items.filter(
+        item =>
+          item.severity === activeSev
+      );
 
   }
 
-}
+  // Arama
+  if (q) {
 
+    items =
+      items.filter(item => {
+
+        const id =
+          String(item.id || '')
+            .toLowerCase();
+
+        const summary =
+          String(item.summary || '')
+            .toLowerCase();
+
+        return (
+          id.includes(q) ||
+          summary.includes(q)
+        );
+
+      });
+
+  }
+
+  // ----------------------------------------------------------
+  // BOŞ SONUÇ
+  // ----------------------------------------------------------
+
+  if (items.length === 0) {
+
+    listEl.innerHTML = `
+      <div class="state-msg">
+        // Son 24 saat içerisinde
+        eşleşen CVE bulunamadı.
+      </div>
+    `;
+
+    return;
+  }
+
+  // ----------------------------------------------------------
+  // HTML
+  // ----------------------------------------------------------
+
+  listEl.innerHTML =
+    items.map(item => {
+
+      const severity =
+        item.severity || 'unknown';
+
+      const score =
+        item.score !== null &&
+        item.score !== undefined &&
+        item.score !== ''
+          ? ` · ${escapeHtml(String(item.score))}`
+          : '';
+
+      const description =
+        String(item.summary || '');
+
+      const shortDescription =
+        description.length > 260
+          ? description.slice(0, 260) + '…'
+          : description;
+
+      return `
+        <article class="row">
+
+          <div class="row-main">
+
+            <p class="row-meta">
+
+              <span>
+                ${formatDate(item.date)}
+              </span>
+
+              <span class="chip sev-${escapeAttr(severity)}">
+                ${escapeHtml(
+                  severity.toUpperCase()
+                )}${score}
+              </span>
+
+            </p>
+
+            <h3 class="row-title">
+
+              <a
+                href="${escapeAttr(item.link)}"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="NVD'de görüntüle"
+              >
+                ${escapeHtml(item.id)}
+              </a>
+
+            </h3>
+
+            <p class="row-desc">
+              ${escapeHtml(shortDescription)}
+            </p>
+
+            <div class="cve-source">
+
+              <span>
+                Kaynak:
+                ${escapeHtml(
+                  item.source || 'CIRCL'
+                )}
+              </span>
+
+              <a
+                href="${escapeAttr(item.link)}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Detay →
+              </a>
+
+            </div>
+
+          </div>
+
+        </article>
+      `;
+
+    }).join('');
+}
 
 // ============================================================
 // CACHE
@@ -844,94 +630,92 @@ function getCache() {
         CACHE_KEY
       );
 
-
-    if (!raw) return null;
-
+    if (!raw) {
+      return null;
+    }
 
     const parsed =
       JSON.parse(raw);
 
-
     if (
       !parsed ||
       !parsed.ts ||
-      !Array.isArray(
-        parsed.data
-      )
+      !Array.isArray(parsed.data)
     ) {
-
       return null;
-
     }
 
-
+    // Cache süresi
     if (
-      Date.now() -
-      parsed.ts >
+      Date.now() - parsed.ts >
       CACHE_TTL
     ) {
-
       localStorage.removeItem(
         CACHE_KEY
       );
 
       return null;
-
     }
-
 
     return parsed.data;
 
-  } catch {
+  } catch (error) {
+
+    console.warn(
+      '[CVE] Cache okunamadı:',
+      error
+    );
 
     return null;
-
   }
-
 }
 
+// ============================================================
+// CACHE KAYDET
+// ============================================================
 
 function setCache(data) {
 
   try {
 
     localStorage.setItem(
-
       CACHE_KEY,
-
       JSON.stringify({
-
         ts: Date.now(),
-
-        data
-
+        data: data
       })
-
     );
 
-  } catch {
+  } catch (error) {
 
-    // localStorage kapalıysa sorun değil
+    console.warn(
+      '[CVE] Cache kaydedilemedi:',
+      error
+    );
 
   }
-
 }
 
-
 // ============================================================
-// DATE FORMAT
+// TARİH FORMATLAMA
 // ============================================================
 
-function formatDate(date) {
+function formatDate(dateString) {
 
-  if (!date) return 'Tarih yok';
-
+  if (!dateString) {
+    return 'Tarih bilinmiyor';
+  }
 
   try {
 
-    return new Date(
-      date
-    ).toLocaleString(
+    const date =
+      new Date(dateString);
+
+    if (isNaN(date.getTime())) {
+      return 'Tarih bilinmiyor';
+    }
+
+    return date.toLocaleDateString(
       'tr-TR',
       {
         day: '2-digit',
@@ -944,12 +728,9 @@ function formatDate(date) {
 
   } catch {
 
-    return date;
-
+    return dateString;
   }
-
 }
-
 
 // ============================================================
 // HTML ESCAPE
@@ -957,23 +738,60 @@ function formatDate(date) {
 
 function escapeHtml(value = '') {
 
-  return String(value)
-    .replace(
-      /[&<>"']/g,
-      char => ({
+  return String(value).replace(
+    /[&<>"']/g,
+    char => {
+
+      const map = {
+
         '&': '&amp;',
         '<': '&lt;',
         '>': '&gt;',
         '"': '&quot;',
         "'": '&#39;'
-      }[char])
-    );
 
+      };
+
+      return map[char];
+    }
+  );
 }
 
+// ============================================================
+// ATTRIBUTE ESCAPE
+// ============================================================
 
 function escapeAttr(value = '') {
 
   return escapeHtml(value);
+}
 
+// ============================================================
+// MANUEL CACHE TEMİZLEME
+// Konsoldan:
+// clearCveCache()
+// ============================================================
+
+function clearCveCache() {
+
+  try {
+
+    localStorage.removeItem(
+      CACHE_KEY
+    );
+
+    console.log(
+      '[CVE] Cache temizlendi.'
+    );
+
+    location.reload();
+
+  } catch (error) {
+
+    console.error(
+      '[CVE] Cache temizlenemedi:',
+      error
+    );
+
+  }
 }
