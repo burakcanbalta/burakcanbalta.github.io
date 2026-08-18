@@ -2225,7 +2225,59 @@ footer{
 
 }
 
+.search-box,
+.search-container,
+.search-form {
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
 
-/* =========================================================
-   END — SIBERPORTAL SUBPAGES
-   ========================================================= */
+.search-box input,
+.search-container input,
+.search-form input,
+.search-input {
+  background:var(--surface) !important;
+  color:var(--text) !important;
+  border:1px solid var(--border-hi) !important;
+  border-radius:6px;
+  outline:none;
+  font-family:var(--mono);
+}
+
+.search-box input::placeholder,
+.search-container input::placeholder,
+.search-form input::placeholder,
+.search-input::placeholder {
+  color:var(--text-faint) !important;
+}
+
+.search-box input:focus,
+.search-container input:focus,
+.search-form input:focus,
+.search-input:focus {
+  border-color:var(--green) !important;
+  box-shadow:0 0 0 2px rgba(0,255,157,.08);
+}
+
+.search-box button,
+.search-container button,
+.search-form button,
+.search-btn {
+  background:var(--green) !important;
+  color:#03130b !important;
+  border:1px solid var(--green) !important;
+  border-radius:6px;
+  font-family:var(--mono);
+  font-weight:700;
+  cursor:pointer;
+  transition:.15s;
+}
+
+.search-box button:hover,
+.search-container button:hover,
+.search-form button:hover,
+.search-btn:hover {
+  background:transparent !important;
+  color:var(--green) !important;
+}
