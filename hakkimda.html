@@ -3,11 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Hakkımda — Burak Can Balta | SiberPortal</title>
 
@@ -21,12 +17,7 @@
   ========================================================== -->
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
-
-  <link
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
-    crossorigin
-  >
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   <link
     href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
@@ -37,10 +28,7 @@
        MAIN CSS
   ========================================================== -->
 
-  <link
-    rel="stylesheet"
-    href="assets/css/style.css"
-  >
+  <link rel="stylesheet" href="assets/css/style.css">
 
 </head>
 
@@ -48,167 +36,707 @@
 <body>
 
 
-  <!-- =========================================================
-       NAVIGATION
-  ========================================================== -->
+<!-- =========================================================
+     NAVIGATION
+========================================================= -->
 
-  <nav class="nav">
+<nav class="nav">
+
+  <div class="wrap">
+
+    <a class="brand" href="index.html">
+
+      <span class="brand-mark">
+        &gt;_
+      </span>
+
+      <span>
+        <span class="bracket">[</span>
+        SİBER<span style="color:var(--green)">PORTAL</span>
+        <span class="bracket">]</span>
+      </span>
+
+    </a>
+
+
+    <div class="navlinks">
+
+      <a href="index.html">
+        Ana Sayfa
+      </a>
+
+      <a href="haberler.html">
+        Haberler
+      </a>
+
+      <a href="cve.html">
+        CVE
+      </a>
+
+      <a href="makaleler.html">
+        Makaleler
+      </a>
+
+      <a href="araclar.html">
+        SiberTools
+      </a>
+
+      <a
+        href="hakkimda.html"
+        class="active"
+      >
+        Hakkımda
+      </a>
+
+    </div>
+
+
+    <div class="nav-cta">
+
+      <a
+        class="btn btn-primary"
+        href="hakkimda.html"
+      >
+        whoami →
+      </a>
+
+
+      <button
+        class="navtoggle"
+        aria-label="Menü"
+      >
+        ☰
+      </button>
+
+    </div>
+
+  </div>
+
+</nav>
+
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main>
+
+  <section style="padding-top:56px;">
 
     <div class="wrap">
 
 
-      <!-- BRAND -->
+      <!-- =====================================================
+           HERO / ABOUT
+      ====================================================== -->
 
-      <a
-        class="brand"
-        href="index.html"
-      >
+      <div class="section-head">
 
-        <span class="brand-mark">
-          &gt;_
+        <span class="tag">
+          OFFENSIVE SECURITY / VULNERABILITY RESEARCHER
         </span>
 
-        <span>
 
-          <span class="bracket">
-            [
-          </span>
-
-          SİBER<span style="color:var(--green)">PORTAL</span>
-
-          <span class="bracket">
-            ]
-          </span>
-
-        </span>
-
-      </a>
+        <h1>
+          Burak Can Balta
+        </h1>
 
 
-      <!-- NAV LINKS -->
+        <p>
+          Uludağ Üniversitesi Fizik öğrencisiyim, siber güvenlik
+          alanında teknik gelişimime odaklanıyorum. Web application
+          security ve offensive security prensipleri üzerine
+          çalışıyor, güvenli yazılım geliştirme pratiklerini takip
+          ediyorum.
+        </p>
 
-      <div class="navlinks">
 
-        <a href="index.html">
-          Ana Sayfa
-        </a>
+        <p>
+          GitHub üzerinde güvenlik odaklı araçlar geliştirerek farklı
+          saldırı senaryolarını ve savunma mekanizmalarını uygulamalı
+          olarak analiz ediyorum.
+        </p>
 
-        <a href="haberler.html">
-          Haberler
-        </a>
 
-        <a href="cve.html">
-          CVE
-        </a>
-
-        <a href="makaleler.html">
-          Makaleler
-        </a>
-
-        <a href="araclar.html">
-          SiberTools
-        </a>
-
-        <a
-          href="hakkimda.html"
-          class="active"
-        >
-          Hakkımda
-        </a>
+        <p>
+          Frontend ve backend geliştirme bilgimi güvenlik perspektifiyle
+          birleştirerek uygulama güvenliği ve saldırı yüzeyi analizi
+          üzerine çalışıyorum. Şu anda
+          <strong>OSCP'ye hazırlanıyorum</strong>,
+          düzenli olarak <strong>CTF</strong> çözüyor;
+          teknik yetkinliğimi gerçekçi saldırı senaryoları,
+          araç geliştirme ve writeup/makale çalışmalarıyla sürekli
+          geliştiriyorum.
+        </p>
 
       </div>
 
 
-      <!-- NAV CTA -->
 
-      <div class="nav-cta">
+      <!-- =====================================================
+           PROFILE / PHOTO + TERMINAL
+      ====================================================== -->
 
-        <a
-          class="btn btn-primary"
-          href="hakkimda.html"
+      <section style="margin-top:48px;">
+
+        <div
+          class="about-grid"
+          style="
+            align-items:start;
+          "
         >
-          whoami →
-        </a>
 
 
-        <button
-          class="navtoggle"
-          aria-label="Menü"
-        >
-          ☰
-        </button>
+          <!-- =================================================
+               CV PHOTO
+          ================================================== -->
 
-      </div>
+          <div
+            class="photo-placeholder"
+            style="
+              padding:0;
+              overflow:hidden;
+              height:420px;
+              min-height:420px;
+              align-self:start;
+            "
+          >
+
+            <img
+              src="assets/img/cvfoto.jpg"
+              alt="Burak Can Balta"
+              style="
+                display:block;
+                width:100%;
+                height:100%;
+                object-fit:cover;
+                object-position:center top;
+              "
+            >
+
+          </div>
 
 
-    </div>
 
-  </nav>
+          <!-- =================================================
+               TERMINAL
+          ================================================== -->
+
+          <div class="terminal">
+
+            <div class="terminal-head">
+
+              <span class="terminal-dot"></span>
+              <span class="terminal-dot"></span>
+              <span class="terminal-dot"></span>
+
+              <span class="terminal-title">
+                burak@sibersec
+              </span>
+
+            </div>
+
+
+            <div
+              class="terminal-body"
+              id="about-terminal"
+            >
+
+              <p>
+
+                <span class="prompt">
+                  burak@sibersec:~$
+                </span>
+
+                cat about.txt
+
+              </p>
+
+
+              <p>
+                Denemek için:
+                <strong>help</strong>,
+                <strong>whoami</strong>,
+                <strong>skills</strong>,
+                <strong>certs</strong>,
+                <strong>projeler</strong>,
+                <strong>iletisim</strong>
+              </p>
+
+
+              <p>
+
+                <span class="prompt">
+                  burak@sibersec:~$
+                </span>
+
+                <span
+                  class="cursor"
+                  id="terminal-cursor"
+                >
+                  █
+                </span>
+
+              </p>
+
+
+              <!-- Terminal input -->
+
+              <div
+                id="terminal-input-line"
+                style="
+                  display:none;
+                  margin-top:8px;
+                "
+              >
+
+                <span class="prompt">
+                  burak@sibersec:~$
+                </span>
+
+                <input
+                  id="about-terminal-input"
+                  type="text"
+                  autocomplete="off"
+                  spellcheck="false"
+                  aria-label="Terminal komutu"
+                  style="
+                    background:transparent;
+                    border:0;
+                    outline:0;
+                    color:inherit;
+                    font:inherit;
+                    width:70%;
+                  "
+                >
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
 
 
 
-  <!-- =========================================================
-       MAIN
-  ========================================================== -->
+      <!-- =====================================================
+           SKILLS
+      ====================================================== -->
 
-  <main>
-
-    <section style="padding-top:56px;">
-
-      <div class="wrap">
-
-
-        <!-- =====================================================
-             ABOUT / HERO
-        ====================================================== -->
+      <section style="margin-top:72px;">
 
         <div class="section-head">
 
           <span class="tag">
-            OFFENSIVE SECURITY / VULNERABILITY RESEARCHER
+            YETENEKLER
           </span>
 
+          <h2>
+            Teknik Beceriler
+          </h2>
 
-          <h1>
-            Burak Can Balta
-          </h1>
+        </div>
 
+
+        <div class="skills-grid">
+
+
+          <!-- Web -->
+
+          <div class="skill">
+
+            <div class="skill-top">
+
+              <span>
+                Web / API Security
+              </span>
+
+              <span>
+                85%
+              </span>
+
+            </div>
+
+            <div class="skill-bar">
+              <span style="width:85%"></span>
+            </div>
+
+          </div>
+
+
+
+          <!-- AD -->
+
+          <div class="skill">
+
+            <div class="skill-top">
+
+              <span>
+                Active Directory Pentest
+              </span>
+
+              <span>
+                75%
+              </span>
+
+            </div>
+
+            <div class="skill-bar">
+              <span style="width:75%"></span>
+            </div>
+
+          </div>
+
+
+
+          <!-- Network -->
+
+          <div class="skill">
+
+            <div class="skill-top">
+
+              <span>
+                Network / Recon
+              </span>
+
+              <span>
+                80%
+              </span>
+
+            </div>
+
+            <div class="skill-bar">
+              <span style="width:80%"></span>
+            </div>
+
+          </div>
+
+
+
+          <!-- Linux -->
+
+          <div class="skill">
+
+            <div class="skill-top">
+
+              <span>
+                Linux / Bash Scripting
+              </span>
+
+              <span>
+                80%
+              </span>
+
+            </div>
+
+            <div class="skill-bar">
+              <span style="width:80%"></span>
+            </div>
+
+          </div>
+
+
+
+          <!-- Python -->
+
+          <div class="skill">
+
+            <div class="skill-top">
+
+              <span>
+                Python
+              </span>
+
+              <span>
+                70%
+              </span>
+
+            </div>
+
+            <div class="skill-bar">
+              <span style="width:70%"></span>
+            </div>
+
+          </div>
+
+
+
+          <!-- Exploitation -->
+
+          <div class="skill">
+
+            <div class="skill-top">
+
+              <span>
+                Exploitation
+              </span>
+
+              <span>
+                75%
+              </span>
+
+            </div>
+
+            <div class="skill-bar">
+              <span style="width:75%"></span>
+            </div>
+
+          </div>
+
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =====================================================
+           CERTIFICATIONS
+      ====================================================== -->
+
+      <section
+        id="sertifikalar"
+        style="margin-top:80px;"
+      >
+
+        <div class="section-head">
+
+          <span class="tag">
+            SERTİFİKALAR
+          </span>
+
+          <h2>
+            Certifications
+          </h2>
 
           <p>
-            Uludağ Üniversitesi Fizik öğrencisiyim, siber güvenlik
-            alanında teknik gelişimime odaklanıyorum. Web application
-            security ve offensive security prensipleri üzerine
-            çalışıyor, güvenli yazılım geliştirme pratiklerini takip
-            ediyorum.
-          </p>
-
-
-          <p>
-            GitHub üzerinde güvenlik odaklı araçlar geliştirerek
-            farklı saldırı senaryolarını ve savunma mekanizmalarını
-            uygulamalı olarak analiz ediyorum.
-          </p>
-
-
-          <p>
-            Frontend ve backend geliştirme bilgimi güvenlik perspektifiyle
-            birleştirerek uygulama güvenliği ve saldırı yüzeyi analizi
-            üzerine çalışıyorum. Şu anda
-            <strong>OSCP'ye hazırlanıyorum</strong>,
-            düzenli olarak <strong>CTF</strong> çözüyor; teknik
-            yetkinliğimi gerçekçi saldırı senaryoları, araç geliştirme
-            ve writeup/makale çalışmalarıyla sürekli geliştiriyorum.
+            Aldığım sertifikalar ve yeterlilik belgeleri.
           </p>
 
         </div>
 
 
+        <!-- =================================================
+             IMPORTANT:
+             certs.js BURAYI arıyor.
+             ID kesinlikle certs-grid olmalı.
+        ================================================== -->
 
-        <!-- =====================================================
-             TERMINAL
-        ====================================================== -->
+        <div
+          class="cert-grid"
+          id="certs-grid"
+        >
+
+          <p class="state-msg">
+            // sertifikalar yükleniyor...
+          </p>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =====================================================
+           JOURNEY
+      ====================================================== -->
+
+      <section style="margin-top:80px;">
+
+        <div class="section-head">
+
+          <span class="tag">
+            YOLCULUK
+          </span>
+
+          <h2>
+            Deneyim & Öğrenme Süreci
+          </h2>
+
+        </div>
+
+
+        <div class="rows">
+
+
+          <!-- OSCP -->
+
+          <div class="row">
+
+            <div class="row-main">
+
+              <p class="row-meta">
+                <span>
+                  Devam ediyor
+                </span>
+              </p>
+
+
+              <h3 class="row-title">
+                OSCP Hazırlığı
+              </h3>
+
+
+              <p class="row-desc">
+                Offensive Security Certified Professional sınavına
+                yönelik lab çalışmaları ve pratik exploitation
+                teknikleri üzerine yoğunlaşıyorum.
+              </p>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- Web / API -->
+
+          <div class="row">
+
+            <div class="row-main">
+
+              <p class="row-meta">
+                <span>
+                  2026
+                </span>
+              </p>
+
+
+              <h3 class="row-title">
+                Web & API Red Team Sertifikaları
+              </h3>
+
+
+              <p class="row-desc">
+                CyberWarFare Labs'tan Web-RTA ve API-RTA
+                sertifikalarını alarak web/API pentest ve red team
+                tekniklerinde uygulamalı yetkinlik kazandım.
+              </p>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- AD -->
+
+          <div class="row">
+
+            <div class="row-main">
+
+              <p class="row-meta">
+                <span>
+                  2025 — 2026
+                </span>
+              </p>
+
+
+              <h3 class="row-title">
+                Active Directory & Offensive Security üzerine derinleşme
+              </h3>
+
+
+              <p class="row-desc">
+                Kerberoasting, ACL abuse, BloodHound ile attack path
+                analizi konularında laboratuvar çalışmaları ve
+                writeup üretimi.
+              </p>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- University -->
+
+          <div class="row">
+
+            <div class="row-main">
+
+              <p class="row-meta">
+                <span>
+                  Uludağ Üniversitesi
+                </span>
+              </p>
+
+
+              <h3 class="row-title">
+                Fizik Bölümü Öğrencisi
+              </h3>
+
+
+              <p class="row-desc">
+                Fizik eğitimimin yanı sıra siber güvenlik alanında
+                teknik gelişimime yoğun şekilde odaklanıyorum.
+              </p>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- SiberPortal -->
+
+          <div class="row">
+
+            <div class="row-main">
+
+              <p class="row-meta">
+                <span>
+                  Devam ediyor
+                </span>
+              </p>
+
+
+              <h3 class="row-title">
+                SiberPortal — Blog & Writeup Arşivi
+              </h3>
+
+
+              <p class="row-desc">
+                Öğrendiklerimi markdown makaleler ve CTF/HTB
+                writeup'ları olarak bu sitede paylaşıyorum.
+              </p>
+
+            </div>
+
+          </div>
+
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =====================================================
+           CONTACT
+      ====================================================== -->
+
+      <section style="margin-top:80px;">
+
+        <div class="section-head">
+
+          <span class="tag">
+            İLETİŞİM
+          </span>
+
+          <h2>
+            Bağlantıda Kalalım
+          </h2>
+
+        </div>
+
 
         <div class="terminal">
+
 
           <div class="terminal-head">
 
@@ -217,7 +745,7 @@
             <span class="terminal-dot"></span>
 
             <span class="terminal-title">
-              burak@sibersec
+              connect.sh
             </span>
 
           </div>
@@ -225,32 +753,71 @@
 
           <div class="terminal-body">
 
+
             <p>
 
               <span class="prompt">
                 burak@sibersec:~$
               </span>
 
-              cat about.txt
+              ./connect.sh
 
             </p>
 
 
-            <p>
-
-              Denemek için:
-
-              <strong>help</strong>,
-              <strong>whoami</strong>,
-              <strong>skills</strong>,
-              <strong>certs</strong>,
-              <strong>projeler</strong>,
-              <strong>iletisim</strong>
-
-            </p>
+            <div
+              class="contact-links"
+              style="
+                display:flex;
+                flex-wrap:wrap;
+                gap:12px;
+                margin-top:20px;
+              "
+            >
 
 
-            <p>
+              <a
+                class="btn btn-primary"
+                href="https://github.com/burakcanbalta"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GitHub ↗
+              </a>
+
+
+              <a
+                class="btn btn-primary"
+                href="https://www.linkedin.com/in/burak-balta-976a64261/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                LinkedIn ↗
+              </a>
+
+
+              <a
+                class="btn btn-primary"
+                href="https://www.youtube.com/@SiberPortal"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                YouTube ↗
+              </a>
+
+
+              <a
+                class="btn btn-primary"
+                href="mailto:burakcanbalta@proton.me"
+              >
+                Email ✉
+              </a>
+
+
+            </div>
+
+
+            <p style="margin-top:24px;">
 
               <span class="prompt">
                 burak@sibersec:~$
@@ -262,610 +829,230 @@
 
             </p>
 
+
           </div>
 
         </div>
 
+      </section>
 
-
-        <!-- =====================================================
-             SKILLS
-        ====================================================== -->
-
-        <section style="margin-top:72px;">
-
-          <div class="section-head">
-
-            <span class="tag">
-              YETENEKLER
-            </span>
-
-
-            <h2>
-              Teknik Beceriler
-            </h2>
-
-          </div>
-
-
-          <div class="skills-grid">
-
-
-            <!-- WEB / API -->
-
-            <div class="skill">
-
-              <div class="skill-top">
-
-                <span>
-                  Web / API Security
-                </span>
-
-                <span>
-                  85%
-                </span>
-
-              </div>
-
-
-              <div class="skill-bar">
-                <span style="width:85%"></span>
-              </div>
-
-            </div>
-
-
-
-            <!-- AD -->
-
-            <div class="skill">
-
-              <div class="skill-top">
-
-                <span>
-                  Active Directory Pentest
-                </span>
-
-                <span>
-                  75%
-                </span>
-
-              </div>
-
-
-              <div class="skill-bar">
-                <span style="width:75%"></span>
-              </div>
-
-            </div>
-
-
-
-            <!-- NETWORK -->
-
-            <div class="skill">
-
-              <div class="skill-top">
-
-                <span>
-                  Network / Recon
-                </span>
-
-                <span>
-                  80%
-                </span>
-
-              </div>
-
-
-              <div class="skill-bar">
-                <span style="width:80%"></span>
-              </div>
-
-            </div>
-
-
-
-            <!-- LINUX -->
-
-            <div class="skill">
-
-              <div class="skill-top">
-
-                <span>
-                  Linux / Bash Scripting
-                </span>
-
-                <span>
-                  80%
-                </span>
-
-              </div>
-
-
-              <div class="skill-bar">
-                <span style="width:80%"></span>
-              </div>
-
-            </div>
-
-
-
-            <!-- PYTHON -->
-
-            <div class="skill">
-
-              <div class="skill-top">
-
-                <span>
-                  Python
-                </span>
-
-                <span>
-                  70%
-                </span>
-
-              </div>
-
-
-              <div class="skill-bar">
-                <span style="width:70%"></span>
-              </div>
-
-            </div>
-
-
-
-            <!-- EXPLOITATION -->
-
-            <div class="skill">
-
-              <div class="skill-top">
-
-                <span>
-                  Exploitation
-                </span>
-
-                <span>
-                  75%
-                </span>
-
-              </div>
-
-
-              <div class="skill-bar">
-                <span style="width:75%"></span>
-              </div>
-
-            </div>
-
-
-          </div>
-
-        </section>
-
-
-
-        <!-- =====================================================
-             CERTIFICATIONS
-        ====================================================== -->
-
-        <section
-          id="sertifikalar"
-          style="margin-top:80px;"
-        >
-
-          <div class="section-head">
-
-            <span class="tag">
-              SERTİFİKALAR
-            </span>
-
-
-            <h2>
-              Certifications
-            </h2>
-
-
-            <p>
-              Aldığım sertifikalar ve yeterlilik belgeleri.
-            </p>
-
-          </div>
-
-
-
-          <!--
-
-            ÖNEMLİ:
-
-            certs.js şu ID'yi arıyor:
-
-            certs-grid
-
-            Burayı değiştirme.
-
-          -->
-
-          <div
-            class="cert-grid"
-            id="certs-grid"
-          >
-
-            <p class="state-msg">
-              // sertifikalar yükleniyor...
-            </p>
-
-          </div>
-
-        </section>
-
-
-
-        <!-- =====================================================
-             JOURNEY
-        ====================================================== -->
-
-        <section style="margin-top:80px;">
-
-          <div class="section-head">
-
-            <span class="tag">
-              YOLCULUK
-            </span>
-
-
-            <h2>
-              Deneyim & Öğrenme Süreci
-            </h2>
-
-          </div>
-
-
-
-          <div class="rows">
-
-
-            <!-- OSCP -->
-
-            <div class="row">
-
-              <div class="row-main">
-
-                <p class="row-meta">
-                  <span>
-                    Devam ediyor
-                  </span>
-                </p>
-
-
-                <h3 class="row-title">
-                  OSCP Hazırlığı
-                </h3>
-
-
-                <p class="row-desc">
-
-                  Offensive Security Certified Professional
-                  sınavına yönelik lab çalışmaları ve pratik
-                  exploitation teknikleri üzerine yoğunlaşıyorum.
-
-                </p>
-
-              </div>
-
-            </div>
-
-
-
-            <!-- WEB / API -->
-
-            <div class="row">
-
-              <div class="row-main">
-
-                <p class="row-meta">
-                  <span>
-                    2026
-                  </span>
-                </p>
-
-
-                <h3 class="row-title">
-                  Web & API Red Team Sertifikaları
-                </h3>
-
-
-                <p class="row-desc">
-
-                  CyberWarFare Labs'tan Web-RTA ve API-RTA
-                  sertifikalarını alarak web/API pentest ve red team
-                  tekniklerinde uygulamalı yetkinlik kazandım.
-
-                </p>
-
-              </div>
-
-            </div>
-
-
-
-            <!-- AD -->
-
-            <div class="row">
-
-              <div class="row-main">
-
-                <p class="row-meta">
-                  <span>
-                    2025 — 2026
-                  </span>
-                </p>
-
-
-                <h3 class="row-title">
-
-                  Active Directory & Offensive Security
-                  üzerine derinleşme
-
-                </h3>
-
-
-                <p class="row-desc">
-
-                  Kerberoasting, ACL abuse, BloodHound ile attack
-                  path analizi konularında laboratuvar çalışmaları
-                  ve writeup üretimi.
-
-                </p>
-
-              </div>
-
-            </div>
-
-
-
-            <!-- UNIVERSITY -->
-
-            <div class="row">
-
-              <div class="row-main">
-
-                <p class="row-meta">
-                  <span>
-                    Uludağ Üniversitesi
-                  </span>
-                </p>
-
-
-                <h3 class="row-title">
-                  Fizik Bölümü Öğrencisi
-                </h3>
-
-
-                <p class="row-desc">
-
-                  Fizik eğitimimin yanı sıra siber güvenlik alanında
-                  teknik gelişimime yoğun şekilde odaklanıyorum.
-
-                </p>
-
-              </div>
-
-            </div>
-
-
-
-            <!-- SİBERPORTAL -->
-
-            <div class="row">
-
-              <div class="row-main">
-
-                <p class="row-meta">
-                  <span>
-                    Devam ediyor
-                  </span>
-                </p>
-
-
-                <h3 class="row-title">
-                  SiberPortal — Blog & Writeup Arşivi
-                </h3>
-
-
-                <p class="row-desc">
-
-                  Öğrendiklerimi markdown makaleler ve CTF/HTB
-                  writeup'ları olarak bu sitede paylaşıyorum.
-
-                </p>
-
-              </div>
-
-            </div>
-
-
-          </div>
-
-        </section>
-
-
-
-        <!-- =====================================================
-             CONTACT
-        ====================================================== -->
-
-        <section style="margin-top:80px;">
-
-          <div class="section-head">
-
-            <span class="tag">
-              İLETİŞİM
-            </span>
-
-
-            <h2>
-              Bağlantıda Kalalım
-            </h2>
-
-          </div>
-
-
-
-          <div class="terminal">
-
-            <div class="terminal-head">
-
-              <span class="terminal-dot"></span>
-              <span class="terminal-dot"></span>
-              <span class="terminal-dot"></span>
-
-              <span class="terminal-title">
-                connect.sh
-              </span>
-
-            </div>
-
-
-
-            <div class="terminal-body">
-
-
-              <p>
-
-                <span class="prompt">
-                  burak@sibersec:~$
-                </span>
-
-                ./connect.sh
-
-              </p>
-
-
-
-              <div
-                class="contact-links"
-                style="
-                  display:flex;
-                  flex-wrap:wrap;
-                  gap:12px;
-                  margin-top:20px;
-                "
-              >
-
-
-                <!-- GITHUB -->
-
-                <a
-                  class="btn btn-primary"
-                  href="https://github.com/burakcanbalta"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  GitHub ↗
-                </a>
-
-
-
-                <!-- LINKEDIN -->
-
-                <a
-                  class="btn btn-primary"
-                  href="https://www.linkedin.com/in/burak-balta-976a64261/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  LinkedIn ↗
-                </a>
-
-
-
-                <!-- YOUTUBE -->
-
-                <a
-                  class="btn btn-primary"
-                  href="https://www.youtube.com/@SiberPortal"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  YouTube ↗
-                </a>
-
-
-
-                <!-- EMAIL -->
-
-                <a
-                  class="btn btn-primary"
-                  href="mailto:burakcanbalta@proton.me"
-                >
-                  Email ✉
-                </a>
-
-
-              </div>
-
-
-
-              <p style="margin-top:24px;">
-
-                <span class="prompt">
-                  burak@sibersec:~$
-                </span>
-
-                <span class="cursor">
-                  █
-                </span>
-
-              </p>
-
-
-            </div>
-
-          </div>
-
-        </section>
-
-
-      </div>
-
-    </section>
-
-  </main>
-
-
-
-  <!-- =========================================================
-       FOOTER
-  ========================================================== -->
-
-  <footer>
-
-    <div class="wrap footer-row">
-
-      <span class="footer-brand">
-
-        &gt;_ burakcanbalta — ©
-        <span class="footer-year"></span>
-
-      </span>
 
     </div>
 
-  </footer>
+  </section>
+
+</main>
 
 
 
-  <!-- =========================================================
-       JAVASCRIPT
-  ========================================================== -->
+<!-- =========================================================
+     FOOTER
+========================================================= -->
 
-  <script src="assets/js/main.js"></script>
+<footer>
 
-  <script src="assets/js/certs.js"></script>
+  <div class="wrap footer-row">
+
+    <span class="footer-brand">
+
+      &gt;_ burakcanbalta — ©
+      <span class="footer-year"></span>
+
+    </span>
+
+  </div>
+
+</footer>
+
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script src="assets/js/main.js"></script>
+
+<script src="assets/js/certs.js"></script>
+
+
+
+<!-- =========================================================
+     ABOUT TERMINAL
+========================================================= -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const terminal =
+    document.getElementById("about-terminal");
+
+  const inputLine =
+    document.getElementById("terminal-input-line");
+
+  const input =
+    document.getElementById("about-terminal-input");
+
+  if (!terminal || !inputLine || !input) {
+    return;
+  }
+
+
+  /*
+   * Terminale tıklanınca input aktif olur.
+   */
+
+  terminal.addEventListener("click", function () {
+
+    inputLine.style.display = "block";
+
+    input.focus();
+
+  });
+
+
+  /*
+   * Komutlar
+   */
+
+  input.addEventListener("keydown", function (event) {
+
+    if (event.key !== "Enter") {
+      return;
+    }
+
+
+    const command =
+      input.value.trim().toLowerCase();
+
+
+    if (!command) {
+      return;
+    }
+
+
+    const output =
+      document.createElement("p");
+
+
+    output.innerHTML =
+      '<span class="prompt">burak@sibersec:~$</span> ' +
+      escapeTerminal(input.value);
+
+
+    terminal.insertBefore(
+      output,
+      inputLine
+    );
+
+
+    const result =
+      document.createElement("p");
+
+
+    if (command === "help") {
+
+      result.innerHTML =
+        "Komutlar: help, whoami, skills, certs, projeler, iletisim, clear";
+
+    }
+
+    else if (command === "whoami") {
+
+      result.innerHTML =
+        "Burak Can Balta — Offensive Security / Vulnerability Researcher";
+
+    }
+
+    else if (command === "skills") {
+
+      result.innerHTML =
+        "Web/API Security · Active Directory · Network Recon · Linux · Python · Exploitation";
+
+    }
+
+    else if (command === "certs") {
+
+      result.innerHTML =
+        "Sertifikalar → aşağıdaki CERTIFICATIONS bölümünde.";
+
+      document
+        .getElementById("sertifikalar")
+        ?.scrollIntoView({
+          behavior: "smooth"
+        });
+
+    }
+
+    else if (command === "projeler") {
+
+      result.innerHTML =
+        "GitHub → github.com/burakcanbalta";
+
+    }
+
+    else if (command === "iletisim") {
+
+      result.innerHTML =
+        "GitHub · LinkedIn · YouTube · ProtonMail";
+
+    }
+
+    else if (command === "clear") {
+
+      const children =
+        Array.from(terminal.children);
+
+      children.forEach(function (child) {
+
+        if (child !== inputLine) {
+          child.remove();
+        }
+
+      });
+
+      input.value = "";
+
+      return;
+
+    }
+
+    else {
+
+      result.innerHTML =
+        "command not found: " +
+        escapeTerminal(command) +
+        " — help yaz.";
+
+    }
+
+
+    terminal.insertBefore(
+      result,
+      inputLine
+    );
+
+
+    input.value = "";
+
+  });
+
+
+  function escapeTerminal(value) {
+
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+
+  }
+
+});
+
+</script>
 
 
 </body>
-
 </html>
