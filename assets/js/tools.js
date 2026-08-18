@@ -1,984 +1,862 @@
-// ============================================================
-// SİBERPORTAL — SiberTools
-// Red Team / Pentest / Security Arsenal
-// ============================================================
+/*
+ * ============================================================
+ * SIBERPORTAL — SIBERTOOLS
+ * ============================================================
+ *
+ * Araç verileri:
+ * content/data/tools.json
+ *
+ * Özellikler:
+ * - Araç arama
+ * - Kategori filtreleme
+ * - Dinamik kategori oluşturma
+ * - İstatistikler
+ * - Platform bilgisi
+ * - Tag desteği
+ * - GitHub / Docs linkleri
+ * - Güvenli HTML escaping
+ * - JSON yükleme hatası gösterimi
+ *
+ * ============================================================
+ */
+
+'use strict';
+
+
+/* ============================================================
+   CONFIG
+   ============================================================ */
+
+const TOOLS_DATA_URL = './content/data/tools.json';
+
+
+/* ============================================================
+   STATE
+   ============================================================ */
 
 let ALL_TOOLS = [];
-let activeCat = 'all';
-let activeLevel = 'all';
-let activeTag = 'all';
+
+let activeCategory = 'all';
+
+let searchQuery = '';
 
 
-// ============================================================
-// BAŞLANGIÇ
-// ============================================================
+/* ============================================================
+   INIT
+   ============================================================ */
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
 
-  const grid = document.getElementById('tools-grid');
+    console.log('[SiberTools] Initializing...');
 
-  if (!grid) return;
+    setupSearch();
 
-  grid.innerHTML = `
-    <p class="state-msg">
-      // SiberTools yükleniyor...
-    </p>
-  `;
-
-  try {
-
-    const res = await fetch('content/data/tools.json', {
-      cache: 'no-cache'
-    });
-
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
-    }
-
-    const data = await res.json();
-
-    if (!Array.isArray(data)) {
-      throw new Error('tools.json array değil');
-    }
-
-    ALL_TOOLS = data;
-
-    console.log(
-      `[SiberTools] ${ALL_TOOLS.length} araç yüklendi.`
-    );
-
-    buildFilters();
-    buildStats();
-    render();
-
-  } catch (error) {
-
-    console.error(
-      '[SiberTools] yükleme hatası:',
-      error
-    );
-
-    grid.innerHTML = `
-      <div class="state-msg error">
-        // araçlar yüklenemedi
-        <br>
-        // content/data/tools.json kontrol edin
-      </div>
-    `;
-
-  }
-
-
-  // ----------------------------------------------------------
-  // ARAMA
-  // ----------------------------------------------------------
-
-  const search =
-    document.getElementById('tools-search');
-
-  if (search) {
-
-    search.addEventListener(
-      'input',
-      render
-    );
-
-  }
+    loadTools();
 
 });
 
 
-// ============================================================
-// FİLTRELER
-// ============================================================
+/* ============================================================
+   LOAD TOOLS
+   ============================================================ */
 
-function buildFilters() {
+async function loadTools() {
 
-  const bar =
-    document.getElementById('cat-filters');
+    const grid = document.getElementById('tools-grid');
 
-  if (!bar) return;
+    if (!grid) {
 
-
-  // ----------------------------------------------------------
-  // KATEGORİLER
-  // ----------------------------------------------------------
-
-  const categories =
-    new Set();
-
-  ALL_TOOLS.forEach(tool => {
-
-    if (tool.category) {
-      categories.add(tool.category);
-    }
-
-  });
-
-
-  // ----------------------------------------------------------
-  // LEVEL'LER
-  // ----------------------------------------------------------
-
-  const levels =
-    new Set();
-
-  ALL_TOOLS.forEach(tool => {
-
-    if (tool.level) {
-      levels.add(tool.level);
-    }
-
-  });
-
-
-  // ----------------------------------------------------------
-  // TAG'LER
-  // ----------------------------------------------------------
-
-  const tags =
-    new Set();
-
-  ALL_TOOLS.forEach(tool => {
-
-    if (Array.isArray(tool.tags)) {
-
-      tool.tags.forEach(tag => {
-
-        if (tag) {
-          tags.add(tag);
-        }
-
-      });
-
-    }
-
-  });
-
-
-  // ----------------------------------------------------------
-  // HTML
-  // ----------------------------------------------------------
-
-  let html = `
-
-    <button
-      class="filter-btn active"
-      data-cat="all"
-    >
-      tümü
-    </button>
-
-  `;
-
-
-  [...categories]
-    .sort()
-    .forEach(category => {
-
-      html += `
-
-        <button
-          class="filter-btn"
-          data-cat="${escapeAttr(category)}"
-        >
-          ${escapeHtml(category)}
-        </button>
-
-      `;
-
-    });
-
-
-  bar.innerHTML = html;
-
-
-  // ----------------------------------------------------------
-  // KATEGORİ EVENT
-  // ----------------------------------------------------------
-
-  bar
-    .querySelectorAll('[data-cat]')
-    .forEach(button => {
-
-      button.addEventListener(
-        'click',
-        () => {
-
-          activeCat =
-            button.dataset.cat || 'all';
-
-          bar
-            .querySelectorAll('[data-cat]')
-            .forEach(btn =>
-              btn.classList.remove('active')
-            );
-
-          button.classList.add('active');
-
-          render();
-
-        }
-      );
-
-    });
-
-
-  // ----------------------------------------------------------
-  // ADVANCED FILTER BAR
-  // ----------------------------------------------------------
-
-  const existingAdvanced =
-    document.getElementById(
-      'tools-advanced-filters'
-    );
-
-  if (existingAdvanced) {
-    existingAdvanced.remove();
-  }
-
-
-  if (levels.size > 0 || tags.size > 0) {
-
-    const advanced =
-      document.createElement('div');
-
-    advanced.id =
-      'tools-advanced-filters';
-
-    advanced.className =
-      'toolbar';
-
-    advanced.style.marginTop =
-      '-14px';
-
-
-    let advancedHTML = '';
-
-
-    // LEVEL
-    if (levels.size > 0) {
-
-      advancedHTML += `
-
-        <select
-          id="tools-level-filter"
-          class="filter-btn"
-        >
-          <option value="all">
-            tüm seviyeler
-          </option>
-
-          ${[...levels]
-            .sort()
-            .map(level => `
-              <option value="${escapeAttr(level)}">
-                ${escapeHtml(level)}
-              </option>
-            `)
-            .join('')}
-
-        </select>
-
-      `;
-
-    }
-
-
-    // TAG
-    if (tags.size > 0) {
-
-      advancedHTML += `
-
-        <select
-          id="tools-tag-filter"
-          class="filter-btn"
-        >
-          <option value="all">
-            tüm tagler
-          </option>
-
-          ${[...tags]
-            .sort()
-            .map(tag => `
-              <option value="${escapeAttr(tag)}">
-                ${escapeHtml(tag)}
-              </option>
-            `)
-            .join('')}
-
-        </select>
-
-      `;
-
-    }
-
-
-    advanced.innerHTML =
-      advancedHTML;
-
-    bar.parentElement.insertBefore(
-      advanced,
-      document.getElementById('tools-grid')
-    );
-
-
-    // LEVEL EVENT
-
-    document
-      .getElementById('tools-level-filter')
-      ?.addEventListener(
-        'change',
-        event => {
-
-          activeLevel =
-            event.target.value;
-
-          render();
-
-        }
-      );
-
-
-    // TAG EVENT
-
-    document
-      .getElementById('tools-tag-filter')
-      ?.addEventListener(
-        'change',
-        event => {
-
-          activeTag =
-            event.target.value;
-
-          render();
-
-        }
-      );
-
-  }
-
-}
-
-
-// ============================================================
-// İSTATİSTİKLER
-// ============================================================
-
-function buildStats() {
-
-  const existing =
-    document.getElementById(
-      'tools-stats'
-    );
-
-  if (existing) {
-    existing.remove();
-  }
-
-
-  const categories =
-    new Set(
-      ALL_TOOLS
-        .map(t => t.category)
-        .filter(Boolean)
-    );
-
-
-  const redTeamCount =
-    ALL_TOOLS.filter(tool => {
-
-      const text =
-        JSON.stringify(tool)
-          .toLowerCase();
-
-      return (
-        text.includes('red team') ||
-        text.includes('redteam') ||
-        text.includes('pentest')
-      );
-
-    }).length;
-
-
-  const webCount =
-    ALL_TOOLS.filter(tool => {
-
-      const text =
-        JSON.stringify(tool)
-          .toLowerCase();
-
-      return (
-        text.includes('web') ||
-        text.includes('api')
-      );
-
-    }).length;
-
-
-  const stats =
-    document.createElement('div');
-
-  stats.id =
-    'tools-stats';
-
-  stats.className =
-    'grid grid-3';
-
-  stats.style.marginBottom =
-    '28px';
-
-
-  stats.innerHTML = `
-
-    <div class="card">
-
-      <div class="card-icon">
-        ⚒
-      </div>
-
-      <h3>
-        ${ALL_TOOLS.length}
-      </h3>
-
-      <p>
-        TOPLAM ARAÇ
-      </p>
-
-    </div>
-
-
-    <div class="card">
-
-      <div class="card-icon">
-        ◈
-      </div>
-
-      <h3>
-        ${categories.size}
-      </h3>
-
-      <p>
-        KATEGORİ
-      </p>
-
-    </div>
-
-
-    <div class="card">
-
-      <div class="card-icon">
-        ⚡
-      </div>
-
-      <h3>
-        ${redTeamCount}
-      </h3>
-
-      <p>
-        OFFENSIVE / PENTEST
-      </p>
-
-    </div>
-
-  `;
-
-
-  const grid =
-    document.getElementById(
-      'tools-grid'
-    );
-
-  if (grid) {
-
-    grid.parentElement.insertBefore(
-      stats,
-      grid
-    );
-
-  }
-
-}
-
-
-// ============================================================
-// RENDER
-// ============================================================
-
-function render() {
-
-  const grid =
-    document.getElementById(
-      'tools-grid'
-    );
-
-  if (!grid) return;
-
-
-  const search =
-    (
-      document.getElementById(
-        'tools-search'
-      )?.value || ''
-    )
-      .trim()
-      .toLowerCase();
-
-
-  // ----------------------------------------------------------
-  // FİLTRELE
-  // ----------------------------------------------------------
-
-  let items =
-    [...ALL_TOOLS];
-
-
-  // CATEGORY
-
-  if (activeCat !== 'all') {
-
-    items =
-      items.filter(
-        tool =>
-          tool.category === activeCat
-      );
-
-  }
-
-
-  // LEVEL
-
-  if (activeLevel !== 'all') {
-
-    items =
-      items.filter(
-        tool =>
-          String(tool.level || '')
-            .toLowerCase() ===
-          activeLevel.toLowerCase()
-      );
-
-  }
-
-
-  // TAG
-
-  if (activeTag !== 'all') {
-
-    items =
-      items.filter(tool => {
-
-        if (!Array.isArray(tool.tags)) {
-          return false;
-        }
-
-        return tool.tags.some(
-          tag =>
-            String(tag).toLowerCase() ===
-            activeTag.toLowerCase()
+        console.error(
+            '[SiberTools] #tools-grid bulunamadı.'
         );
 
-      });
+        return;
 
-  }
+    }
 
 
-  // SEARCH
+    grid.innerHTML = `
+        <div class="state-msg">
+            // SiberTools veritabanı yükleniyor...
+        </div>
+    `;
 
-  if (search) {
 
-    items =
-      items.filter(tool => {
+    try {
+
+        console.log(
+            '[SiberTools] Loading:',
+            TOOLS_DATA_URL
+        );
+
+
+        const response = await fetch(
+            TOOLS_DATA_URL,
+            {
+                cache: 'no-store'
+            }
+        );
+
+
+        console.log(
+            '[SiberTools] HTTP:',
+            response.status
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                `HTTP ${response.status}`
+            );
+
+        }
+
+
+        const data = await response.json();
+
+
+        if (!Array.isArray(data)) {
+
+            throw new Error(
+                'tools.json bir JSON array olmalı.'
+            );
+
+        }
+
+
+        ALL_TOOLS = data
+            .filter(isValidTool)
+            .map(normalizeTool);
+
+
+        console.log(
+            `[SiberTools] ${ALL_TOOLS.length} araç yüklendi.`
+        );
+
+
+        if (ALL_TOOLS.length === 0) {
+
+            throw new Error(
+                'tools.json boş veya geçersiz.'
+            );
+
+        }
+
+
+        buildCategoryFilters();
+
+        renderStats();
+
+        renderTools();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            '[SiberTools] Veri yükleme hatası:',
+            error
+        );
+
+
+        grid.innerHTML = `
+
+            <div
+                class="state-msg error"
+                style="
+                    grid-column:1/-1;
+                    padding:30px;
+                    border:1px solid rgba(255,70,70,.25);
+                    border-radius:10px;
+                "
+            >
+
+                <strong>
+                    // ARAÇ VERİTABANI YÜKLENEMEDİ
+                </strong>
+
+                <br><br>
+
+                ${escapeHtml(error.message)}
+
+                <br><br>
+
+                <small>
+                    Kontrol et:
+                    <br>
+                    <code>
+                    content/data/tools.json
+                    </code>
+
+                    <br><br>
+
+                    veya tarayıcı konsolunu aç:
+                    <br>
+                    F12 → Console
+                </small>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* ============================================================
+   VALIDATE
+   ============================================================ */
+
+function isValidTool(tool) {
+
+    return (
+        tool &&
+        typeof tool === 'object' &&
+        typeof tool.name === 'string' &&
+        tool.name.trim() !== ''
+    );
+
+}
+
+
+/* ============================================================
+   NORMALIZE
+   ============================================================ */
+
+function normalizeTool(tool) {
+
+    return {
+
+        name:
+            String(tool.name || '')
+                .trim(),
+
+        category:
+            String(
+                tool.category || 'misc'
+            )
+                .trim()
+                .toLowerCase(),
+
+        description:
+            String(
+                tool.description || 'Güvenlik aracı.'
+            )
+                .trim(),
+
+        link:
+            typeof tool.link === 'string'
+                ? tool.link.trim()
+                : '',
+
+        github:
+            typeof tool.github === 'string'
+                ? tool.github.trim()
+                : '',
+
+        docs:
+            typeof tool.docs === 'string'
+                ? tool.docs.trim()
+                : '',
+
+        platform:
+            Array.isArray(tool.platform)
+                ? tool.platform
+                : [],
+
+        tags:
+            Array.isArray(tool.tags)
+                ? tool.tags
+                : []
+
+    };
+
+}
+
+
+/* ============================================================
+   SEARCH
+   ============================================================ */
+
+function setupSearch() {
+
+    const input =
+        document.getElementById(
+            'tools-search'
+        );
+
+
+    if (!input) return;
+
+
+    input.addEventListener(
+        'input',
+        event => {
+
+            searchQuery =
+                event.target.value
+                    .toLowerCase()
+                    .trim();
+
+
+            renderTools();
+
+        }
+    );
+
+}
+
+
+/* ============================================================
+   CATEGORY FILTERS
+   ============================================================ */
+
+function buildCategoryFilters() {
+
+    const container =
+        document.getElementById(
+            'cat-filters'
+        );
+
+
+    if (!container) return;
+
+
+    const categories =
+        [...new Set(
+            ALL_TOOLS
+                .map(tool => tool.category)
+                .filter(Boolean)
+        )]
+        .sort();
+
+
+    let html = `
+
+        <button
+            class="filter-btn active"
+            data-category="all"
+        >
+            tümü
+        </button>
+
+    `;
+
+
+    categories.forEach(category => {
+
+        const count =
+            ALL_TOOLS.filter(
+                tool =>
+                    tool.category === category
+            ).length;
+
+
+        html += `
+
+            <button
+                class="filter-btn"
+                data-category="${escapeAttr(category)}"
+            >
+                ${escapeHtml(category)}
+                <span style="opacity:.55">
+                    (${count})
+                </span>
+            </button>
+
+        `;
+
+    });
+
+
+    container.innerHTML = html;
+
+
+    container
+        .querySelectorAll(
+            '[data-category]'
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                'click',
+                () => {
+
+                    activeCategory =
+                        button.dataset.category;
+
+
+                    container
+                        .querySelectorAll(
+                            '.filter-btn'
+                        )
+                        .forEach(
+                            btn =>
+                                btn.classList.remove(
+                                    'active'
+                                )
+                        );
+
+
+                    button.classList.add(
+                        'active'
+                    );
+
+
+                    renderTools();
+
+                }
+            );
+
+        });
+
+}
+
+
+/* ============================================================
+   FILTER
+   ============================================================ */
+
+function getFilteredTools() {
+
+    return ALL_TOOLS.filter(tool => {
+
+        const categoryMatch =
+            activeCategory === 'all' ||
+            tool.category === activeCategory;
+
+
+        if (!categoryMatch) {
+            return false;
+        }
+
+
+        if (!searchQuery) {
+            return true;
+        }
+
 
         const searchable = [
 
-          tool.name,
+            tool.name,
 
-          tool.description,
+            tool.category,
 
-          tool.category,
+            tool.description,
 
-          tool.level,
+            ...(tool.tags || []),
 
-          tool.os,
-
-          tool.command,
-
-          tool.usage,
-
-          ...(Array.isArray(tool.tags)
-            ? tool.tags
-            : [])
+            ...(tool.platform || [])
 
         ]
-          .filter(Boolean)
-          .join(' ')
-          .toLowerCase();
+            .join(' ')
+            .toLowerCase();
 
 
-        return searchable.includes(search);
+        return searchable.includes(
+            searchQuery
+        );
 
-      });
-
-  }
-
-
-  // ----------------------------------------------------------
-  // EMPTY
-  // ----------------------------------------------------------
-
-  if (items.length === 0) {
-
-    grid.innerHTML = `
-
-      <div class="state-msg">
-
-        // eşleşen araç bulunamadı
-
-        <br>
-
-        // başka bir kategori veya arama terimi deneyin
-
-      </div>
-
-    `;
-
-    return;
-
-  }
-
-
-  // ----------------------------------------------------------
-  // RENDER
-  // ----------------------------------------------------------
-
-  grid.innerHTML =
-    items
-      .map(renderTool)
-      .join('');
+    });
 
 }
 
 
-// ============================================================
-// TOOL CARD
-// ============================================================
+/* ============================================================
+   RENDER TOOLS
+   ============================================================ */
 
-function renderTool(tool) {
+function renderTools() {
 
-  const name =
-    tool.name || 'Unnamed Tool';
-
-
-  const description =
-    tool.description ||
-    'Açıklama bulunmuyor.';
+    const grid =
+        document.getElementById(
+            'tools-grid'
+        );
 
 
-  const category =
-    tool.category ||
-    'Other';
+    if (!grid) return;
 
 
-  const level =
-    tool.level ||
-    '';
+    const tools =
+        getFilteredTools();
 
 
-  const os =
-    tool.os ||
-    '';
+    if (tools.length === 0) {
 
+        grid.innerHTML = `
 
-  const command =
-    tool.command ||
-    tool.usage ||
-    '';
+            <div
+                class="state-msg"
+                style="grid-column:1/-1"
+            >
+                // eşleşen araç bulunamadı
+            </div>
 
+        `;
 
-  const tags =
-    Array.isArray(tool.tags)
-      ? tool.tags
-      : [];
+        renderStats();
 
-
-  // ----------------------------------------------------------
-  // LINKLER
-  // ----------------------------------------------------------
-
-  const github =
-    tool.github ||
-    tool.github_url ||
-    '';
-
-
-  const docs =
-    tool.docs ||
-    tool.documentation ||
-    tool.docs_url ||
-    tool.link ||
-    '';
-
-
-  // ----------------------------------------------------------
-  // ESSENTIAL
-  // ----------------------------------------------------------
-
-  const isEssential =
-    tool.essential === true ||
-    tool.featured === true;
-
-
-  // ----------------------------------------------------------
-  // TAG HTML
-  // ----------------------------------------------------------
-
-  const tagsHTML =
-    tags
-      .slice(0, 5)
-      .map(tag => `
-
-        <span class="chip">
-          ${escapeHtml(tag)}
-        </span>
-
-      `)
-      .join('');
-
-
-  // ----------------------------------------------------------
-  // LEVEL
-  // ----------------------------------------------------------
-
-  const levelHTML =
-    level
-      ? `
-
-        <span class="chip tool-level">
-          ${escapeHtml(level)}
-        </span>
-
-      `
-      : '';
-
-
-  // ----------------------------------------------------------
-  // OS
-  // ----------------------------------------------------------
-
-  const osHTML =
-    os
-      ? `
-
-        <span class="chip">
-          ${escapeHtml(os)}
-        </span>
-
-      `
-      : '';
-
-
-  // ----------------------------------------------------------
-  // KOMUT
-  // ----------------------------------------------------------
-
-  const commandHTML =
-    command
-      ? `
-
-        <div class="tool-command">
-
-          <span class="command-prefix">
-            $
-          </span>
-
-          <code>
-            ${escapeHtml(command)}
-          </code>
-
-        </div>
-
-      `
-      : '';
-
-
-  // ----------------------------------------------------------
-  // LINKLER
-  // ----------------------------------------------------------
-
-  let linksHTML = '';
-
-
-  if (github) {
-
-    linksHTML += `
-
-      <a
-        class="chip tool-link"
-        href="${escapeAttr(github)}"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        GitHub ↗
-      </a>
-
-    `;
-
-  }
-
-
-  if (docs) {
-
-    // GitHub ve docs aynıysa iki kere göstermeyelim
-
-    if (docs !== github) {
-
-      linksHTML += `
-
-        <a
-          class="chip tool-link"
-          href="${escapeAttr(docs)}"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Docs ↗
-        </a>
-
-      `;
+        return;
 
     }
 
-  }
+
+    grid.innerHTML =
+        tools
+            .map(
+                (tool, index) =>
+                    createToolCard(
+                        tool,
+                        index
+                    )
+            )
+            .join('');
 
 
-  // ----------------------------------------------------------
-  // CARD
-  // ----------------------------------------------------------
-
-  return `
-
-    <article class="card tool-card">
-
-      <div class="tool-top">
-
-        <div class="card-icon">
-          ⚒
-        </div>
-
-        ${
-          isEssential
-            ? `
-              <span class="tool-essential">
-                ★ ESSENTIAL
-              </span>
-            `
-            : ''
-        }
-
-      </div>
-
-
-      <div class="tool-header">
-
-        <div>
-
-          <h3>
-            ${escapeHtml(name)}
-          </h3>
-
-          <span class="tool-category">
-            ${escapeHtml(category)}
-          </span>
-
-        </div>
-
-      </div>
-
-
-      <p class="tool-description">
-        ${escapeHtml(description)}
-      </p>
-
-
-      ${
-        tagsHTML ||
-        levelHTML ||
-        osHTML
-          ? `
-
-            <div class="tags">
-
-              ${levelHTML}
-
-              ${osHTML}
-
-              ${tagsHTML}
-
-            </div>
-
-          `
-          : ''
-      }
-
-
-      ${commandHTML}
-
-
-      ${
-        linksHTML
-          ? `
-
-            <div
-              class="tags"
-              style="margin-top:14px;"
-            >
-
-              ${linksHTML}
-
-            </div>
-
-          `
-          : ''
-      }
-
-    </article>
-
-  `;
+    renderStats();
 
 }
 
 
-// ============================================================
-// HTML ESCAPE
-// ============================================================
+/* ============================================================
+   TOOL CARD
+   ============================================================ */
+
+function createToolCard(
+    tool,
+    index
+) {
+
+    const platformHTML =
+        tool.platform
+            .map(
+                platform =>
+                    `<span class="chip">
+                        ${escapeHtml(platform)}
+                    </span>`
+            )
+            .join('');
+
+
+    const tagsHTML =
+        tool.tags
+            .slice(0, 4)
+            .map(
+                tag =>
+                    `<span class="chip">
+                        ${escapeHtml(tag)}
+                    </span>`
+            )
+            .join('');
+
+
+    let linksHTML = '';
+
+
+    if (tool.link) {
+
+        linksHTML += `
+
+            <a
+                class="chip"
+                href="${escapeAttr(tool.link)}"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Docs ↗
+            </a>
+
+        `;
+
+    }
+
+
+    if (
+        tool.github &&
+        tool.github !== tool.link
+    ) {
+
+        linksHTML += `
+
+            <a
+                class="chip"
+                href="${escapeAttr(tool.github)}"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                GitHub ↗
+            </a>
+
+        `;
+
+    }
+
+
+    return `
+
+        <article
+            class="card tool-card"
+            style="
+                animation-delay:${index * 20}ms;
+            "
+        >
+
+            <div class="card-icon">
+                ⚒
+            </div>
+
+
+            <h3>
+                ${escapeHtml(tool.name)}
+            </h3>
+
+
+            <p>
+                ${escapeHtml(tool.description)}
+            </p>
+
+
+            <div
+                class="tags"
+                style="margin-top:14px;"
+            >
+
+                <span class="chip">
+                    ${escapeHtml(
+                        tool.category
+                    )}
+                </span>
+
+                ${platformHTML}
+
+                ${tagsHTML}
+
+            </div>
+
+
+            ${
+                linksHTML
+                    ? `
+                    <div
+                        class="tags"
+                        style="margin-top:12px;"
+                    >
+                        ${linksHTML}
+                    </div>
+                    `
+                    : ''
+            }
+
+        </article>
+
+    `;
+
+}
+
+
+/* ============================================================
+   STATISTICS
+   ============================================================ */
+
+function renderStats() {
+
+    const stats =
+        document.getElementById(
+            'tools-stats'
+        );
+
+
+    if (!stats) return;
+
+
+    const visible =
+        getFilteredTools();
+
+
+    const categories =
+        new Set(
+            ALL_TOOLS.map(
+                tool => tool.category
+            )
+        );
+
+
+    const offensiveCategories = [
+
+        'recon',
+
+        'web',
+
+        'exploitation',
+
+        'active-directory',
+
+        'password',
+
+        'red-team',
+
+        'network',
+
+        'privilege-escalation'
+
+    ];
+
+
+    const offensive =
+        ALL_TOOLS.filter(
+            tool =>
+                offensiveCategories.includes(
+                    tool.category
+                )
+        ).length;
+
+
+    stats.innerHTML = `
+
+        <div class="card">
+
+            <div class="card-icon">
+                ⚒
+            </div>
+
+            <strong
+                style="
+                    display:block;
+                    font-size:26px;
+                "
+            >
+                ${ALL_TOOLS.length}
+            </strong>
+
+            <span>
+                TOPLAM ARAÇ
+            </span>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-icon">
+                ◈
+            </div>
+
+            <strong
+                style="
+                    display:block;
+                    font-size:26px;
+                "
+            >
+                ${categories.size}
+            </strong>
+
+            <span>
+                KATEGORİ
+            </span>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-icon">
+                ⚡
+            </div>
+
+            <strong
+                style="
+                    display:block;
+                    font-size:26px;
+                "
+            >
+                ${offensive}
+            </strong>
+
+            <span>
+                OFFENSIVE / PENTEST
+            </span>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-icon">
+                ▣
+            </div>
+
+            <strong
+                style="
+                    display:block;
+                    font-size:26px;
+                "
+            >
+                ${visible.length}
+            </strong>
+
+            <span>
+                GÖRÜNTÜLENİYOR
+            </span>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ============================================================
+   SECURITY HELPERS
+   ============================================================ */
 
 function escapeHtml(value = '') {
 
-  return String(value).replace(
+    return String(value)
+        .replace(
+            /[&<>"']/g,
+            character => ({
 
-    /[&<>"']/g,
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
 
-    char => ({
-
-      '&': '&amp;',
-
-      '<': '&lt;',
-
-      '>': '&gt;',
-
-      '"': '&quot;',
-
-      "'": '&#39;'
-
-    }[char])
-
-  );
+            })[character]
+        );
 
 }
 
 
 function escapeAttr(value = '') {
 
-  return escapeHtml(value);
+    return escapeHtml(value);
 
 }
+
+
+/* ============================================================
+   DEBUG
+   ============================================================ */
+
+window.SiberTools = {
+
+    getAll: () =>
+        ALL_TOOLS,
+
+    getFiltered:
+        () =>
+            getFilteredTools(),
+
+    reload:
+        () =>
+            loadTools()
+
+};
+
+
+console.log(
+    '[SiberTools] tools.js loaded.'
+);
