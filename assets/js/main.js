@@ -1,44 +1,55 @@
-```javascript
 // ============================================================
-// SiberPortal — Shared Behaviors
+// SiberPortal — Shared Behaviors + Interactive Terminal
 // ============================================================
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  // ----------------------------------------------------------
-  // MOBILE NAV
-  // ----------------------------------------------------------
+  initNavigation();
 
-  const navToggle = document.querySelector(".navtoggle");
-  const nav = document.querySelector(".nav");
-
-  if (navToggle && nav) {
-
-    navToggle.addEventListener("click", () => {
-      nav.classList.toggle("open");
-    });
-
-  }
-
-
-  // ----------------------------------------------------------
-  // FOOTER YEAR
-  // ----------------------------------------------------------
-
-  document
-    .querySelectorAll(".footer-year")
-    .forEach(el => {
-      el.textContent = new Date().getFullYear();
-    });
-
-
-  // ----------------------------------------------------------
-  // TERMINAL
-  // ----------------------------------------------------------
+  initFooterYear();
 
   initTerminal();
 
 });
+
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+
+function initNavigation() {
+
+  const navToggle = document.querySelector(".navtoggle");
+  const nav = document.querySelector(".nav");
+
+  if (!navToggle || !nav) {
+    return;
+  }
+
+  navToggle.addEventListener("click", () => {
+
+    nav.classList.toggle("open");
+
+  });
+
+}
+
+
+// ============================================================
+// FOOTER YEAR
+// ============================================================
+
+function initFooterYear() {
+
+  document
+    .querySelectorAll(".footer-year")
+    .forEach(element => {
+
+      element.textContent = new Date().getFullYear();
+
+    });
+
+}
 
 
 // ============================================================
@@ -47,181 +58,272 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function initTerminal() {
 
-  const term = document.querySelector("[data-terminal]");
+  const terminal = document.querySelector("[data-terminal]");
 
-  if (!term) return;
-
-
-  const body = term.querySelector(".term-body");
-  const input = term.querySelector(".term-input");
+  if (!terminal) {
+    return;
+  }
 
 
-  if (!body || !input) return;
+  const body = terminal.querySelector(".term-body");
+
+  const input = terminal.querySelector(".term-input");
+
+
+  if (!body || !input) {
+    return;
+  }
 
 
   // ----------------------------------------------------------
   // COMMANDS
   // ----------------------------------------------------------
 
-  const CMDS = {
+  const commands = {
 
-    help: () =>
-      `Kullanılabilir komutlar:
-help, whoami, skills, certs, projeler, iletisim, temizle`,
+    help: () => {
 
-    whoami: () =>
-      `burakcanbalta — Siber Güvenlik Araştırmacısı & Pentester
-Odak: Web App Sec, API Security, Red Team, Active Directory`,
+      return [
+        "Kullanılabilir komutlar:",
+        "",
+        "help      → komutları göster",
+        "whoami    → kullanıcı bilgisi",
+        "skills    → teknik yetenekler",
+        "certs     → sertifikalar",
+        "projeler  → projeler / writeup'lar",
+        "iletisim  → iletişim bilgileri",
+        "temizle   → terminali temizle"
+      ].join("\n");
 
-    skills: () =>
-      `Web / API Security — 85%
-Active Directory Pentest — 75%
-Network / Recon — 80%
-Linux / Bash Scripting — 80%
-Python — 70%
-Exploitation — 75%`,
+    },
 
-    certs: () =>
-      `→ Sertifikalar için "hakkimda.html#sertifikalar" adresine git.`,
 
-    projeler: () =>
-      `→ Makaleler ve writeup'lar için "makaleler.html" sayfasına git.`,
+    whoami: () => {
 
-    iletisim: () =>
-      `mail: burakcanbalta@proton.me
-github: github.com/burakcanbalta
-linkedin: linkedin.com/in/burak-balta-976a64261/
-youtube: youtube.com/@SiberPortal`,
+      return [
+        "burakcanbalta",
+        "",
+        "Siber Güvenlik Araştırmacısı & Pentester",
+        "",
+        "Odak:",
+        "Web Application Security",
+        "API Security",
+        "Active Directory",
+        "Red Team",
+        "Vulnerability Research"
+      ].join("\n");
 
-    temizle: () =>
-      "__CLEAR__"
+    },
+
+
+    skills: () => {
+
+      return [
+        "WEB / API SECURITY        85%",
+        "ACTIVE DIRECTORY PENTEST  75%",
+        "NETWORK / RECON           80%",
+        "LINUX / BASH SCRIPTING    80%",
+        "PYTHON                    70%",
+        "EXPLOITATION              75%"
+      ].join("\n");
+
+    },
+
+
+    certs: () => {
+
+      return [
+        "Sertifikalar:",
+        "",
+        "→ TryHackMe — Offensive Pentesting",
+        "→ CyberExam — Junior SOC Analyst",
+        "→ CyberWarFare Labs — Web-RTA",
+        "→ CyberWarFare Labs — API-RTA",
+        "→ TryHackMe — Jr Penetration Tester",
+        "→ TryHackMe — Red Teaming",
+        "",
+        "Detaylar için aşağıdaki CERTIFICATIONS bölümüne bak."
+      ].join("\n");
+
+    },
+
+
+    projeler: () => {
+
+      return [
+        "Projeler / çalışmalar:",
+        "",
+        "→ SiberPortal",
+        "→ CTF / HTB Writeup'ları",
+        "→ Web Security Research",
+        "→ API Security Research",
+        "→ Red Team Labs",
+        "→ Security Tools"
+      ].join("\n");
+
+    },
+
+
+    iletisim: () => {
+
+      return [
+        "İletişim:",
+        "",
+        "GitHub   : github.com/burakcanbalta",
+        "LinkedIn : linkedin.com/in/burak-balta-976a64261",
+        "YouTube  : youtube.com/@SiberPortal",
+        "Email    : burakcanbalta@proton.me"
+      ].join("\n");
+
+    },
+
+
+    temizle: () => {
+
+      return "__CLEAR__";
+
+    }
 
   };
 
 
-  // ----------------------------------------------------------
-  // HTML ESCAPE
-  // ----------------------------------------------------------
+  // ==========================================================
+  // ESCAPE
+  // ==========================================================
 
   function escapeHtml(value) {
 
     return String(value).replace(
       /[&<>"']/g,
-      char => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-      })[char]
+      character => {
+
+        const map = {
+
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;"
+
+        };
+
+        return map[character];
+
+      }
     );
 
   }
 
 
-  // ----------------------------------------------------------
+  // ==========================================================
   // PRINT LINE
-  // ----------------------------------------------------------
+  // ==========================================================
 
   function printLine(text, html = false) {
 
-    const p = document.createElement("p");
+    const line = document.createElement("p");
 
-    p.className = "term-line";
+    line.className = "term-line";
 
 
     if (html) {
-      p.innerHTML = text;
+
+      line.innerHTML = text;
+
     } else {
-      p.textContent = text;
+
+      line.textContent = text;
+
     }
 
 
-    const inputRow =
-      body.querySelector(".term-input-row");
+    const inputRow = body.querySelector(".term-input-row");
 
 
     if (inputRow) {
-      body.insertBefore(p, inputRow);
+
+      body.insertBefore(line, inputRow);
+
     } else {
-      body.appendChild(p);
+
+      body.appendChild(line);
+
     }
 
   }
 
 
-  // ----------------------------------------------------------
+  // ==========================================================
   // RUN COMMAND
-  // ----------------------------------------------------------
+  // ==========================================================
 
-  function runCommand(raw) {
+  function runCommand(rawCommand) {
+
+    const raw = String(rawCommand || "");
 
     const command = raw.trim().toLowerCase();
 
 
-    // Kullanıcının girdiği komutu terminale yaz
+    // Print entered command
 
     printLine(
-      `<span class="p">burak@sibersec:~$</span> ` +
-      `<span class="out">${escapeHtml(raw)}</span>`,
+      `<span class="p">burak@sibersec:~$</span> <span class="out">${escapeHtml(raw)}</span>`,
       true
     );
 
 
-    if (!command) return;
-
-
-    // Komut mevcut mu?
-
-    if (CMDS[command]) {
-
-      const output = CMDS[command]();
-
-
-      // CLEAR
-
-      if (output === "__CLEAR__") {
-
-        body
-          .querySelectorAll(".term-line")
-          .forEach(line => line.remove());
-
-        return;
-      }
-
-
-      // Çıktıyı yaz
-
-      printLine(
-        escapeHtml(output)
-          .replace(/\n/g, "<br>"),
-        true
-      );
-
+    if (!command) {
 
       return;
+
     }
 
 
-    // Bilinmeyen komut
+    if (!commands[command]) {
+
+      printLine(
+        `komut bulunamadı: ${escapeHtml(command)} — "help" yaz.`,
+        true
+      );
+
+      return;
+
+    }
+
+
+    const output = commands[command]();
+
+
+    if (output === "__CLEAR__") {
+
+      body
+        .querySelectorAll(".term-line:not(.term-input-row)")
+        .forEach(line => line.remove());
+
+      return;
+
+    }
+
 
     printLine(
-      `komut bulunamadı: ` +
-      `<span class="out">${escapeHtml(command)}</span>` +
-      ` — "help" yaz.`,
+      escapeHtml(output).replace(/\n/g, "<br>"),
       true
     );
 
   }
 
 
-  // ----------------------------------------------------------
+  // ==========================================================
   // ENTER
-  // ----------------------------------------------------------
+  // ==========================================================
 
   input.addEventListener("keydown", event => {
 
-    if (event.key !== "Enter") return;
+    if (event.key !== "Enter") {
+
+      return;
+
+    }
 
 
     event.preventDefault();
@@ -238,22 +340,23 @@ youtube: youtube.com/@SiberPortal`,
   });
 
 
-  // ----------------------------------------------------------
-  // CLICK TERMINAL → FOCUS
-  // ----------------------------------------------------------
+  // ==========================================================
+  // TERMINAL CLICK = FOCUS
+  // ==========================================================
 
-  term.addEventListener("click", () => {
+  terminal.addEventListener("click", () => {
 
     input.focus();
 
   });
 
 
-  // ----------------------------------------------------------
-  // INITIAL FOCUS
-  // ----------------------------------------------------------
+  // Initial focus
 
-  input.focus();
+  setTimeout(() => {
+
+    input.focus();
+
+  }, 100);
 
 }
-```
