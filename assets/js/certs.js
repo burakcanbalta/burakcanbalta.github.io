@@ -1,4 +1,3 @@
-```javascript
 // ============================================================
 // SiberPortal — Certifications
 // content/data/certs.json
@@ -16,31 +15,29 @@ document.addEventListener(
 
 async function loadCertificates() {
 
-  // ÖNEMLİ:
-  // hakkimda.html içindeki ID bununla aynı olmalı.
-
   const container =
     document.getElementById("certs-grid");
 
 
   if (!container) {
+
     console.warn(
-      "Certificate container #certs-grid bulunamadı."
+      "Certificate container #certs-grid not found."
     );
 
     return;
+
   }
 
 
   try {
 
-    const response =
-      await fetch(
-        "content/data/certs.json",
-        {
-          cache: "no-store"
-        }
-      );
+    const response = await fetch(
+      "content/data/certs.json",
+      {
+        cache: "no-store"
+      }
+    );
 
 
     if (!response.ok) {
@@ -68,6 +65,7 @@ async function loadCertificates() {
       `;
 
       return;
+
     }
 
 
@@ -107,156 +105,159 @@ function renderCertificates(
 
   container.innerHTML =
     certificates
-      .map(
-        (cert, index) => {
+      .map((cert, index) => {
 
-          const name =
-            escapeHtml(
-              cert.name ||
-              "Sertifika"
-            );
+        const name =
+          escapeHtml(
+            cert.name || "Sertifika"
+          );
 
 
-          const issuer =
-            escapeHtml(
-              cert.issuer ||
-              ""
-            );
+        const issuer =
+          escapeHtml(
+            cert.issuer || ""
+          );
 
 
-          const date =
-            escapeHtml(
-              cert.date ||
-              ""
-            );
+        const date =
+          escapeHtml(
+            cert.date || ""
+          );
 
 
-          const status =
-            escapeHtml(
-              cert.status ||
-              ""
-            );
+        const status =
+          escapeHtml(
+            cert.status || ""
+          );
 
 
-          const image =
-            normalizePath(
-              cert.image
-            );
+        const image =
+          normalizePath(
+            cert.image
+          );
 
 
-          const link =
-            normalizePath(
-              cert.link ||
-              cert.image
-            );
+        const link =
+          normalizePath(
+            cert.link || cert.image
+          );
 
 
-          return `
+        return `
 
-            <article class="cert-card">
+          <article class="cert-card">
 
-              <!-- IMAGE -->
 
-              <div
-                class="cert-image-wrap"
-              >
+            <!-- IMAGE -->
 
-                ${
-                  image
-                    ? `
+            <div class="cert-image-wrap">
 
-                      <a
-                        href="${escapeAttr(link)}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title="${name} — sertifikayı aç"
+
+              ${
+                image
+                  ? `
+
+                    <a
+                      href="${escapeAttr(link)}"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title="${name} — sertifikayı aç"
+                    >
+
+                      <img
+                        class="cert-thumb"
+                        src="${escapeAttr(image)}"
+                        alt="${name}"
+                        loading="${index < 4 ? "eager" : "lazy"}"
+                        decoding="async"
+                        onerror="certificateImageError(this)"
                       >
 
-                        <img
-                          class="cert-thumb"
-                          src="${escapeAttr(image)}"
-                          alt="${name}"
-                          loading="${
-                            index < 4
-                              ? "eager"
-                              : "lazy"
-                          }"
-                          decoding="async"
-                          onerror="certificateImageError(this)"
-                        >
+                      <div class="cert-image-overlay">
 
-                        <div
-                          class="cert-image-fallback"
-                        >
-
-                          <span>◇</span>
-
-                          <small>
-                            CERTIFICATE IMAGE
-                          </small>
-
-                        </div>
-
-                      </a>
-
-                    `
-                    : `
-
-                      <div
-                        class="cert-thumb-placeholder"
-                      >
-
-                        <span>◇</span>
-
-                        <small>
-                          IMAGE NOT AVAILABLE
-                        </small>
+                        <span>
+                          ↗ SERTİFİKAYI AÇ
+                        </span>
 
                       </div>
 
-                    `
-                }
+                    </a>
 
-              </div>
+                  `
+                  : `
 
+                    <div class="cert-thumb-placeholder">
 
-              <!-- CONTENT -->
-
-              <div class="cert-info">
-
-                ${
-                  status
-                    ? `
-
-                      <span
-                        class="cert-status"
-                      >
-                        ● ${status.toUpperCase()}
+                      <span>
+                        ◇
                       </span>
 
-                    `
-                    : ""
-                }
+                      <small>
+                        IMAGE NOT AVAILABLE
+                      </small>
+
+                    </div>
+
+                  `
+              }
 
 
-                <div class="cert-name">
-                  ${name}
-                </div>
+              <div class="cert-image-fallback">
 
+                <span>
+                  ◇
+                </span>
 
-                <div class="cert-issuer">
-                  ${issuer}
-                </div>
-
-
-                <div class="cert-date">
-                  ${date}
-                </div>
+                <small>
+                  SERTİFİKA GÖRSELİ YÜKLENEMEDİ
+                </small>
 
               </div>
 
 
-              <!-- OPEN -->
+            </div>
+
+
+            <!-- INFO -->
+
+            <div class="cert-info">
+
+
+              ${
+                status
+                  ? `
+
+                    <span class="cert-status">
+
+                      ● ${status.toUpperCase()}
+
+                    </span>
+
+                  `
+                  : ""
+              }
+
+
+              <span class="cert-name">
+
+                ${name}
+
+              </span>
+
+
+              <span class="cert-issuer">
+
+                ${issuer}
+
+              </span>
+
+
+              <span class="cert-date">
+
+                ${date}
+
+              </span>
+
 
               ${
                 link
@@ -268,19 +269,23 @@ function renderCertificates(
                       target="_blank"
                       rel="noopener noreferrer"
                     >
+
                       ↗ SERTİFİKAYI AÇ
+
                     </a>
 
                   `
                   : ""
               }
 
-            </article>
 
-          `;
+            </div>
 
-        }
-      )
+          </article>
+
+        `;
+
+      })
       .join("");
 
 }
@@ -298,7 +303,11 @@ function certificateImageError(image) {
     );
 
 
-  if (!wrapper) return;
+  if (!wrapper) {
+
+    return;
+
+  }
 
 
   wrapper.classList.add(
@@ -314,18 +323,12 @@ function certificateImageError(image) {
 
 function normalizePath(path = "") {
 
-  if (!path) return "";
+  if (!path) {
 
+    return "";
 
-  /*
-   * JSON:
-   *
-   * /public/certificates/file.png
-   *
-   * Browser:
-   *
-   * public/certificates/file.png
-   */
+  }
+
 
   return String(path)
     .replace(/^\/+/, "");
@@ -341,14 +344,15 @@ function escapeHtml(value = "") {
 
   return String(value).replace(
     /[&<>"']/g,
-    char =>
-      ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
-      })[char]
+    character => ({
+
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+
+    })[character]
   );
 
 }
@@ -359,4 +363,3 @@ function escapeAttr(value = "") {
   return escapeHtml(value);
 
 }
-```
