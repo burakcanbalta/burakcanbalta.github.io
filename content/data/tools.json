@@ -1,11 +1,429 @@
 [
-  { "name": "Nmap", "category": "recon", "description": "Ağ keşfi ve port taraması için standart araç. Servis/versiyon tespiti ve script motoru (NSE) ile enumeration'ı hızlandırır.", "link": "https://nmap.org/" },
-  { "name": "Burp Suite", "category": "web", "description": "Web uygulama pentestinde proxy, repeater, intruder ve scanner modülleriyle vazgeçilmez araç seti.", "link": "https://portswigger.net/burp" },
-  { "name": "BloodHound", "category": "active-directory", "description": "Active Directory içindeki yetki ilişkilerini grafik olarak görselleştirip saldırı yollarını (attack path) ortaya çıkarır.", "link": "https://github.com/BloodHoundAD/BloodHound" },
-  { "name": "Impacket", "category": "active-directory", "description": "Python tabanlı, SMB/Kerberos/DCOM gibi Windows protokolleriyle çalışmak için kullanılan araç koleksiyonu (secretsdump, GetUserSPNs, vb.).", "link": "https://github.com/fortra/impacket" },
-  { "name": "Metasploit Framework", "category": "exploitation", "description": "Exploit geliştirme ve doğrulama için modüler pentest framework'ü.", "link": "https://www.metasploit.com/" },
-  { "name": "Wireshark", "category": "forensics", "description": "Paket yakalama ve derinlemesine trafik analizi için endüstri standardı araç.", "link": "https://www.wireshark.org/" },
-  { "name": "ffuf", "category": "web", "description": "Hızlı, Go tabanlı dizin/parametre/subdomain fuzzing aracı.", "link": "https://github.com/ffuf/ffuf" },
-  { "name": "Hashcat", "category": "exploitation", "description": "GPU hızlandırmalı parola/hash kırma aracı; Kerberoasting ve AS-REP roasting sonrası kritik.", "link": "https://hashcat.net/hashcat/" },
-  { "name": "CyberChef", "category": "forensics", "description": "Encode/decode, şifreleme ve veri dönüştürme işlemleri için tarayıcı tabanlı 'İsviçre çakısı'.", "link": "https://gchq.github.io/CyberChef/" }
+  {
+    "name": "Nmap",
+    "category": "recon",
+    "description": "Ağ keşfi, port taraması, servis/versiyon tespiti ve NSE scriptleriyle kapsamlı enumeration için temel araç.",
+    "link": "https://nmap.org/"
+  },
+  {
+    "name": "RustScan",
+    "category": "recon",
+    "description": "Çok hızlı port keşfi yaparak bulunan portları Nmap'e aktarır. Büyük hedeflerde hızlı ilk enumeration için kullanışlıdır.",
+    "link": "https://github.com/RustScan/RustScan"
+  },
+  {
+    "name": "Naabu",
+    "category": "recon",
+    "description": "Hızlı ve güvenilir port tarama aracı. Subdomain enumeration ve web reconnaissance pipeline'larında sık kullanılır.",
+    "link": "https://github.com/projectdiscovery/naabu"
+  },
+  {
+    "name": "Masscan",
+    "category": "recon",
+    "description": "İnternet ölçeğinde son derece hızlı TCP port taraması için tasarlanmış reconnaissance aracı.",
+    "link": "https://github.com/robertdavidgraham/masscan"
+  },
+  {
+    "name": "Amass",
+    "category": "recon",
+    "description": "Subdomain keşfi, DNS enumeration ve attack surface mapping için güçlü OSINT ve reconnaissance framework'ü.",
+    "link": "https://github.com/owasp-amass/amass"
+  },
+  {
+    "name": "Subfinder",
+    "category": "recon",
+    "description": "Pasif subdomain enumeration yaparak hedefin dışa açık saldırı yüzeyini hızlı şekilde keşfetmeye yardımcı olur.",
+    "link": "https://github.com/projectdiscovery/subfinder"
+  },
+  {
+    "name": "httpx",
+    "category": "recon",
+    "description": "HTTP servislerini hızlı şekilde probe eder; status code, title, teknoloji ve web sunucusu bilgilerini toplar.",
+    "link": "https://github.com/projectdiscovery/httpx"
+  },
+  {
+    "name": "dnsx",
+    "category": "recon",
+    "description": "DNS kayıtlarını çözümlemek, wildcard tespiti yapmak ve domain reconnaissance süreçlerini otomatikleştirmek için kullanılır.",
+    "link": "https://github.com/projectdiscovery/dnsx"
+  },
+  {
+    "name": "Naabu + httpx",
+    "category": "recon",
+    "description": "Port keşfi ile HTTP servis keşfini birleştiren hızlı reconnaissance workflow'u.",
+    "link": "https://github.com/projectdiscovery"
+  },
+
+  {
+    "name": "Burp Suite",
+    "category": "web",
+    "description": "HTTP proxy, Repeater, Intruder, Scanner ve Proxy history özellikleriyle web uygulama güvenlik testlerinde temel araç seti.",
+    "link": "https://portswigger.net/burp"
+  },
+  {
+    "name": "ffuf",
+    "category": "web",
+    "description": "Dizin, dosya, endpoint, parametre ve virtual host fuzzing işlemleri için hızlı Go tabanlı fuzzing aracı.",
+    "link": "https://github.com/ffuf/ffuf"
+  },
+  {
+    "name": "Feroxbuster",
+    "category": "web",
+    "description": "Web sunucularında içerik ve endpoint discovery için kullanılan hızlı Rust tabanlı enumeration aracı.",
+    "link": "https://github.com/epi052/feroxbuster"
+  },
+  {
+    "name": "Gobuster",
+    "category": "web",
+    "description": "Directory, DNS ve virtual host enumeration işlemleri için kullanılan Go tabanlı brute-force keşif aracı.",
+    "link": "https://github.com/OJ/gobuster"
+  },
+  {
+    "name": "Dirsearch",
+    "category": "web",
+    "description": "Web sunucularındaki gizli dizin ve dosyaları keşfetmek için kullanılan Python tabanlı content discovery aracı.",
+    "link": "https://github.com/maurosoria/dirsearch"
+  },
+  {
+    "name": "Nikto",
+    "category": "web",
+    "description": "Web sunucularında bilinen yanlış yapılandırmaları, eski bileşenleri ve potansiyel güvenlik sorunlarını tespit eder.",
+    "link": "https://github.com/sullo/nikto"
+  },
+  {
+    "name": "SQLmap",
+    "category": "web",
+    "description": "SQL injection tespiti ve kontrollü doğrulaması için kullanılan otomatik SQL injection testing framework'ü.",
+    "link": "https://sqlmap.org/"
+  },
+  {
+    "name": "Wfuzz",
+    "category": "web",
+    "description": "HTTP parametreleri, endpointler ve çeşitli request alanlarında fuzzing yapmak için kullanılan web security aracı.",
+    "link": "https://github.com/xmendez/wfuzz"
+  },
+  {
+    "name": "WhatWeb",
+    "category": "web",
+    "description": "Web teknolojileri, framework'ler, CMS'ler, server bilgileri ve çeşitli fingerprint'leri tespit eder.",
+    "link": "https://github.com/urbanadventurer/WhatWeb"
+  },
+  {
+    "name": "WPScan",
+    "category": "web",
+    "description": "WordPress kurulumlarında kullanıcı, plugin, theme ve bilinen güvenlik açıklarını keşfetmek için kullanılan scanner.",
+    "link": "https://wpscan.com/"
+  },
+  {
+    "name": "Nuclei",
+    "category": "web",
+    "description": "Template tabanlı hızlı vulnerability scanner. Bilinen güvenlik açıkları, misconfiguration ve exposure kontrollerini otomatikleştirir.",
+    "link": "https://github.com/projectdiscovery/nuclei"
+  },
+  {
+    "name": "Katana",
+    "category": "web",
+    "description": "Modern web crawler. Endpoint, URL ve saldırı yüzeyi keşfi için reconnaissance pipeline'larına entegre edilebilir.",
+    "link": "https://github.com/projectdiscovery/katana"
+  },
+  {
+    "name": "Arjun",
+    "category": "web",
+    "description": "Web uygulamalarında gizli HTTP parametrelerini keşfetmek için kullanılan parameter discovery aracı.",
+    "link": "https://github.com/s0md3v/Arjun"
+  },
+
+  {
+    "name": "BloodHound",
+    "category": "active-directory",
+    "description": "Active Directory içindeki kullanıcı, grup, bilgisayar ve ACL ilişkilerini analiz ederek attack path'leri görselleştirir.",
+    "link": "https://github.com/SpecterOps/BloodHound"
+  },
+  {
+    "name": "Impacket",
+    "category": "active-directory",
+    "description": "SMB, Kerberos, LDAP, RPC ve DCOM gibi Windows protokolleriyle çalışmak için kullanılan güçlü Python araç koleksiyonu.",
+    "link": "https://github.com/fortra/impacket"
+  },
+  {
+    "name": "NetExec",
+    "category": "active-directory",
+    "description": "SMB, WinRM, LDAP ve diğer Windows servislerinde enumeration ve credential validation işlemleri için kullanılan ağ aracı.",
+    "link": "https://github.com/Pennyw0rth/NetExec"
+  },
+  {
+    "name": "Evil-WinRM",
+    "category": "active-directory",
+    "description": "WinRM üzerinden yetkili Windows sistemlerine uzaktan erişim ve post-exploitation işlemleri için kullanılan Ruby tabanlı araç.",
+    "link": "https://github.com/Hackplayers/evil-winrm"
+  },
+  {
+    "name": "BloodHound CE",
+    "category": "active-directory",
+    "description": "Modern BloodHound Community Edition ile Active Directory attack path analizi ve privilege relationship mapping.",
+    "link": "https://github.com/SpecterOps/BloodHound"
+  },
+  {
+    "name": "Rubeus",
+    "category": "active-directory",
+    "description": "Windows Kerberos etkileşimleri, ticket işlemleri ve Kerberos güvenlik araştırmaları için kullanılan C# aracı.",
+    "link": "https://github.com/GhostPack/Rubeus"
+  },
+  {
+    "name": "Certipy",
+    "category": "active-directory",
+    "description": "Active Directory Certificate Services (AD CS) enumeration ve güvenlik araştırmaları için kullanılan Python aracı.",
+    "link": "https://github.com/ly4k/Certipy"
+  },
+  {
+    "name": "ldapsearch",
+    "category": "active-directory",
+    "description": "LDAP dizinlerinden kullanıcı, grup, bilgisayar ve domain bilgilerini sorgulamak için kullanılan standart araç.",
+    "link": "https://www.openldap.org/software/man.cgi?query=ldapsearch"
+  },
+  {
+    "name": "enum4linux-ng",
+    "category": "active-directory",
+    "description": "SMB ve Windows ağlarında kullanıcı, grup, share, domain ve diğer bilgileri enumeration etmek için modern araç.",
+    "link": "https://github.com/cddmp/enum4linux-ng"
+  },
+
+  {
+    "name": "Metasploit Framework",
+    "category": "exploitation",
+    "description": "Exploit geliştirme, vulnerability validation, payload üretimi ve post-exploitation işlemleri için modüler penetration testing framework'ü.",
+    "link": "https://www.metasploit.com/"
+  },
+  {
+    "name": "SearchSploit",
+    "category": "exploitation",
+    "description": "Exploit-DB arşivinde bulunan exploitleri komut satırından aramak ve ilgili exploit kaynaklarını incelemek için kullanılır.",
+    "link": "https://www.exploit-db.com/searchsploit"
+  },
+  {
+    "name": "Exploit-DB",
+    "category": "exploitation",
+    "description": "Bilinen güvenlik açıklarına ait exploit, PoC ve ilgili teknik araştırmaları barındıran güvenlik araştırma veritabanı.",
+    "link": "https://www.exploit-db.com/"
+  },
+  {
+    "name": "pwntools",
+    "category": "exploitation",
+    "description": "CTF, binary exploitation ve exploit geliştirme süreçlerini kolaylaştıran Python tabanlı framework.",
+    "link": "https://github.com/Gallopsled/pwntools"
+  },
+  {
+    "name": "GDB",
+    "category": "exploitation",
+    "description": "Binary debugging, memory inspection, register analizi ve exploit geliştirme süreçlerinde kullanılan debugger.",
+    "link": "https://www.gnu.org/software/gdb/"
+  },
+  {
+    "name": "GEF",
+    "category": "exploitation",
+    "description": "GDB üzerine kurulmuş, binary exploitation ve reverse engineering çalışmalarını kolaylaştıran debugger extension.",
+    "link": "https://github.com/hugsy/gef"
+  },
+
+  {
+    "name": "Hashcat",
+    "category": "passwords",
+    "description": "GPU hızlandırmalı password recovery ve hash cracking aracı. Çok sayıda hash formatını destekler.",
+    "link": "https://hashcat.net/hashcat/"
+  },
+  {
+    "name": "John the Ripper",
+    "category": "passwords",
+    "description": "Password auditing ve hash cracking için kullanılan klasik ve güçlü parola güvenlik test aracıdır.",
+    "link": "https://www.openwall.com/john/"
+  },
+  {
+    "name": "Hydra",
+    "category": "passwords",
+    "description": "Yetkili güvenlik testlerinde çeşitli network servislerinin credential dayanıklılığını değerlendirmek için kullanılan login testing aracı.",
+    "link": "https://github.com/vanhauser-thc/thc-hydra"
+  },
+  {
+    "name": "CeWL",
+    "category": "passwords",
+    "description": "Hedef kurumun web içeriğinden özel kelime listeleri oluşturmak için kullanılan reconnaissance aracı.",
+    "link": "https://github.com/digininja/CeWL"
+  },
+
+  {
+    "name": "Wireshark",
+    "category": "network",
+    "description": "Paket yakalama, protokol analizi ve ağ trafiğinin derinlemesine incelenmesi için endüstri standardı network analyzer.",
+    "link": "https://www.wireshark.org/"
+  },
+  {
+    "name": "tcpdump",
+    "category": "network",
+    "description": "Komut satırından network paketlerini yakalamak ve analiz etmek için kullanılan hafif ve güçlü packet analyzer.",
+    "link": "https://www.tcpdump.org/"
+  },
+  {
+    "name": "Netcat",
+    "category": "network",
+    "description": "TCP/UDP bağlantıları oluşturmak, network servislerini test etmek ve kontrollü lab ortamlarında veri aktarmak için kullanılan klasik network utility.",
+    "link": "https://nmap.org/ncat/"
+  },
+  {
+    "name": "Socat",
+    "category": "network",
+    "description": "Farklı network socket türleri arasında veri aktarımı ve bağlantı yönlendirme işlemleri için kullanılan gelişmiş network utility.",
+    "link": "http://www.dest-unreach.org/socat/"
+  },
+  {
+    "name": "Proxychains",
+    "category": "network",
+    "description": "Destekleyen uygulamaların TCP bağlantılarını proxy zinciri üzerinden yönlendirmek için kullanılan network proxy utility.",
+    "link": "https://github.com/haad/proxychains"
+  },
+
+  {
+    "name": "Aircrack-ng",
+    "category": "wireless",
+    "description": "Wi-Fi ağlarının güvenliğini değerlendirmek, paket yakalamak ve kablosuz güvenlik araştırmaları yapmak için kullanılan araç paketi.",
+    "link": "https://www.aircrack-ng.org/"
+  },
+  {
+    "name": "Kismet",
+    "category": "wireless",
+    "description": "Wireless network discovery, monitoring ve passive packet analysis için kullanılan kablosuz ağ IDS/sniffer platformu.",
+    "link": "https://www.kismetwireless.net/"
+  },
+
+  {
+    "name": "Trivy",
+    "category": "containers",
+    "description": "Container image, filesystem, repository ve Kubernetes yapılandırmalarında vulnerability ve misconfiguration taraması yapar.",
+    "link": "https://github.com/aquasecurity/trivy"
+  },
+  {
+    "name": "Docker Scout",
+    "category": "containers",
+    "description": "Container image güvenliği, dependency analizi ve bilinen vulnerability'lerin değerlendirilmesi için kullanılan Docker güvenlik aracı.",
+    "link": "https://docs.docker.com/scout/"
+  },
+
+  {
+    "name": "Prowler",
+    "category": "cloud",
+    "description": "AWS, Azure, GCP ve diğer cloud ortamlarında güvenlik posture, compliance ve misconfiguration kontrolleri yapan açık kaynak araç.",
+    "link": "https://github.com/prowler-cloud/prowler"
+  },
+  {
+    "name": "ScoutSuite",
+    "category": "cloud",
+    "description": "Cloud hesaplarının güvenlik durumunu değerlendirmek ve yanlış yapılandırmaları tespit etmek için kullanılan multi-cloud security auditing aracı.",
+    "link": "https://github.com/nccgroup/ScoutSuite"
+  },
+
+  {
+    "name": "LinPEAS",
+    "category": "privesc",
+    "description": "Linux sistemlerde privilege escalation vektörlerini ve yanlış yapılandırmaları otomatik olarak enumerate eder.",
+    "link": "https://github.com/peass-ng/PEASS-ng"
+  },
+  {
+    "name": "WinPEAS",
+    "category": "privesc",
+    "description": "Windows sistemlerde privilege escalation için kullanılabilecek servis, registry, credential ve configuration bilgilerini enumerate eder.",
+    "link": "https://github.com/peass-ng/PEASS-ng"
+  },
+  {
+    "name": "pspy",
+    "category": "privesc",
+    "description": "Linux sistemlerde root yetkisi gerektirmeden çalışan process ve komutları gerçek zamanlı olarak gözlemlemek için kullanılır.",
+    "link": "https://github.com/DominicBreuker/pspy"
+  },
+  {
+    "name": "Linux Exploit Suggester",
+    "category": "privesc",
+    "description": "Linux kernel ve sistem bilgilerini değerlendirerek potansiyel local privilege escalation açıklarını araştırmaya yardımcı olur.",
+    "link": "https://github.com/mzet-/linux-exploit-suggester"
+  },
+
+  {
+    "name": "Mimikatz",
+    "category": "active-directory",
+    "description": "Windows credential material ve authentication mekanizmaları üzerine güvenlik araştırmaları ve yetkili red team testlerinde kullanılan araç.",
+    "link": "https://github.com/gentilkiwi/mimikatz"
+  },
+  {
+    "name": "LaZagne",
+    "category": "post-exploitation",
+    "description": "Yerel sistemlerde uygulamalarda saklanan credential bilgilerini güvenlik değerlendirmeleri kapsamında araştırmak için kullanılan araç.",
+    "link": "https://github.com/AlessandroZ/LaZagne"
+  },
+
+  {
+    "name": "CyberChef",
+    "category": "forensics",
+    "description": "Encoding, decoding, hashing, encryption, compression ve veri dönüştürme işlemleri için tarayıcı tabanlı analiz platformu.",
+    "link": "https://gchq.github.io/CyberChef/"
+  },
+  {
+    "name": "Volatility",
+    "category": "forensics",
+    "description": "Memory dump analizi, process, network, credential ve malware artefact incelemeleri için kullanılan dijital forensics framework'ü.",
+    "link": "https://github.com/volatilityfoundation/volatility3"
+  },
+  {
+    "name": "Autopsy",
+    "category": "forensics",
+    "description": "Disk image ve filesystem incelemeleri için kullanılan açık kaynak dijital forensics platformu.",
+    "link": "https://www.autopsy.com/"
+  },
+  {
+    "name": "ExifTool",
+    "category": "forensics",
+    "description": "Dosya metadata bilgilerini okumak, analiz etmek ve güvenlik araştırmalarında artefact incelemek için kullanılan araç.",
+    "link": "https://exiftool.org/"
+  },
+
+  {
+    "name": "theHarvester",
+    "category": "osint",
+    "description": "Domain, email, hostname ve diğer açık kaynak istihbarat verilerini toplamak için kullanılan OSINT aracı.",
+    "link": "https://github.com/laramies/theHarvester"
+  },
+  {
+    "name": "Sherlock",
+    "category": "osint",
+    "description": "Bir kullanıcı adının farklı sosyal medya ve internet servislerinde bulunup bulunmadığını araştırmak için kullanılan OSINT aracı.",
+    "link": "https://github.com/sherlock-project/sherlock"
+  },
+  {
+    "name": "SpiderFoot",
+    "category": "osint",
+    "description": "Domain, IP, DNS, username, email ve diğer açık kaynak verilerini otomatik olarak ilişkilendiren OSINT automation platformu.",
+    "link": "https://github.com/smicallef/spiderfoot"
+  },
+
+  {
+    "name": "PayloadsAllTheThings",
+    "category": "payloads",
+    "description": "Web, privilege escalation, Active Directory, SSRF, SQL injection ve diğer pentest konuları için kapsamlı payload ve teknik not arşivi.",
+    "link": "https://github.com/swisskyrepo/PayloadsAllTheThings"
+  },
+  {
+    "name": "SecLists",
+    "category": "payloads",
+    "description": "Pentest ve security assessment süreçlerinde kullanılan kapsamlı wordlist, username, password, fuzzing ve payload koleksiyonu.",
+    "link": "https://github.com/danielmiessler/SecLists"
+  },
+  {
+    "name": "GTFOBins",
+    "category": "payloads",
+    "description": "Unix binary'lerinin privilege escalation, file read/write ve diğer güvenlik senaryolarında nasıl kötüye kullanılabileceğini belgeleyen referans.",
+    "link": "https://gtfobins.github.io/"
+  },
+  {
+    "name": "LOLBAS",
+    "category": "payloads",
+    "description": "Windows üzerinde bulunan legitimate binary'lerin security assessment ve adversary simulation kapsamında nasıl abuse edilebildiğini belgeleyen proje.",
+    "link": "https://lolbas-project.github.io/"
+  }
 ]
