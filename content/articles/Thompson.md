@@ -1,5 +1,3 @@
-# Thompson - TryHackMe Writeup
-
 ## Recon
 
 Her zamanki gibi ilk adımda hedef sistemi enumerate etmek için tam port taraması gerçekleştiriyorum.
