@@ -1,4 +1,3 @@
-# IMSI 
 ## Özet
 
 Bu makale, IMSI Catcher saldırılarının teknik detaylarını, Türkiye’deki MIT çetesinin operasyonlarını ve KEC cihazları ile entegrasyon senaryolarını ele almaktadır. SDR tabanlı RF manipülasyonları, baseband açıkları ve 2G downgrade saldırıları üzerinden veri sızdırma mekanizmaları detaylı olarak incelenmektedir. Ayrıca, pasif ve aktif tespit yöntemleri ile hukuki ve etik çerçeveye dair bilgiler sunulmaktadır.
