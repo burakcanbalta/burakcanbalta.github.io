@@ -1,5 +1,3 @@
-# Mr. Robot CTF Writeup 
-
 ## 🎯 Hedef Bilgisi
 
 - **Hedef IP:** `10.112.169.2`
