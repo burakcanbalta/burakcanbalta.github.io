@@ -1,5 +1,3 @@
-# TryHackMe — Support Writeup
-
 Support, TryHackMe üzerinde yer alan bir makine. Kurumsal bir helpdesk panelini simüle ediyor ve içerisinde zayıf kimlik doğrulama, LFI, IDOR ve Command Injection zafiyetlerini bir arada barındırıyor. Bu yazıda makineyi baştan sona nasıl ele geçirdiğimi anlatıyorum.
 
 ---
