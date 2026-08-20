@@ -1,5 +1,3 @@
-# TryHackMe - Interceptor Writeup
-
 ## Keşif
 
 İlk olarak nmap taraması ile başlıyoruz:
