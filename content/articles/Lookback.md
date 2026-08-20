@@ -1,5 +1,3 @@
-# TryHackMe - Lookback Writeup
-
 <img width="256" height="256" alt="lookback" src="https://github.com/user-attachments/assets/f93ff91d-9e38-4732-864f-5b1636e415a4" />
 
 ## Giriş
