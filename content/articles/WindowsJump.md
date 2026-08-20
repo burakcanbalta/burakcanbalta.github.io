@@ -1,5 +1,3 @@
-# Windows Jump — TryHackMe Writeup
-
 > **Yol:** `guest` → `thmuser` → `notadmin` → `svcadmin` → `SYSTEM`
 
 ## Giriş
