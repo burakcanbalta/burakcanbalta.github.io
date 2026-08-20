@@ -16,12 +16,8 @@ Forgot your password? Reset it here (/reset-password)
 
 Bu linke gittiğimde beklediğim gibi bir sayfa yerine S3'e özgü bir hata mesajıyla karşılaştım:
 
-```
-404 Not Found
-Code: NoSuchKey
-Message: The specified key does not exist.
-Key: reset-password
-```
+<img width="1020" height="369" alt="reset" src="https://github.com/user-attachments/assets/31f5d2c8-4f13-4710-b040-369b7586b33a" />
+
 
 Bu hata mesajı çok değerli bir bilgi veriyor aslında: site normal bir web sunucusunda değil, doğrudan **Amazon S3 static website hosting** üzerinde barınıyor. URL'nin yapısına bakınca da bu zaten netleşiyor:
 
