@@ -1,5 +1,3 @@
-# DOMINO — TryHackMe WriteUp
-
 ## Nmap ile Başlayalım
 
 İlk olarak makinede hangi portların açık olduğunu görmek için klasik Nmap taramamı attım.
