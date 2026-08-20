@@ -1,5 +1,3 @@
-# KEC Card Access Devices
-
 ## Giriş: KEC ve EKDS Ekosistemine Genel Bakış
 
 **KEC (Kart Erişim Cihazı)**, Türkiye'nin yeni nesil kimlik kartlarıyla yerinde, güvenli kimlik doğrulama yapabilmek için tasarlanmış özel bir akıllı kart terminali. İçinde barındırdığı **GEM (Güvenli Eleman Modülü)**, kimlik kartının standart okuyucularla erişilemeyen hassas bölgelerine (kişisel mesaj alanı ya da biyometrik korumalı veri gibi) kontrollü erişim sağlıyor.
