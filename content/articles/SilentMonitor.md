@@ -1,5 +1,3 @@
-# TryHackMe — Silent Monitor
-
 ## Nmap ile Başlayalım
 
 İlk olarak bütün TCP portlarını tarıyorum:
