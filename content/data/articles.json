@@ -1,5 +1,20 @@
 [
   {
+    "slug": "a-bucket-of-phish",
+    "title": "TryHackMe — A Bucket of Phish Writeup",
+    "date": "2026-08-20",
+    "tags": [
+      "Cloud",
+      "AWS",
+      "S3",
+      "Phishing",
+      "Web",
+      "Enumeration"
+    ],
+    "excerpt": "Publicly accessible AWS S3 bucket'ın keşfi, anonim bucket enumeration, exposed web assets ve phishing altyapısının incelenmesi üzerinden gerçekleştirilen TryHackMe A Bucket of Phish çözümünün teknik analizi.",
+    "readTime": "10 dk"
+  },
+  {
     "slug": "RFID",
     "title": "RFID-Based Physical Access Control Security",
     "date": "2026-08-20",
