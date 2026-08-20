@@ -1,5 +1,3 @@
-# BettercapHelpTR 🇹🇷
-
 🔍 **Bettercap modül ve komutlarının detaylı Türkçe açıklaması**  
 Bu belge, Bettercap’in `help` komutuyla listelenen tüm modüllerini ve temel komutlarını sade, anlaşılır ve profesyonel biçimde açıklar.
 
