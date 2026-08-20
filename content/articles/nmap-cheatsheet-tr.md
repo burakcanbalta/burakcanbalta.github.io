@@ -1,6 +1,3 @@
-
-# 🛰️ Nmap Komutları ve Açıklamaları
-
 ## 🎯 Hedef Tanımlama ve Ping Taramaları
 
 | Komut | Açıklama |
