@@ -1,5 +1,19 @@
 [
   {
+    "slug": "rfid-access-control",
+    "title": "RFID Tabanlı Fiziksel Erişim Kontrol Sistemleri",
+    "date": "2026-08-20",
+    "tags": [
+      "Research",
+      "RFID",
+      "Physical Security",
+      "Access Control",
+      "PACS"
+    ],
+    "excerpt": "RFID tabanlı fiziksel erişim kontrol sistemlerinin çalışma mantığı, LF/HF/UHF frekansları, ISO/IEC 14443, MIFARE ve HID kart teknolojileri, PACS mimarisi, Wiegand ve OSDP, AD/IAM/SIEM entegrasyonları, Zero Trust, bulut tabanlı PACS ve mobil kimlik çözümlerinin güvenlik perspektifinden kapsamlı analizi.",
+    "readTime": "20 dk"
+  },
+  {
     "slug": "Lookback",
     "title": "TryHackMe — Lookback Writeup",
     "date": "2026-08-20",
