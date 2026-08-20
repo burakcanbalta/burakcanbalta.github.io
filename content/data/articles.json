@@ -1,5 +1,19 @@
 [
   {
+    "slug": "Lookback",
+    "title": "TryHackMe — Lookback Writeup",
+    "date": "2026-08-20",
+    "tags": [
+      "Windows",
+      "Active Directory",
+      "Exchange",
+      "ProxyShell",
+      "Command Injection"
+    ],
+    "excerpt": "Unutulmuş bir debug panelinde command injection ile ilk erişim, ardından yamalanmamış Microsoft Exchange üzerinde ProxyShell (CVE-2021-34473) istismarıyla tam yetkili shell alma sürecinin teknik incelemesi.",
+    "readTime": "12 dk"
+  },
+  {
     "slug": "Alfred",
     "title": "TryHackMe — Alfred Writeup",
     "date": "2026-08-18",
