@@ -1,5 +1,3 @@
-# TryHackMe — Alfred Writeup
-
 ## 1. Keşif
 
 
