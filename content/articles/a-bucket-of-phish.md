@@ -1,16 +1,14 @@
-# A Bucket of Phish - Writeup
-
 Bu odada elimizde DarkInjector adlı bir saldırganın kurduğu sahte bir Cmail giriş sayfası var. Amacımız bu phishing sitesinin arkasındaki altyapıyı inceleyip, varsa mağdur kullanıcıların bilgilerine ulaşmak.
 
 ## Siteye İlk Bakış
 
 Verilen linke gidiyoruz:
 
-```
-http://darkinjector-phish.s3-website-us-west-2.amazonaws.com
-```
+<img width="1918" height="783" alt="site" src="https://github.com/user-attachments/assets/1916c930-a1bd-49a6-9831-56f7e1bb7999" />
 
-Karşımıza klasik bir Cmail login sayfası çıkıyor. İlk yaptığım şey her zaman olduğu gibi sayfa kaynağına (view-source) bakmak oldu. Kaynak kodu incelerken dikkatimi şu satır çekti:
+Karşımıza klasik bir Cmail login sayfası çıkıyor. İlk yaptığım şey her zaman olduğu gibi sayfa kaynağına (view-source) bakmak oldu. Kaynak kodu incelerken bu satırı görüyoruz:
+
+<img width="761" height="277" alt="kaynakod" src="https://github.com/user-attachments/assets/b085e2ec-17a5-4ac5-a98f-34b5e7d09770" />
 
 ```
 Forgot your password? Reset it here (/reset-password)
@@ -40,6 +38,7 @@ S3 bucket'larında sık karşılaşılan bir yanlış yapılandırma, bucket'ın
 ```bash
 aws s3 ls s3://darkinjector-phish --no-sign-request
 ```
+<img width="513" height="86" alt="aws" src="https://github.com/user-attachments/assets/6d7473ba-58c2-45d0-98c1-c3572e26ec9c" />
 
 Ve bingo, bucket gerçekten public listelenebiliyormuş:
 
@@ -61,12 +60,8 @@ aws s3 cp s3://darkinjector-phish/captured-logins-093582390 . --no-sign-request
 
 `captured-logins-093582390` dosyasını açtığımda içeride flag'i buluyorum:
 
+<img width="447" height="128" alt="captured" src="https://github.com/user-attachments/assets/5cda314d-7867-49b8-991d-2c93e9047416" />
+
 ```
 THM{this_is_not_what_i_meant_by_public}
 ```
-
-## Sonuç
-
-Flag'in adı da aslında olayı özetliyor: "bu public olsun demek bunu kastetmemiştim". DarkInjector, phishing altyapısını S3 üzerinde barındırırken bucket permission'larını doğru yapılandırmayı unutmuş ve topladığı bilgileri (muhtemelen çaldığı kimlik bilgilerini) kimliksiz erişime açık bırakmış. Kendi ağına kendi düşmüş yani.
-
-**Çıkarılacak ders:** S3 bucket policy ve ACL ayarlarını her zaman "least privilege" prensibiyle yapılandırmak gerekiyor. `aws s3 ls --no-sign-request` gibi basit bir komut bile, yanlış yapılandırılmış bir bucket'ın tüm içeriğini ifşa edebiliyor. Bu sadece saldırganlar için değil, kurumsal ortamlarda da sıkça karşılaşılan gerçek bir zafiyet türü.
