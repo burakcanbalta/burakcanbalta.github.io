@@ -1,5 +1,3 @@
-# TryHackMe - Kenobi Writeup
-
 # Reconnaissance
 
 İlk olarak hedef makine üzerinde tam port taraması gerçekleştiriyoruz.
