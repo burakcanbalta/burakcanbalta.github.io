@@ -1,5 +1,3 @@
-# TryHackMe - Operation Coldstart Writeup
-
 ## Keşif
 
 İlk olarak hedef sistemi Nmap ile taradım:
