@@ -1,5 +1,3 @@
-# TryHackMe - Operation Promotion Writeup
-
 ## Keşif
 
 İşe her zaman olduğu gibi bir Nmap taramasıyla başladım:
