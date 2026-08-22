@@ -1,4 +1,4 @@
-## Giriş
+<img width="300" height="300" alt="a1466ce6-d9de-48b2-913b-9c91e82db427" src="https://github.com/user-attachments/assets/b9a11be9-db15-4ebb-8082-08bd4988586a" />
 
 Principal, ilk bakışta klasik bir web login sayfasıyla karşılıyor ama işin özü aslında kimlik doğrulama mantığındaki bir tasarım hatasında gizli. Makine boyunca iki kez aynı temayla karşılaşıyoruz: sistem, gelen verinin *şifrelenmiş/imzalı olup olmadığını* kontrol ediyor ama içindeki *kimlik iddiasının doğru olup olmadığını* hiç sorgulamıyor. Bu mantık hatası hem web tarafındaki JWT doğrulamasında hem de sunucudaki SSH sertifika yapılandırmasında karşımıza çıkıyor. Aşağıda adım adım nasıl root olduğumu anlatıyorum.
 
