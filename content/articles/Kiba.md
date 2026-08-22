@@ -83,6 +83,9 @@ export TERM=xterm-256color
 ```
 kiba@ubuntu:/home/kiba$ ls
 elasticsearch-6.5.4.deb  kibana  user.txt
+```
+
+```
 kiba@ubuntu:/home/kiba$ cat user.txt
 THM{1s_easy_pwn3d_k1bana_w1th_rce}
 ```
