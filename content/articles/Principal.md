@@ -142,9 +142,9 @@ ssh -i mykey root@localhost
 
 Ve bağlantı başarılı oldu — root shell elimdeydi.
 
-<img width="607" height="290" alt="ssh2" src="https://github.com/user-attachments/assets/58f1d136-ef1d-4f89-8af6-4595f12df550" />
+<img width="607" height="290" alt="ssh2" src="https://github.com/user-attachments/assets/8d6ab221-b612-465a-aa10-f395d1e525a7" />
 
-<img width="607" height="290" alt="ssh2" src="https://github.com/user-attachments/assets/4a85605c-5b90-4299-835b-51ab9d29b57f" />
+<img width="959" height="480" alt="ssh3" src="https://github.com/user-attachments/assets/b8b13fe9-c48d-47f1-9dbd-0d9953969e62" />
 
 ---
 
