@@ -11,23 +11,15 @@ Principal, ilk bakışta klasik bir web login sayfasıyla karşılıyor ama işi
 ```bash
 nmap -sS -A -T4 -Pn -p- 10.129.79.220
 ```
+<img width="858" height="546" alt="nmap" src="https://github.com/user-attachments/assets/98876e42-8f11-4889-8265-a09846bac228" />
 
-Sonuç:
-
-```
-PORT     STATE SERVICE    VERSION
-22/tcp   open  ssh        OpenSSH 9.6p1 Ubuntu 3ubuntu13.14 (Ubuntu Linux; protocol 2.0)
-8080/tcp open  http-proxy Jetty
-|_http-title: Principal Internal Platform - Login
-|_http-server-header: Jetty
-|   X-Powered-By: pac4j-jwt/6.0.3
-```
-
-Sadece 2 port açık: SSH (22) ve üzerinde bir Jetty web servisi çalışan 8080. En dikkat çekici detay `X-Powered-By: pac4j-jwt/6.0.3` header'ı — bunu not ediyorum, ileride işime yarayacak.
+Sadece 2 port açık: SSH ve üzerinde bir Jetty web servisi çalışan 8080. En dikkat çekici detay `X-Powered-By: pac4j-jwt/6.0.3` header'ı — bunu not ediyorum, ileride işime yarayacak.
 
 ---
 
 ## 2. Web Uygulamasını Keşfetme
+
+<img width="953" height="813" alt="login" src="https://github.com/user-attachments/assets/9ef20555-9810-483a-98e6-e7bf55028c0a" />
 
 `http://10.129.79.220:8080/login` adresine gittiğimde beni bir giriş ekranı karşılıyor.
 
@@ -38,12 +30,7 @@ Sadece 2 port açık: SSH (22) ve üzerinde bir Jetty web servisi çalışan 808
 
 `app.js` dosyasını inceleyince uygulamanın kullandığı API endpoint'lerini gördüm:
 
-```js
-const AUTH_ENDPOINT = '/api/auth/login';
-const DASHBOARD_ENDPOINT = '/api/dashboard';
-const USERS_ENDPOINT = '/api/users';
-const SETTINGS_ENDPOINT = '/api/settings';
-```
+<img width="758" height="595" alt="app js" src="https://github.com/user-attachments/assets/03ddf2f4-7ffe-4111-b8c4-9d59112cc498" />
 
 Bu endpoint'lerden ilk olarak JWKS (JSON Web Key Set) uç noktasını kontrol ettim:
 
@@ -51,30 +38,7 @@ Bu endpoint'lerden ilk olarak JWKS (JSON Web Key Set) uç noktasını kontrol et
 http://10.129.79.220:8080/api/auth/jwks
 ```
 
-Yanıt olarak bir RSA public key seti döndü:
-
-```json
-{
-  "keys": [
-    {
-      "kty": "RSA",
-      "e": "AQAB",
-      "kid": "enc-key-1",
-      "n": "lTh54vtBS1NAWrxAFU1NEZdrVxPeSMhHZ5NpZX-WtBsdWtJRaeeG61iNgYsFUXE9j2..."
-    }
-  ]
-}
-```
-
-Uygulamanın JWT tabanlı bir kimlik doğrulama sistemi kullandığı netleşti. `/api/auth/login` endpoint'ine gittiğimde ise:
-
-```
-There was an unexpected error (type=Method Not Allowed, status=405)
-```
-
-hatası aldım — yani endpoint var ama farklı bir HTTP metodu bekliyor. Bunu not düşüp devam ettim, çünkü asıl anahtar ipucu zaten elimdeydi: **`X-Powered-By: pac4j-jwt/6.0.3`**.
-
----
+<img width="1919" height="174" alt="jwks" src="https://github.com/user-attachments/assets/2015ce60-1421-4911-a787-46df719ca0d1" />
 
 ## 3. CVE Araştırması — pac4j-jwt Kimlik Doğrulama Atlatması
 
@@ -96,16 +60,8 @@ Bunun için hazır bir PoC buldum:
 python3 exploit.py --jwks-url http://10.129.79.220:8080/api/auth/jwks --target http://10.129.79.220:8080/dashboard
 ```
 
-Çıktı:
+<img width="987" height="552" alt="exploitpy" src="https://github.com/user-attachments/assets/1aef1ffc-ac3a-43aa-a907-9a6a68e0ca3b" />
 
-```
-[+] Fetching JWKS from http://10.129.79.220:8080/api/auth/jwks
-[+] Forged Token:
-eyJhbGciOiJSU0EtT0FFUC0yNTYiLCJjdHkiOiJKV1QiLCJlbmMiOiJBMTI4R0NNIn0...
-
-[+] Browser Injection:
-sessionStorage.setItem("auth_token", "eyJhbGciOiJSU0EtT0FFUC0yNTYi...")
-```
 
 Script, JWKS'ten aldığı public key ile geçerli bir JWE zarfı oluşturup içine imzasız (plain) bir JWT gömüyor. Sunucu zarfı şifreleme anahtarıyla açabildiği için içeriğe güveniyor — imza kontrolü hiç devreye girmiyor.
 
@@ -133,6 +89,8 @@ Sonrasında **Settings** sekmesine geçtim ve orada açık şekilde yazan bir de
 encryptionKey: D3pl0y_$$H_Now42!
 ```
 
+<img width="711" height="298" alt="şifre" src="https://github.com/user-attachments/assets/f1944bf6-a22c-43ea-8a40-9ed7cda25cb5" />
+
 ---
 
 ## 5. İlk Erişim — SSH ile Kullanıcı Ele Geçirme
@@ -148,6 +106,7 @@ Parola olarak `D3pl0y_$$H_Now42!` değerini girince başarıyla bağlandım. Ev 
 ```
 user.txt: 0682db7635f33e7021303a549a1ac54f
 ```
+<img width="717" height="355" alt="ssh1" src="https://github.com/user-attachments/assets/1c525954-9317-4ee6-bdb4-9c681f78645b" />
 
 ---
 
@@ -183,6 +142,10 @@ ssh -i mykey root@localhost
 
 Ve bağlantı başarılı oldu — root shell elimdeydi.
 
+<img width="607" height="290" alt="ssh2" src="https://github.com/user-attachments/assets/58f1d136-ef1d-4f89-8af6-4595f12df550" />
+
+<img width="607" height="290" alt="ssh2" src="https://github.com/user-attachments/assets/4a85605c-5b90-4299-835b-51ab9d29b57f" />
+
 ---
 
 ## 7. Root Flag
@@ -194,33 +157,3 @@ cat /root/root.txt
 ```
 root.txt: 49ebb99ec7f2fc42176f5d90e6ebb47e
 ```
-
----
-
-## 8. Sonuç ve Öğrenilenler
-
-Principal, bana kriptografide çok kritik bir prensibi bir kez daha hatırlattı: **"şifrelenmiş/imzalı olmak" ile "içeriği doğru olmak" aynı şey değildir.**
-
-- Web tarafında `pac4j-jwt`, bir JWE zarfının geçerli olmasını "içindeki token güvenilirdir" olarak yorumladı ve imza kontrolünü atladı.
-- Sistem tarafında SSH CA yapılandırması, sertifikanın CA tarafından imzalanmış olmasını "istenen kullanıcı için geçerlidir" olarak yorumladı ve principal alanını doğrulamadı.
-
-İki farklı katmanda, aynı mantık hatasının tekrar etmesi bu makineyi benim için özellikle öğretici kıldı. Root'a giden yol karmaşık bir exploit zinciri değil, doğru yerde doğru soruyu sormamaktan kaynaklanan bir güven eksikliğiydi.
-
-### Kısa Özet
-
-| Adım | Aksiyon |
-|---|---|
-| Recon | Nmap ile 22 ve 8080 portları tespit edildi |
-| Web Enum | `app.js` üzerinden API endpoint'leri bulundu |
-| Zafiyet | CVE-2026-29000 (pac4j-jwt auth bypass) tespit edildi |
-| Exploit | Forged JWE/JWT ile panele giriş yapıldı |
-| Bilgi Sızıntısı | Settings sayfasından `svc-deploy` şifresi bulundu |
-| User | SSH ile `svc-deploy` olarak erişim sağlandı |
-| PrivEsc | SSH CA private key'i ile `root` için sertifika imzalandı |
-| Root | Sertifika ile root olarak SSH erişimi sağlandı |
-
-Flag'ler:
-- **user.txt:** `0682db7635f33e7021303a549a1ac54f`
-- **root.txt:** `49ebb99ec7f2fc42176f5d90e6ebb47e`
-
-Okuduğunuz için teşekkürler, bir sonraki writeup'ta görüşmek üzere!
