@@ -1,5 +1,20 @@
 [
   {
+    "slug": "Dogcat",
+    "title": "TryHackMe — Dogcat Writeup",
+    "date": "2026-08-22",
+    "tags": [
+      "Web",
+      "LFI",
+      "RCE",
+      "Log Poisoning",
+      "Docker",
+      "Privilege Escalation"
+    ],
+    "excerpt": "PHP tabanlı dogcat uygulamasında LFI ile kaynak kod ve flag okuma, Apache access log zehirlemesiyle RCE elde edilmesi, sudo/env yanlış yapılandırmasıyla root olunması ve son olarak backup script'i üzerinden Docker container'dan host makineye kaçış sürecinin teknik incelemesi.",
+    "readTime": "14 dk"
+  },
+  {
     "slug": "Kiba",
     "title": "TryHackMe — Kiba Writeup",
     "date": "2026-08-22",
