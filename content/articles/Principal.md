@@ -146,7 +146,6 @@ Ve bağlantı başarılı oldu — root shell elimdeydi.
 
 <img width="959" height="480" alt="ssh3" src="https://github.com/user-attachments/assets/b8b13fe9-c48d-47f1-9dbd-0d9953969e62" />
 
----
 
 ## 7. Root Flag
 
