@@ -1,9 +1,3 @@
-# HTB Principal — Writeup
-
-**Zorluk:** Orta (Medium)
-**Kategori:** Web / Kriptografi / Privilege Escalation
-**IP:** 10.129.79.220
-
 ## Giriş
 
 Principal, ilk bakışta klasik bir web login sayfasıyla karşılıyor ama işin özü aslında kimlik doğrulama mantığındaki bir tasarım hatasında gizli. Makine boyunca iki kez aynı temayla karşılaşıyoruz: sistem, gelen verinin *şifrelenmiş/imzalı olup olmadığını* kontrol ediyor ama içindeki *kimlik iddiasının doğru olup olmadığını* hiç sorgulamıyor. Bu mantık hatası hem web tarafındaki JWT doğrulamasında hem de sunucudaki SSH sertifika yapılandırmasında karşımıza çıkıyor. Aşağıda adım adım nasıl root olduğumu anlatıyorum.
