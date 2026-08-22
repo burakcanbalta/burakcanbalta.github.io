@@ -1,5 +1,20 @@
 [
   {
+    "slug": "Principal",
+    "title": "HackTheBox — Principal Writeup",
+    "date": "2026-08-22",
+    "tags": [
+      "Web",
+      "JWT",
+      "Cryptography",
+      "CVE",
+      "SSH",
+      "Privilege Escalation"
+    ],
+    "excerpt": "pac4j-jwt kütüphanesindeki CVE-2026-29000 kimlik doğrulama atlatma açığı ile forged JWE/JWT kullanılarak panel erişimi sağlanması, ardından SSH CA sertifika yapılandırmasındaki principal doğrulama eksikliğinin istismar edilerek root yetkisine ulaşılmasının teknik incelemesi.",
+    "readTime": "12 dk"
+  },
+  {
     "slug": "a-bucket-of-phish",
     "title": "TryHackMe — A Bucket of Phish Writeup",
     "date": "2026-08-20",
