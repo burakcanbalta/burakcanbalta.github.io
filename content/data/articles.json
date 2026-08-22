@@ -1,5 +1,20 @@
 [
   {
+    "slug": "Kiba",
+    "title": "TryHackMe — Kiba Writeup",
+    "date": "2026-08-22",
+    "tags": [
+      "Linux",
+      "Kibana",
+      "Elasticsearch",
+      "CVE",
+      "RCE",
+      "Privilege Escalation"
+    ],
+    "excerpt": "Elasticsearch Kibana 6.5.4 üzerindeki prototype pollution zafiyeti CVE-2019-7609 ile uzaktan kod çalıştırma sağlanması, ardından cap_setuid capability'sine sahip özel bir Python binary'sinin istismar edilerek root yetkisine ulaşılmasının teknik incelemesi.",
+    "readTime": "10 dk"
+  },
+  {
     "slug": "Principal",
     "title": "HackTheBox — Principal Writeup",
     "date": "2026-08-22",
