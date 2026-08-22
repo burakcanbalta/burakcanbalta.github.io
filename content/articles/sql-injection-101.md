@@ -1,7 +1,3 @@
-# SQL Injection
-
-## SQL Injection Nedir?
-
 SQL Injection, bir web uygulamasının kullanıcıdan aldığı verileri **doğrudan SQL sorgusu içine eklemesi** sonucu ortaya çıkan kritik bir güvenlik açığıdır.
 
 Bu açık sayesinde saldırgan:
