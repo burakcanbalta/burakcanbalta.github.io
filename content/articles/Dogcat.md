@@ -275,19 +275,8 @@ root@dogcat:~#
 ## 10. Dördüncü ve Son Flag
 
 ```bash
-ls
-```
-
-```
-container
-flag4.txt
-```
-
-```bash
 cat flag4.txt
-```
 
-```
 THM{esc4l4tions_on_esc4l4tions_on_esc4l4tions_7a52b17dba6ebb0dc38bc1049bcba02d}
 ```
 <img width="647" height="212" alt="flag4" src="https://github.com/user-attachments/assets/44d1f3e4-bc70-4c08-834e-93a54a9618ad" />
