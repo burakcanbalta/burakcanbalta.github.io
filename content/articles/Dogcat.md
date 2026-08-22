@@ -1,3 +1,5 @@
+<img width="1280" height="720" alt="tFclZGq" src="https://github.com/user-attachments/assets/25ad71d5-3202-4cee-848e-1aed0c690694" />
+
 Dogcat, adından da anlaşılacağı gibi köpek ve kedi resimleri gösteren basit bir PHP uygulaması ama arkasında oldukça öğretici bir zincir saklıyor. LFI ile başlayıp log poisoning üzerinden RCE'ye, oradan `sudo` yanlış yapılandırmasıyla root'a, en sonunda da bir Docker container'ından host makineye kaçışa kadar giden dört flag'li bir makine. Aşağıda tüm süreci adım adım anlatıyorum.
 
 ## 1. Keşif
