@@ -50,7 +50,7 @@ Script'in mantığı şöyle:
 - Önce hedefteki Kibana sürümünü doğruluyor.
 - `/api/timelion/run` endpoint'ine, `.es(*).props()` fonksiyon zincirini kötüye kullanarak `label.__proto__.env` üzerinden prototype pollution yapan bir JSON payload gönderiyor.
 - Bu sayede Node.js'in `NODE_OPTIONS` ortam değişkenine `child_process.exec` içeren bir komut enjekte edip, socket.io endpoint'ine yapılan bir istekle bu kodu tetikliyor.
-- Sonuç olarak hedefte istediğimiz komutu çalıştırabiliyoruz — bu örnekte bir reverse shell.
+- Sonuç olarak hedefte istediğimiz komutu çalıştırabiliyoruz
 
 ## 4. Exploit ve İlk Erişim
 
