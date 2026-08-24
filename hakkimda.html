@@ -217,6 +217,115 @@
       color: var(--green);
     }
 
+    .practice-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 10px;
+    }
+
+    .practice-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color .15s ease, transform .15s ease;
+    }
+
+    .practice-card:hover {
+      border-color: var(--border-hi);
+      transform: translateY(-2px);
+    }
+
+    .practice-badge {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 56px;
+    }
+
+    .practice-badge img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .practice-info {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .practice-platform {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    .practice-user {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-faint);
+    }
+
+    .practice-desc {
+      color: var(--text-dim);
+      font-size: 13px;
+      line-height: 1.55;
+      margin: 4px 0 6px;
+    }
+
+    .practice-info .btn {
+      align-self: flex-start;
+    }
+
+    .cv-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      max-width: 760px;
+      margin: 10px auto 0;
+    }
+
+    .cv-box-preview iframe {
+      width: 100%;
+      height: 560px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-alt);
+    }
+
+    .cv-box-note {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-faint);
+      margin: 10px 0 0;
+    }
+
+    .cv-box-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 650px) {
+
+      .practice-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cv-box-preview iframe {
+        height: 420px;
+      }
+
+    }
+
     @media (max-width: 650px) {
       .about-terminal {
         margin-top: 20px;
@@ -296,26 +405,31 @@
         </h1>
 
         <p class="cv-summary">
-          Uludağ Üniversitesi Fizik öğrencisiyim, siber güvenlik alanında
-          teknik gelişimime odaklanıyorum. Web application security ve
-          offensive security prensipleri üzerine çalışıyor, güvenli
-          yazılım geliştirme pratiklerini takip ediyorum.
+          Uludağ Üniversitesi Fizik Bölümü öğrencisiyim ve siber güvenlik
+          alanında offensive security odaklı olarak kendimi geliştiriyorum.
+          Web application security, Active Directory pentest ve exploitation
+          üzerine uygulamalı deneyim kazanıyor, güvenli yazılım geliştirme
+          pratiklerini takip ediyorum.
         </p>
 
         <p class="cv-summary">
-          GitHub üzerinde güvenlik odaklı araçlar geliştirerek farklı
-          saldırı senaryolarını ve savunma mekanizmalarını uygulamalı
-          olarak analiz ediyorum.
+          Şu anda <strong>BgTek Cyber Security</strong> bünyesinde
+          Penetration Tester stajyeri olarak gerçek saldırı senaryoları
+          üzerinde çalışıyorum. Bunun yanında <strong>Siber Vatan</strong>
+          ve <strong>UluSiber</strong> (Uludağ Üniversitesi Siber Güvenlik
+          Topluluğu) çatısı altında teknik ekip üyesi olarak aktif rol
+          alıyor, GitHub üzerinde güvenlik odaklı araçlar geliştirerek
+          farklı saldırı senaryolarını ve savunma mekanizmalarını
+          uygulamalı olarak analiz ediyorum.
         </p>
 
         <p class="cv-summary">
-          Frontend ve backend geliştirme bilgimi güvenlik perspektifiyle
-          birleştirerek uygulama güvenliği ve saldırı yüzeyi analizi
-          üzerine çalışıyorum. Şu anda
-          <strong>OSCP'ye hazırlanıyorum</strong>,
-          düzenli olarak <strong>CTF</strong> çözüyor; teknik yetkinliğimi
-          gerçekçi saldırı senaryoları, araç geliştirme ve writeup/makale
-          çalışmalarıyla sürekli geliştiriyorum.
+          CyberWarFare Labs'tan Web-RTA ve API-RTA sertifikalarına
+          sahibim, şu anda <strong>OSCP'ye hazırlanıyorum</strong>.
+          Düzenli olarak <strong>Hack The Box</strong> ve
+          <strong>TryHackMe</strong> üzerinde CTF/lab çözüyor; teknik
+          yetkinliğimi gerçekçi saldırı senaryoları, araç geliştirme ve
+          writeup/makale çalışmalarıyla sürekli geliştiriyorum.
         </p>
 
         <div class="social-row">
@@ -419,6 +533,10 @@
 
             <button type="button" data-command="certs">
               certs
+            </button>,
+
+            <button type="button" data-command="cv">
+              cv
             </button>,
 
             <button type="button" data-command="projeler">
@@ -545,6 +663,99 @@
 
 </section>
 
+<section id="pratik">
+
+  <div class="wrap">
+
+    <div class="section-head">
+
+      <div class="tag">CTF & PRATİK</div>
+
+      <h2>Hack The Box & TryHackMe</h2>
+
+      <p>
+        Pratik lab ve CTF platformlarındaki profillerim. Rozetler ilgili
+        platformdan canlı çekildiği için istatistikler otomatik güncellenir.
+      </p>
+
+    </div>
+
+    <div class="practice-grid">
+
+      <article class="practice-card">
+
+        <div class="practice-badge">
+          <img
+            src="https://www.hackthebox.eu/badge/image/2381172"
+            alt="Hack The Box profil rozeti — burakbalta"
+            loading="lazy"
+            onerror="this.parentElement.style.display='none'"
+          >
+        </div>
+
+        <div class="practice-info">
+
+          <span class="practice-platform">Hack The Box</span>
+          <span class="practice-user">burakbalta</span>
+
+          <p class="practice-desc">
+            Machines, pro lab'lar ve CTF challenge'ları üzerinde pratik
+            exploitation çalışmaları yapıyorum.
+          </p>
+
+          <a
+            class="btn"
+            href="https://app.hackthebox.com/users/2381172?profile-top-tab=machines&ownership-period=1M&profile-bottom-tab=prolabs"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Profili Görüntüle ↗
+          </a>
+
+        </div>
+
+      </article>
+
+      <article class="practice-card">
+
+        <div class="practice-badge">
+          <img
+            src="https://tryhackme-badges.s3.amazonaws.com/burakcanbalta.png"
+            alt="TryHackMe profil rozeti — burakcanbalta"
+            loading="lazy"
+            onerror="this.parentElement.style.display='none'"
+          >
+        </div>
+
+        <div class="practice-info">
+
+          <span class="practice-platform">TryHackMe</span>
+          <span class="practice-user">Script Kiddie · burakcanbalta</span>
+
+          <p class="practice-desc">
+            Room'lar ve öğrenme path'leri üzerinden uygulamalı siber
+            güvenlik eğitimi alıyorum.
+          </p>
+
+          <a
+            class="btn"
+            href="https://tryhackme.com/p/burakcanbalta"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Profili Görüntüle ↗
+          </a>
+
+        </div>
+
+      </article>
+
+    </div>
+
+  </div>
+
+</section>
+
 <section id="sertifikalar">
 
   <div class="wrap">
@@ -573,7 +784,66 @@
 
 </section>
 
-<section id="journey" class="section-alt">
+<section id="cv" class="section-alt">
+
+  <div class="wrap">
+
+    <div class="section-head">
+
+      <div class="tag">CV</div>
+
+      <h2>Özgeçmiş</h2>
+
+      <p>
+        Güncel CV'mi buradan görüntüleyebilir veya PDF olarak indirebilirsiniz.
+      </p>
+
+    </div>
+
+    <div class="cv-box">
+
+      <div class="cv-box-preview">
+        <iframe
+          src="content/files/cv.pdf"
+          title="Burak Can Balta — CV"
+          loading="lazy"
+        ></iframe>
+      </div>
+
+      <div class="cv-box-actions">
+
+        <a
+          class="btn"
+          href="content/files/cv.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Görüntüle ↗
+        </a>
+
+        <a
+          class="btn"
+          href="content/files/cv.pdf"
+          download="Burak-Can-Balta-CV.pdf"
+        >
+          İndir ⬇
+        </a>
+
+      </div>
+
+      <p class="cv-box-note">
+        // Not: CV'yi güncellemek için content/files/cv.pdf dosyasını aynı
+        isimle yeni PDF ile değiştirmen yeterli — sayfa otomatik olarak
+        güncel dosyayı gösterir, kod değişikliği gerekmez.
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section id="journey">
 
   <div class="wrap">
 
@@ -590,6 +860,32 @@
     </div>
 
     <div class="rows">
+
+      <article class="row">
+
+        <div class="row-main">
+
+          <div class="row-meta">
+            <span>BgTek Cyber Security · Stajyer</span>
+          </div>
+
+          <h3 class="row-title">
+            Penetration Tester
+          </h3>
+
+          <p class="row-desc">
+            Bursa merkezli hibrit çalışma düzeninde pentest süreçlerine,
+            saldırı senaryolarının kurgulanmasına ve raporlama
+            aşamalarına katkı sağladım.
+          </p>
+
+        </div>
+
+        <div class="row-side">
+          <span class="source-pill">Tem 2026 — Eki 2026 · 3 ay</span>
+        </div>
+
+      </article>
 
       <article class="row">
 
@@ -622,6 +918,56 @@
         <div class="row-main">
 
           <div class="row-meta">
+            <span>Siber Vatan · Öğrenci</span>
+          </div>
+
+          <h3 class="row-title">
+            Student
+          </h3>
+
+          <p class="row-desc">
+            Sızma testi ve ağ güvenliği dersleri alıyor, program
+            kapsamındaki CTF'lerde aktif rol oynuyorum.
+          </p>
+
+        </div>
+
+        <div class="row-side">
+          <span class="source-pill">Ara 2025 — Devam ediyor</span>
+        </div>
+
+      </article>
+
+      <article class="row">
+
+        <div class="row-main">
+
+          <div class="row-meta">
+            <span>UluSiber — Uludağ Üniversitesi Siber Güvenlik Topluluğu</span>
+          </div>
+
+          <h3 class="row-title">
+            Technical Team Member
+          </h3>
+
+          <p class="row-desc">
+            Topluluğun teknik ekibinde etkinlik, eğitim ve proje
+            süreçlerine katkı sağlıyorum.
+          </p>
+
+        </div>
+
+        <div class="row-side">
+          <span class="source-pill">Kas 2025 — Devam ediyor</span>
+        </div>
+
+      </article>
+
+      <article class="row">
+
+        <div class="row-main">
+
+          <div class="row-meta">
             <span>CyberWarFare Labs</span>
           </div>
 
@@ -639,6 +985,32 @@
 
         <div class="row-side">
           <span class="source-pill">2025 — 2026</span>
+        </div>
+
+      </article>
+
+      <article class="row">
+
+        <div class="row-main">
+
+          <div class="row-meta">
+            <span>Zerone Security · Stajyer</span>
+          </div>
+
+          <h3 class="row-title">
+            Cyber Security / Project Leader
+          </h3>
+
+          <p class="row-desc">
+            Web uygulamalarında XSS, SQLi, IDOR, LFI açıkları tespit
+            ettim; malware analizi gerçekleştiren web tabanlı bir
+            platform geliştirdim ve ekip liderliği yaptım.
+          </p>
+
+        </div>
+
+        <div class="row-side">
+          <span class="source-pill">Tem 2025 — Eki 2025</span>
         </div>
 
       </article>
@@ -688,7 +1060,7 @@
         </div>
 
         <div class="row-side">
-          <span class="source-pill">Devam ediyor</span>
+          <span class="source-pill">2022 — 2027</span>
         </div>
 
       </article>
@@ -844,6 +1216,10 @@
           Sertifikalar
         </a>
 
+        <a href="hakkimda.html#cv">
+          CV
+        </a>
+
         <a href="makaleler.html">
           Writeups
         </a>
@@ -887,6 +1263,10 @@ document.addEventListener("DOMContentLoaded", function () {
         <div>
           <span class="terminal-green">certs</span>
           — sertifikalar bölümüne gider
+        </div>
+        <div>
+          <span class="terminal-green">cv</span>
+          — CV bölümüne gider, PDF'i açar
         </div>
         <div>
           <span class="terminal-green">projeler</span>
@@ -937,6 +1317,36 @@ document.addEventListener("DOMContentLoaded", function () {
         <div>
           <span class="terminal-green">→</span>
           Sertifikalar bölümüne gidiliyor...
+        </div>
+      `;
+    },
+
+    cv: function () {
+
+      const section = document.getElementById("cv");
+
+      if (section) {
+        section.scrollIntoView({
+          behavior: "smooth"
+        });
+      }
+
+      return `
+        <div>
+          <span class="terminal-green">→</span>
+          CV bölümüne gidiliyor...
+        </div>
+        <div>
+          <span class="terminal-green">→</span>
+          Doğrudan aç:
+          <a
+            href="content/files/cv.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="terminal-green"
+          >
+            content/files/cv.pdf ↗
+          </a>
         </div>
       `;
     },
