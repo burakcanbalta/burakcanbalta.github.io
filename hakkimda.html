@@ -756,6 +756,7 @@
 
         <div class="practice-badge">
           <img
+            id="htb-badge-img"
             src="https://www.hackthebox.eu/badge/image/2381172"
             alt="Hack The Box profil rozeti — burakbalta"
             loading="lazy"
@@ -790,6 +791,7 @@
 
         <div class="practice-badge">
           <img
+            id="thm-badge-img"
             src="https://tryhackme-badges.s3.amazonaws.com/burakcanbalta.png"
             alt="TryHackMe profil rozeti — burakcanbalta"
             loading="lazy"
@@ -1330,6 +1332,37 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
   });
+
+});
+</script>
+
+
+<!-- =========================================================
+     PRACTICE BADGES (HTB / TryHackMe)
+     Rozet görselleri HTB / TryHackMe sunucularından canlı çekiliyor.
+     Bu script sadece cache-bust yaparak her ziyarette en güncel
+     kopyanın gelmesini garanti eder — görselin içeriğini değiştirmez.
+     ========================================================= -->
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const badgeCacheBust = Date.now();
+
+  const htbBadge = document.getElementById("htb-badge-img");
+  const thmBadge = document.getElementById("thm-badge-img");
+
+  if (htbBadge) {
+    htbBadge.src =
+      "https://www.hackthebox.eu/badge/image/2381172?_=" +
+      badgeCacheBust;
+  }
+
+  if (thmBadge) {
+    thmBadge.src =
+      "https://tryhackme-badges.s3.amazonaws.com/burakcanbalta.png?_=" +
+      badgeCacheBust;
+  }
 
 });
 </script>
