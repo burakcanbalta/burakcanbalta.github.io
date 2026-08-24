@@ -526,6 +526,15 @@
             Email ✉
           </a>
 
+          <a
+            class="btn"
+            href="https://burakcanbalta.github.io/content/files/cv.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            CV ↗
+          </a>
+
         </div>
 
       </div>
@@ -606,10 +615,6 @@
 
             <button type="button" data-command="projeler">
               projeler
-            </button>,
-
-            <button type="button" data-command="iletisim">
-              iletisim
             </button>
 
           </span>
@@ -849,59 +854,6 @@
 
 </section>
 
-<section id="cv" class="section-alt">
-
-  <div class="wrap">
-
-    <div class="section-head">
-
-      <div class="tag">CV</div>
-
-      <h2>Özgeçmiş</h2>
-
-      <p>
-        Güncel CV'mi buradan görüntüleyebilir veya PDF olarak indirebilirsiniz.
-      </p>
-
-    </div>
-
-    <div class="cv-box">
-
-      <div class="cv-box-preview">
-        <iframe
-          src="content/files/cv.pdf"
-          title="Burak Can Balta — CV"
-          loading="lazy"
-        ></iframe>
-      </div>
-
-      <div class="cv-box-actions">
-
-        <a
-          class="btn"
-          href="content/files/cv.pdf"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Görüntüle ↗
-        </a>
-
-        <a
-          class="btn"
-          href="content/files/cv.pdf"
-          download="Burak-Can-Balta-CV.pdf"
-        >
-          İndir ⬇
-        </a>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
 <section id="journey">
 
   <div class="wrap">
@@ -1095,7 +1047,11 @@
           Sertifikalar
         </a>
 
-        <a href="hakkimda.html#cv">
+        <a
+          href="https://burakcanbalta.github.io/content/files/cv.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           CV
         </a>
 
@@ -1122,6 +1078,8 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
+  const CV_URL = "https://burakcanbalta.github.io/content/files/cv.pdf";
+
   const commands = {
 
     help: function () {
@@ -1145,15 +1103,11 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
         <div>
           <span class="terminal-green">cv</span>
-          — CV bölümüne gider, PDF'i açar
+          — CV'yi yeni sekmede açar
         </div>
         <div>
           <span class="terminal-green">projeler</span>
           — projeleri gösterir
-        </div>
-        <div>
-          <span class="terminal-green">iletisim</span>
-          — iletişim bölümüne gider
         </div>
         <div>
           <span class="terminal-green">clear</span>
@@ -1202,29 +1156,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
     cv: function () {
 
-      const section = document.getElementById("cv");
-
-      if (section) {
-        section.scrollIntoView({
-          behavior: "smooth"
-        });
-      }
+      window.open(
+        CV_URL,
+        "_blank",
+        "noopener,noreferrer"
+      );
 
       return `
         <div>
           <span class="terminal-green">→</span>
-          CV bölümüne gidiliyor...
+          CV açılıyor...
         </div>
         <div>
           <span class="terminal-green">→</span>
           Doğrudan aç:
           <a
-            href="content/files/cv.pdf"
+            href="${CV_URL}"
             target="_blank"
             rel="noopener noreferrer"
             class="terminal-green"
           >
-            content/files/cv.pdf ↗
+            cv.pdf ↗
           </a>
         </div>
       `;
@@ -1248,24 +1200,6 @@ document.addEventListener("DOMContentLoaded", function () {
         <div>
           <span class="terminal-green">→</span>
           Active Directory Labs
-        </div>
-      `;
-    },
-
-    iletisim: function () {
-
-      const section = document.getElementById("contact-links");
-
-      if (section) {
-        section.scrollIntoView({
-          behavior: "smooth"
-        });
-      }
-
-      return `
-        <div>
-          <span class="terminal-green">→</span>
-          İletişim bölümüne gidiliyor...
         </div>
       `;
     }
