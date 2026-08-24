@@ -314,6 +314,58 @@
       margin-top: 14px;
     }
 
+    .exp-list {
+      display: flex;
+      flex-direction: column;
+      margin-top: 8px;
+      max-width: 760px;
+    }
+
+    .exp-entry {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .exp-entry:first-child {
+      padding-top: 4px;
+    }
+
+    .exp-entry:last-child {
+      border-bottom: none;
+      padding-bottom: 4px;
+    }
+
+    .exp-org {
+      margin: 0 0 3px;
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: .1px;
+    }
+
+    .exp-role {
+      margin: 0 0 8px;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--green);
+    }
+
+    .exp-meta {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-faint);
+      margin-bottom: 10px;
+    }
+
+    .exp-desc {
+      color: var(--text-dim);
+      font-size: 14px;
+      line-height: 1.65;
+      margin: 0;
+      max-width: 640px;
+    }
+
     @media (max-width: 650px) {
 
       .practice-grid {
@@ -424,15 +476,14 @@
         </p>
 
         <p class="cv-summary">
-          CyberWarFare Labs'tan Web-RTA ve API-RTA sertifikalarına
-          sahibim, şu anda <strong>OSCP'ye hazırlanıyorum</strong>.
-          Düzenli olarak <strong>Hack The Box</strong> ve
-          <strong>TryHackMe</strong> üzerinde CTF/lab çözüyor; teknik
-          yetkinliğimi gerçekçi saldırı senaryoları, araç geliştirme ve
-          writeup/makale çalışmalarıyla sürekli geliştiriyorum.
+          Şu anda <strong>OSCP'ye hazırlanıyorum</strong>. Düzenli olarak
+          <strong>Hack The Box</strong> ve <strong>TryHackMe</strong>
+          üzerinde CTF/lab çözüyor; teknik yetkinliğimi gerçekçi saldırı
+          senaryoları, araç geliştirme ve writeup/makale çalışmalarıyla
+          sürekli geliştiriyorum.
         </p>
 
-        <div class="social-row">
+        <div class="social-row" id="contact-links">
 
           <a
             class="btn"
@@ -459,6 +510,13 @@
             rel="noopener noreferrer"
           >
             YouTube ↗
+          </a>
+
+          <a
+            class="btn"
+            href="mailto:burakcanbalta@proton.me"
+          >
+            Email ✉
           </a>
 
         </div>
@@ -859,334 +917,150 @@
 
     </div>
 
-    <div class="rows">
+    <div class="exp-list">
 
-      <article class="row">
+      <article class="exp-entry">
 
-        <div class="row-main">
+        <h3 class="exp-org">BgTek Cyber Security</h3>
+        <h4 class="exp-role">Penetration Tester</h4>
 
-          <div class="row-meta">
-            <span>BgTek Cyber Security · Stajyer</span>
-          </div>
-
-          <h3 class="row-title">
-            Penetration Tester
-          </h3>
-
-          <p class="row-desc">
-            Bursa merkezli hibrit çalışma düzeninde pentest süreçlerine,
-            saldırı senaryolarının kurgulanmasına ve raporlama
-            aşamalarına katkı sağladım.
-          </p>
-
+        <div class="exp-meta">
+          Stajyer · Bursa, Türkiye · Hibrit · Tem 2026 — Eki 2026 · 3 ay
         </div>
 
-        <div class="row-side">
-          <span class="source-pill">Tem 2026 — Eki 2026 · 3 ay</span>
-        </div>
+        <p class="exp-desc">
+          Bursa merkezli hibrit çalışma düzeninde pentest süreçlerine,
+          saldırı senaryolarının kurgulanmasına ve raporlama
+          aşamalarına katkı sağladım.
+        </p>
 
       </article>
 
-      <article class="row">
+      <article class="exp-entry">
 
-        <div class="row-main">
+        <h3 class="exp-org">OSCP Hazırlığı</h3>
 
-          <div class="row-meta">
-            <span>Devam ediyor</span>
-          </div>
-
-          <h3 class="row-title">
-            OSCP Hazırlığı
-          </h3>
-
-          <p class="row-desc">
-            Offensive Security Certified Professional sınavına yönelik
-            lab çalışmaları ve pratik exploitation teknikleri üzerine
-            yoğunlaşıyorum.
-          </p>
-
+        <div class="exp-meta">
+          Devam ediyor · 2026
         </div>
 
-        <div class="row-side">
-          <span class="source-pill">2026</span>
-        </div>
+        <p class="exp-desc">
+          Offensive Security Certified Professional sınavına yönelik
+          lab çalışmaları ve pratik exploitation teknikleri üzerine
+          yoğunlaşıyorum.
+        </p>
 
       </article>
 
-      <article class="row">
+      <article class="exp-entry">
 
-        <div class="row-main">
+        <h3 class="exp-org">Siber Vatan</h3>
+        <h4 class="exp-role">Student</h4>
 
-          <div class="row-meta">
-            <span>Siber Vatan · Öğrenci</span>
-          </div>
-
-          <h3 class="row-title">
-            Student
-          </h3>
-
-          <p class="row-desc">
-            Sızma testi ve ağ güvenliği dersleri alıyor, program
-            kapsamındaki CTF'lerde aktif rol oynuyorum.
-          </p>
-
+        <div class="exp-meta">
+          Öğrenci · Ara 2025 — Devam ediyor
         </div>
 
-        <div class="row-side">
-          <span class="source-pill">Ara 2025 — Devam ediyor</span>
-        </div>
+        <p class="exp-desc">
+          Sızma testi ve ağ güvenliği dersleri alıyor, program
+          kapsamındaki CTF'lerde aktif rol oynuyorum.
+        </p>
 
       </article>
 
-      <article class="row">
+      <article class="exp-entry">
 
-        <div class="row-main">
+        <h3 class="exp-org">UluSiber — Uludağ Üniversitesi Siber Güvenlik Topluluğu</h3>
+        <h4 class="exp-role">Technical Team Member</h4>
 
-          <div class="row-meta">
-            <span>UluSiber — Uludağ Üniversitesi Siber Güvenlik Topluluğu</span>
-          </div>
-
-          <h3 class="row-title">
-            Technical Team Member
-          </h3>
-
-          <p class="row-desc">
-            Topluluğun teknik ekibinde etkinlik, eğitim ve proje
-            süreçlerine katkı sağlıyorum.
-          </p>
-
+        <div class="exp-meta">
+          Kas 2025 — Devam ediyor
         </div>
 
-        <div class="row-side">
-          <span class="source-pill">Kas 2025 — Devam ediyor</span>
-        </div>
+        <p class="exp-desc">
+          Topluluğun teknik ekibinde etkinlik, eğitim ve proje
+          süreçlerine katkı sağlıyorum.
+        </p>
 
       </article>
 
-      <article class="row">
+      <article class="exp-entry">
 
-        <div class="row-main">
+        <h3 class="exp-org">CyberWarFare Labs</h3>
+        <h4 class="exp-role">Web & API Red Team Sertifikaları</h4>
 
-          <div class="row-meta">
-            <span>CyberWarFare Labs</span>
-          </div>
-
-          <h3 class="row-title">
-            Web & API Red Team Sertifikaları
-          </h3>
-
-          <p class="row-desc">
-            CyberWarFare Labs'tan Web-RTA ve API-RTA sertifikalarını
-            alarak web/API pentest ve red team tekniklerinde uygulamalı
-            yetkinlik kazandım.
-          </p>
-
+        <div class="exp-meta">
+          2025 — 2026
         </div>
 
-        <div class="row-side">
-          <span class="source-pill">2025 — 2026</span>
-        </div>
+        <p class="exp-desc">
+          CyberWarFare Labs'tan Web-RTA ve API-RTA sertifikalarını
+          alarak web/API pentest ve red team tekniklerinde uygulamalı
+          yetkinlik kazandım.
+        </p>
 
       </article>
 
-      <article class="row">
+      <article class="exp-entry">
 
-        <div class="row-main">
+        <h3 class="exp-org">Zerone Security</h3>
+        <h4 class="exp-role">Cyber Security / Project Leader</h4>
 
-          <div class="row-meta">
-            <span>Zerone Security · Stajyer</span>
-          </div>
-
-          <h3 class="row-title">
-            Cyber Security / Project Leader
-          </h3>
-
-          <p class="row-desc">
-            Web uygulamalarında XSS, SQLi, IDOR, LFI açıkları tespit
-            ettim; malware analizi gerçekleştiren web tabanlı bir
-            platform geliştirdim ve ekip liderliği yaptım.
-          </p>
-
+        <div class="exp-meta">
+          Stajyer · Tem 2025 — Eki 2025 · 4 ay
         </div>
 
-        <div class="row-side">
-          <span class="source-pill">Tem 2025 — Eki 2025</span>
-        </div>
+        <p class="exp-desc">
+          Web uygulamalarında XSS, SQLi, IDOR, LFI açıkları tespit
+          ettim; malware analizi gerçekleştiren web tabanlı bir
+          platform geliştirdim ve ekip liderliği yaptım.
+        </p>
 
       </article>
 
-      <article class="row">
+      <article class="exp-entry">
 
-        <div class="row-main">
+        <h3 class="exp-org">AD / Red Team</h3>
+        <h4 class="exp-role">Active Directory & Offensive Security üzerine derinleşme</h4>
 
-          <div class="row-meta">
-            <span>AD / Red Team</span>
-          </div>
-
-          <h3 class="row-title">
-            Active Directory & Offensive Security üzerine derinleşme
-          </h3>
-
-          <p class="row-desc">
-            Kerberoasting, ACL abuse, BloodHound ile attack path analizi
-            konularında laboratuvar çalışmaları ve writeup üretimi.
-          </p>
-
+        <div class="exp-meta">
+          Devam ediyor
         </div>
 
-        <div class="row-side">
-          <span class="source-pill">Devam ediyor</span>
-        </div>
+        <p class="exp-desc">
+          Kerberoasting, ACL abuse, BloodHound ile attack path analizi
+          konularında laboratuvar çalışmaları ve writeup üretimi.
+        </p>
 
       </article>
 
-      <article class="row">
+      <article class="exp-entry">
 
-        <div class="row-main">
+        <h3 class="exp-org">Uludağ Üniversitesi</h3>
+        <h4 class="exp-role">Fizik Bölümü Öğrencisi</h4>
 
-          <div class="row-meta">
-            <span>Uludağ Üniversitesi</span>
-          </div>
-
-          <h3 class="row-title">
-            Fizik Bölümü Öğrencisi
-          </h3>
-
-          <p class="row-desc">
-            Fizik eğitimimin yanı sıra siber güvenlik alanında teknik
-            gelişimime yoğun şekilde odaklanıyorum.
-          </p>
-
+        <div class="exp-meta">
+          2022 — 2027
         </div>
 
-        <div class="row-side">
-          <span class="source-pill">2022 — 2027</span>
-        </div>
+        <p class="exp-desc">
+          Fizik eğitimimin yanı sıra siber güvenlik alanında teknik
+          gelişimime yoğun şekilde odaklanıyorum.
+        </p>
 
       </article>
 
-      <article class="row">
+      <article class="exp-entry">
 
-        <div class="row-main">
+        <h3 class="exp-org">SiberPortal</h3>
+        <h4 class="exp-role">Blog & Writeup Arşivi</h4>
 
-          <div class="row-meta">
-            <span>SiberPortal</span>
-          </div>
-
-          <h3 class="row-title">
-            Blog & Writeup Arşivi
-          </h3>
-
-          <p class="row-desc">
-            Öğrendiklerimi markdown makaleler ve CTF/HTB writeup'ları
-            olarak bu sitede paylaşıyorum.
-          </p>
-
-        </div>
-
-        <div class="row-side">
-          <span class="source-pill">Blog</span>
-        </div>
+        <p class="exp-desc">
+          Öğrendiklerimi markdown makaleler ve CTF/HTB writeup'ları
+          olarak bu sitede paylaşıyorum.
+        </p>
 
       </article>
-
-    </div>
-
-  </div>
-
-</section>
-
-<section id="iletisim">
-
-  <div class="wrap">
-
-    <div class="section-head">
-
-      <div class="tag">İLETİŞİM</div>
-
-      <h2>Bağlantıda Kalalım</h2>
-
-      <p>
-        Siber güvenlik, projeler ve teknik çalışmalar hakkında bağlantı kurabilirsiniz.
-      </p>
-
-    </div>
-
-    <div class="about-terminal">
-
-      <div class="about-terminal-bar">
-
-        <span class="about-terminal-dot"></span>
-        <span class="about-terminal-dot"></span>
-        <span class="about-terminal-dot"></span>
-
-        <span class="about-terminal-title">
-          burak@siberporta — terminal
-        </span>
-
-      </div>
-
-      <div class="about-terminal-body">
-
-        <div class="shell-line">
-          <span class="shell-prompt">burak@siberporta:~$</span>
-          <span class="shell-command">cat connect.txt</span>
-        </div>
-
-        <div class="shell-output">
-        </div>
-
-        <div class="contact-terminal-links">
-
-          <a
-            href="https://github.com/burakcanbalta"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            GitHub
-            <span class="arrow">→</span>
-            github.com/burakcanbalta ↗
-          </a>
-
-          <a
-            href="https://www.linkedin.com/in/burak-balta-976a64261/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            LinkedIn
-            <span class="arrow">→</span>
-            linkedin.com/in/burak-balta-976a64261 ↗
-          </a>
-
-          <a
-            href="https://www.youtube.com/@SiberPortal"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            YouTube
-            <span class="arrow">→</span>
-            youtube.com/@SiberPortal ↗
-          </a>
-
-          <a href="mailto:burakcanbalta@proton.me">
-            Email
-            <span class="arrow">→</span>
-            burakcanbalta@proton.me ✉
-          </a>
-
-        </div>
-
-        <div class="shell-line" style="margin-top:9px">
-
-          <span class="shell-prompt">
-            burak@siberportal:~$
-          </span>
-
-          <span class="shell-cursor"></span>
-
-        </div>
-
-      </div>
 
     </div>
 
@@ -1375,7 +1249,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     iletisim: function () {
 
-      const section = document.getElementById("iletisim");
+      const section = document.getElementById("contact-links");
 
       if (section) {
         section.scrollIntoView({
