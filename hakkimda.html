@@ -317,51 +317,58 @@
     .exp-list {
       display: flex;
       flex-direction: column;
-      margin-top: 8px;
+      margin-top: 12px;
       max-width: 760px;
     }
 
     .exp-entry {
-      padding: 24px 0;
+      padding: 32px 0;
       border-bottom: 1px solid var(--border);
     }
 
     .exp-entry:first-child {
-      padding-top: 4px;
+      padding-top: 6px;
     }
 
     .exp-entry:last-child {
       border-bottom: none;
-      padding-bottom: 4px;
-    }
-
-    .exp-org {
-      margin: 0 0 3px;
-      font-size: 19px;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: .1px;
+      padding-bottom: 6px;
     }
 
     .exp-role {
+      margin: 0 0 5px;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: .1px;
+      line-height: 1.35;
+    }
+
+    .exp-org {
       margin: 0 0 8px;
       font-family: var(--mono);
-      font-size: 13px;
+      font-size: 15px;
       font-weight: 600;
       color: var(--green);
+      line-height: 1.4;
     }
 
     .exp-meta {
       font-family: var(--mono);
-      font-size: 11px;
+      font-size: 13px;
       color: var(--text-faint);
-      margin-bottom: 10px;
+      margin-bottom: 3px;
+      line-height: 1.6;
+    }
+
+    .exp-meta:last-of-type {
+      margin-bottom: 14px;
     }
 
     .exp-desc {
       color: var(--text-dim);
-      font-size: 14px;
-      line-height: 1.65;
+      font-size: 15.5px;
+      line-height: 1.75;
       margin: 0;
       max-width: 640px;
     }
@@ -763,7 +770,7 @@
 
           <a
             class="btn"
-            href="https://app.hackthebox.com/users/2381172?profile-top-tab=machines&ownership-period=1M&profile-bottom-tab=prolabs"
+            href="https://profile.hackthebox.com/profile/019ce6ad-f017-715f-892e-4cba7bceb9bd"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -915,11 +922,15 @@
 
       <article class="exp-entry">
 
-        <h3 class="exp-org">BgTek Cyber Security</h3>
-        <h4 class="exp-role">Penetration Tester</h4>
+        <h3 class="exp-role">Penetration Tester</h3>
+        <div class="exp-org">BgTek Cyber Security · Stajyer</div>
 
         <div class="exp-meta">
-          Stajyer · Bursa, Türkiye · Hibrit · Tem 2026 — Eki 2026 · 3 ay
+          Tem 2026 — Eki 2026 · 3 ay
+        </div>
+
+        <div class="exp-meta">
+          Bursa, Türkiye · Hibrit
         </div>
 
         <p class="exp-desc">
@@ -932,7 +943,7 @@
 
       <article class="exp-entry">
 
-        <h3 class="exp-org">OSCP Hazırlığı</h3>
+        <h3 class="exp-role">OSCP Hazırlığı</h3>
 
         <div class="exp-meta">
           Devam ediyor · 2026
@@ -948,11 +959,11 @@
 
       <article class="exp-entry">
 
-        <h3 class="exp-org">Siber Vatan</h3>
-        <h4 class="exp-role">Student</h4>
+        <h3 class="exp-role">Student</h3>
+        <div class="exp-org">Siber Vatan · Öğrenci</div>
 
         <div class="exp-meta">
-          Öğrenci · Ara 2025 — Devam ediyor
+          Ara 2025 — Devam ediyor
         </div>
 
         <p class="exp-desc">
@@ -964,8 +975,8 @@
 
       <article class="exp-entry">
 
-        <h3 class="exp-org">UluSiber — Uludağ Üniversitesi Siber Güvenlik Topluluğu</h3>
-        <h4 class="exp-role">Technical Team Member</h4>
+        <h3 class="exp-role">Technical Team Member</h3>
+        <div class="exp-org">UluSiber — Uludağ Üniversitesi Siber Güvenlik Topluluğu</div>
 
         <div class="exp-meta">
           Kas 2025 — Devam ediyor
@@ -980,8 +991,8 @@
 
       <article class="exp-entry">
 
-        <h3 class="exp-org">CyberWarFare Labs</h3>
-        <h4 class="exp-role">Web & API Red Team Sertifikaları</h4>
+        <h3 class="exp-role">Web & API Red Team Sertifikaları</h3>
+        <div class="exp-org">CyberWarFare Labs</div>
 
         <div class="exp-meta">
           2025 — 2026
@@ -997,11 +1008,11 @@
 
       <article class="exp-entry">
 
-        <h3 class="exp-org">Zerone Security</h3>
-        <h4 class="exp-role">Cyber Security / Project Leader</h4>
+        <h3 class="exp-role">Cyber Security / Project Leader</h3>
+        <div class="exp-org">Zerone Security · Stajyer</div>
 
         <div class="exp-meta">
-          Stajyer · Tem 2025 — Eki 2025 · 4 ay
+          Tem 2025 — Eki 2025 · 4 ay
         </div>
 
         <p class="exp-desc">
@@ -1014,8 +1025,8 @@
 
       <article class="exp-entry">
 
-        <h3 class="exp-org">AD / Red Team</h3>
-        <h4 class="exp-role">Active Directory & Offensive Security üzerine derinleşme</h4>
+        <h3 class="exp-role">Active Directory & Offensive Security üzerine derinleşme</h3>
+        <div class="exp-org">AD / Red Team</div>
 
         <div class="exp-meta">
           Devam ediyor
@@ -1030,8 +1041,8 @@
 
       <article class="exp-entry">
 
-        <h3 class="exp-org">Uludağ Üniversitesi</h3>
-        <h4 class="exp-role">Fizik Bölümü Öğrencisi</h4>
+        <h3 class="exp-role">Fizik Bölümü Öğrencisi</h3>
+        <div class="exp-org">Uludağ Üniversitesi</div>
 
         <div class="exp-meta">
           2022 — 2027
@@ -1046,8 +1057,8 @@
 
       <article class="exp-entry">
 
-        <h3 class="exp-org">SiberPortal</h3>
-        <h4 class="exp-role">Blog & Writeup Arşivi</h4>
+        <h3 class="exp-role">Blog & Writeup Arşivi</h3>
+        <div class="exp-org">SiberPortal</div>
 
         <p class="exp-desc">
           Öğrendiklerimi markdown makaleler ve CTF/HTB writeup'ları
