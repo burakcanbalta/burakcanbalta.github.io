@@ -1,13 +1,4 @@
-# HackTheBox — Funnel Writeup
-
-**Zorluk:** Easy
-**İşletim Sistemi:** Linux
-**Hedef IP:** 10.129.184.109
-**Saldırgan IP:** 10.10.14.156
-
----
-
-## 1. Keşif (Reconnaissance)
+## 1. Keşif
 
 Her zamanki gibi işe kapsamlı bir Nmap taramasıyla başlıyorum. Öncelikle tüm portları tarayıp servis/versiyon bilgisi ve OS tespiti almak istiyorum:
 
@@ -15,15 +6,8 @@ Her zamanki gibi işe kapsamlı bir Nmap taramasıyla başlıyorum. Öncelikle t
 nmap -sS -A -p- -T5 10.129.184.109
 ```
 
-**Çıktı (özet):**
+<img width="670" height="547" alt="nmap2" src="https://github.com/user-attachments/assets/a1fa444d-c23c-46d1-b531-2c87ee72fb52" />
 
-```
-PORT      STATE    SERVICE       VERSION
-21/tcp    open     ftp           vsftpd 3.0.3
-| ftp-anon: Anonymous FTP login allowed (FTP code 230)
-|_drwxr-xr-x    2 ftp      ftp          4096 Nov 28  2022 mail_backup
-22/tcp    open     ssh           OpenSSH 8.2p1 Ubuntu 4ubuntu0.5 (Ubuntu Linux; protocol 2.0)
-```
 
 Ek olarak hızlı bir doğrulama taraması da attım:
 
@@ -31,11 +15,7 @@ Ek olarak hızlı bir doğrulama taraması da attım:
 nmap -vvv 10.129.184.109
 ```
 
-```
-PORT   STATE SERVICE REASON
-21/tcp open  ftp     syn-ack ttl 63
-22/tcp open  ssh     syn-ack ttl 63
-```
+<img width="782" height="327" alt="nmap1" src="https://github.com/user-attachments/assets/9501eb2b-87f0-4c90-911e-34a46ea71805" />
 
 Sonuç net: hedefte sadece **2 adet TCP portu** açık — **21 (FTP)** ve **22 (SSH)**. Nmap ayrıca birkaç "filtered" port göstermiş olsa da (11617, 12006, 13232 vb.) bunlar gerçek açık portlar değil, muhtemelen bir firewall/IDS tarafından filtreleniyor. Gerçek anlamda açık ve kullanılabilir olan yalnızca 21 ve 22.
 
@@ -90,6 +70,7 @@ ftp> get password_policy.pdf
 ftp> get welcome_28112022
 ftp> exit
 ```
+<img width="907" height="642" alt="ftp" src="https://github.com/user-attachments/assets/656444e4-e733-4ab7-8a0b-4c3deebd1e08" />
 
 ---
 
@@ -101,20 +82,8 @@ ftp> exit
 cat welcome_28112022
 ```
 
-```
-Frome: root@funnel.htb
-To: optimus@funnel.htb albert@funnel.htb andreas@funnel.htb christine@funnel.htb maria@funnel.htb
-Subject: Welcome to the team!
+<img width="913" height="270" alt="welcomedosya" src="https://github.com/user-attachments/assets/0690f624-b96f-4506-88c0-b508d3d6dddb" />
 
-Hello everyone,
-We would like to welcome you to our team.
-We think you'll be a great asset to the "Funnel" team and want to make sure you get settled in as smoothly as possible.
-We have set up your accounts that you will need to access our internal infrastructure. Please, read through the attached password policy with extreme care.
-All the steps mentioned there should be completed as soon as possible. If you have any questions or concerns feel free to reach directly to your manager.
-
-We hope that you will have an amazing time with us,
-The funnel team.
-```
 
 Bu e-posta bize çok değerli bir bilgi veriyor: **5 adet kullanıcı adı**.
 
@@ -133,13 +102,9 @@ Bu isimleri bir `users.txt` dosyasına kaydediyorum, ilerideki brute-force denem
 PDF dosyasını `cat` ile açmaya çalışırsanız binary içerik nedeniyle bozuk/okunmaz görünür. Bunun yerine dosyayı doğrudan bir PDF görüntüleyici ile (Kali'de `xdg-open` / `open .` ile dosya yöneticisinden çift tıklayarak) açtım.
 
 PDF içinde şirketin şifre politikası anlatılıyor, ve en kritik kısım şu:
+Yeni işe başlayan her kullanıcıya varsayılan olarak **`funnel123#!#`** şifresi atanıyor ve değiştirilmesi isteniyor. Buradan yola çıkarak henüz bu şifreyi değiştirmemiş bir kullanıcı olabileceğini düşünüyorum.
 
-> **Password Creation:**
-> - All passwords should be sufficiently complex and therefore difficult for anyone to guess.
-> - In addition, employees should also use common sense when choosing passwords...
-> - Default passwords — such as those created for new users — must be changed as quickly as possible. **For example the default password of "funnel123#!#" must be changed immediately.**
-
-Yani yeni işe başlayan her kullanıcıya varsayılan olarak **`funnel123#!#`** şifresi atanıyor ve değiştirilmesi isteniyor. Buradan yola çıkarak henüz bu şifreyi değiştirmemiş bir kullanıcı olabileceğini düşünüyorum.
+<img width="605" height="545" alt="passworddosya" src="https://github.com/user-attachments/assets/0f07eba7-5273-479c-b78a-5bd4228c62f5" />
 
 ---
 
@@ -153,6 +118,9 @@ hydra -L users.txt -p 'funnel123#!#' 10.129.184.109 ssh
 
 Sonuçta **christine** kullanıcısının hâlâ varsayılan şifresini kullandığı ortaya çıkıyor. Diğer kullanıcılar muhtemelen politikayı takip edip şifrelerini değiştirmiş.
 
+<img width="920" height="270" alt="hydrasonuç" src="https://github.com/user-attachments/assets/44fb38a0-1f14-481d-ac42-cf07eed914e3" />
+
+
 SSH ile bağlanıyorum:
 
 ```bash
@@ -161,6 +129,8 @@ ssh christine@10.129.184.109
 ```
 
 Başarılı bir şekilde `christine` kullanıcısı olarak sisteme giriş yapıyorum.
+
+<img width="670" height="160" alt="sshbağlantı" src="https://github.com/user-attachments/assets/987e1178-1375-492e-b5d9-b0679697b6df" />
 
 ---
 
@@ -188,17 +158,23 @@ LISTEN       0            128                         [::]:22                   
 127.0.0.1:postgresql
 ```
 
+<img width="874" height="252" alt="listelemeport" src="https://github.com/user-attachments/assets/73066490-edf1-412f-9f22-2b562414b684" />
+
+
 Görüldüğü üzere **5432 portunda PostgreSQL servisi** çalışıyor, fakat sadece `127.0.0.1` (localhost) üzerinde dinliyor — yani dışarıdan doğrudan erişilemiyor. Bu servise ulaşabilmek için bir SSH tüneli kurmam gerekiyor.
 
 ---
 
-## 6. SSH ile Local Port Forwarding (Tünelleme)
+## 6. SSH ile Local Port Forwarding
 
 Servis sadece hedef makinenin localhost'unda dinlediği için, doğrudan bana (saldırgan makineye) bağlantı gelmiyor — ben bağlantıyı hedefe doğru başlatmam gerekiyor. Bu durumda kullanılması gereken doğru yöntem **local port forwarding (yerel port yönlendirme)**'dir; **remote port forwarding değil**, çünkü tünelin amacı benim yerel makinemden hedefin localhost'undaki bir servise erişim sağlamak (`-L` seçeneği).
 
 ```bash
 ssh -L 1234:localhost:5432 christine@10.129.184.109
 ```
+
+<img width="538" height="85" alt="portforwarding" src="https://github.com/user-attachments/assets/d820d7c7-696f-420f-997d-13985ac98325" />
+
 
 Bu komutla kendi makinemdeki `1234` portuna gelen trafiği, SSH tüneli üzerinden hedef makinenin `localhost:5432` adresine yönlendirmiş oluyorum.
 
@@ -207,13 +183,6 @@ Tünel ayaktayken artık kendi makinemden PostgreSQL'e bağlanabilirim:
 ```bash
 psql -U christine -h 127.0.0.1 -p 1234
 Password for user christine: funnel123#!#
-```
-
-```
-psql (17.5 (Debian 17.5-1), server 15.1 (Debian 15.1-1.pgdg110+1))
-Type "help" for help.
-
-christine=#
 ```
 
 Bağlantı başarılı.
@@ -274,22 +243,12 @@ SELECT * FROM flag;
 
 Flag başarıyla elde edildi. 🎉
 
----
-
-## 8. Özet — Atak Zinciri
-
-1. Nmap taramasıyla 21 (FTP) ve 22 (SSH) portlarının açık olduğu tespit edildi.
-2. FTP'de anonim giriş aktif olduğu keşfedildi ve `mail_backup` dizinindeki dosyalar indirildi.
-3. `welcome_28112022` dosyasından geçerli kullanıcı adları elde edildi.
-4. `password_policy.pdf` dosyasından varsayılan şifre (`funnel123#!#`) tespit edildi.
-5. Hydra ile SSH üzerinde password spraying yapılarak `christine` kullanıcısının hâlâ varsayılan şifreyi kullandığı bulundu ve giriş yapıldı.
-6. Sistemde yalnızca localhost'ta dinleyen PostgreSQL servisi (5432) tespit edildi.
-7. SSH local port forwarding (`ssh -L`) ile bu servise yerel makineden tünel kuruldu.
-8. `psql` ile bağlanılıp `secrets` veritabanındaki `flag` tablosundan flag okundu.
+<img width="556" height="431" alt="flag" src="https://github.com/user-attachments/assets/0a8606a6-ba4a-417b-adcc-0396c723373e" />
 
 ---
 
-## 9. Görev Cevapları (Task Answers)
+
+## 9. Görev Cevapları
 
 | Görev | Soru | Cevap |
 |---|---|---|
@@ -302,7 +261,3 @@ Flag başarıyla elde edildi. 🎉
 | **Görev 7** | Bayrağın saklandığı veritabanının adı nedir? | **secrets** |
 | **Task 8** | Could you use a dynamic tunnel instead of local port forwarding? | **Hayır (No)** — Dinamik tünel (`ssh -D`, SOCKS proxy) trafiği uygulama bazında yönlendirmez, genel bir SOCKS proxy oluşturur; belirli bir yerel porttan belirli bir hedef porta doğrudan statik yönlendirme yapmaz. Bu senaryoda tek, sabit bir servise (`localhost:5432`) erişim gerektiği için doğru ve pratik çözüm local port forwarding'dir. |
 | **Flag** | Submit the flag located in the database. | **cf277664b1771217d7006acdea006db1** |
-
----
-
-*Not: Bu writeup eğitim/CTF amaçlıdır. Tüm işlemler yalnızca HackTheBox'ın izin verdiği laboratuvar ortamında gerçekleştirilmiştir.*
