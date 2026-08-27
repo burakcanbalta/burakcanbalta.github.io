@@ -34,10 +34,6 @@ Bu tarz bir açık gerçek ortamda pek görülmez ama var olduğu yerlerde de bi
 
 Masaüstüne bağlandığımda ilk gördüğüm şey `flag` isimli bir metin belgesiydi. Notepad ile açtım:
 
-```
-951fa96d7830c451b536be5a6be008a0
-```
-
 <img width="1028" height="469" alt="flag" src="https://github.com/user-attachments/assets/6d4b6745-1666-44ba-a4c3-195d1129f190" />
 
 ## Görev Soruları ve Cevapları
