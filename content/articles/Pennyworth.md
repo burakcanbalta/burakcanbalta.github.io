@@ -11,7 +11,6 @@ nmap -sS -A -p- -T5 10.129.184.209
 
 Hedefte tek bir port açık: **8080/tcp**, üzerinde **Jetty 9.4.39** web sunucusu çalışıyor. Jetty, Java tabanlı uygulamalar için sıkça kullanılan bir servlet konteyneri/web sunucusu — bu da bana Java ekosisteminde bir şey (Jenkins, Tomcat, vb.) çalışıyor olabileceği fikrini veriyor.
 
----
 
 ## 2. Web Servisinin İncelenmesi — Jenkins Tespiti
 
