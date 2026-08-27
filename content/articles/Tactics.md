@@ -104,29 +104,20 @@ psexec.py Administrator@10.129.184.220
 
 ## 6. Görev Soruları ve Cevapları
 
-**Görev 1 — Windows güvenlik duvarı ping ICMP paketlerimizi engellediğinde makineleri listelemek için hangi Nmap anahtarını kullanabiliriz?**
-`-Pn`
+**Görev 1 — Windows güvenlik duvarı ping ICMP paketlerimizi engellediğinde makineleri listelemek için hangi Nmap anahtarını kullanabiliriz?** `-Pn`
 
-**Görev 2 — Üç harfli SMB kısaltması ne anlama geliyor?**
-`Server Message Block`
+**Görev 2 — Üç harfli SMB kısaltması ne anlama geliyor?** `Server Message Block`
 
-**Görev 3 — SMB varsayılan olarak hangi bağlantı noktasından dinleme yapar?**
-`445`
+**Görev 3 — SMB varsayılan olarak hangi bağlantı noktasından dinleme yapar?** `445`
 
-**Görev 4 — `smbclient` kullanılabilir paylaşımları listelemek için hangi komut satırı argümanını veriyorsunuz?**
-`-L`
+**Görev 4 — `smbclient` kullanılabilir paylaşımları listelemek için hangi komut satırı argümanını veriyorsunuz?** `-L`
 
-**Görev 5 — Bir hisse senedi adının sonundaki hangi karakter, o hisse senedinin yönetimsel bir hisse senedi olduğunu gösterir?**
-`$`
+**Görev 5 — Bir hisse senedi adının sonundaki hangi karakter, o hisse senedinin yönetimsel bir hisse senedi olduğunu gösterir?** `$`
 
-**Görev 6 — Kullanıcıların tüm dosya sistemini görüntülemesine olanak tanıyan sunucuda hangi Yönetimsel paylaşım klasörüne erişilebilir?**
-`C$`
+**Görev 6 — Kullanıcıların tüm dosya sistemini görüntülemesine olanak tanıyan sunucuda hangi Yönetimsel paylaşım klasörüne erişilebilir?** `C$`
 
-**Görev 7 — SMB paylaşımında bulduğumuz dosyaları indirmek için hangi komutu kullanabiliriz?**
-`get`
+**Görev 7 — SMB paylaşımında bulduğumuz dosyaları indirmek için hangi komutu kullanabiliriz?** `get`
 
-**Görev 8 — Impacket koleksiyonunun parçası olan hangi araç, sistemde etkileşimli bir kabuk elde etmek için kullanılabilir?**
-`psexec.py`
+**Görev 8 — Impacket koleksiyonunun parçası olan hangi araç, sistemde etkileşimli bir kabuk elde etmek için kullanılabilir?** `psexec.py`
 
-**Tek Bayrak Gönder — Yöneticinin masaüstünde bulunan bayrağı gönderin.**
-`f751c19eda8f61ce81827e6930a1f40c`
+**Tek Bayrak Gönder — Yöneticinin masaüstünde bulunan bayrağı gönderin.**`f751c19eda8f61ce81827e6930a1f40c`
