@@ -238,16 +238,31 @@ Flag başarıyla elde edildi. 🎉
 ---
 
 
-## 9. Görev Cevapları
-
-| Görev | Soru | Cevap |
-|---|---|---|
-| **Görev 1** | Kaç adet TCP portu açık? | **2** (21/FTP, 22/SSH) |
-| **Görev 2** | FTP sunucusunda bulunan dizinin adı nedir? | **mail_backup** |
-| **Görev 3** | "Funnel" ekibine yeni katılan her üyenin en kısa sürede değiştirmesi gereken varsayılan hesap şifresi nedir? | **funnel123#!#** |
-| **Görev 4** | Hangi kullanıcı varsayılan şifresini henüz değiştirmedi? | **christine** |
-| **Görev 5** | TCP 5432 portunda çalışan ve yalnızca localhost'u dinleyen servis hangisidir? | **PostgreSQL** |
-| **Görev 6** | Yerel makinenizden daha önce bahsedilen servise erişemediğiniz için tünel kurmanız gerekiyor — hangi tünelleme türü doğru? | **Local port forwarding (yerel port yönlendirme)** — `ssh -L 1234:localhost:5432 christine@10.129.184.109` |
-| **Görev 7** | Bayrağın saklandığı veritabanının adı nedir? | **secrets** |
-| **Task 8** | Could you use a dynamic tunnel instead of local port forwarding? | **Hayır (No)** — Dinamik tünel (`ssh -D`, SOCKS proxy) trafiği uygulama bazında yönlendirmez, genel bir SOCKS proxy oluşturur; belirli bir yerel porttan belirli bir hedef porta doğrudan statik yönlendirme yapmaz. Bu senaryoda tek, sabit bir servise (`localhost:5432`) erişim gerektiği için doğru ve pratik çözüm local port forwarding'dir. |
-| **Flag** | Submit the flag located in the database. | **cf277664b1771217d7006acdea006db1** |
+## Görev Soruları ve Cevapları
+ 
+**Görev 1 — Kaç adet TCP portu açık?**
+2 (21/FTP, 22/SSH)
+ 
+**Görev 2 — FTP sunucusunda bulunan dizinin adı nedir?**
+mail_backup
+ 
+**Görev 3 — "Funnel" ekibine yeni katılan her üyenin en kısa sürede değiştirmesi gereken varsayılan hesap şifresi nedir?**
+`funnel123#!#`
+ 
+**Görev 4 — Hangi kullanıcı varsayılan şifresini henüz değiştirmedi?**
+christine
+ 
+**Görev 5 — TCP 5432 portunda çalışan ve yalnızca localhost'u dinleyen servis hangisidir?**
+PostgreSQL
+ 
+**Görev 6 — Yerel makinenizden daha önce bahsedilen servise erişemediğiniz için, bir tünel oluşturmanız ve makinenizden ona bağlanmanız gerekecek. Kullanılacak doğru tünelleme türü hangisidir? Uzaktan port yönlendirme mi yoksa yerel port yönlendirme mi?**
+Local port forwarding (yerel port yönlendirme) — `ssh -L 1234:localhost:5432 christine@10.129.184.109`
+ 
+**Görev 7 — Bayrağın saklandığı veritabanının adı nedir?**
+secrets
+ 
+**Task 8 — Could you use a dynamic tunnel instead of local port forwarding? Yes or No.**
+Hayır (No) — Dinamik tünel (`ssh -D`, SOCKS proxy) trafiği uygulama bazında yönlendirmez, genel bir SOCKS proxy oluşturur; belirli bir yerel porttan belirli bir hedef porta doğrudan statik yönlendirme yapmaz. Bu senaryoda tek, sabit bir servise (`localhost:5432`) erişim gerektiği için doğru ve pratik çözüm local port forwarding'dir.
+ 
+**Submit Single Flag — Submit the flag located in the database.**
+`cf277664b1771217d7006acdea006db1`
