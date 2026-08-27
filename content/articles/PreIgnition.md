@@ -3,9 +3,7 @@
 ```
 nmap -sS -A -p- 10.129.184.20 -T5
 ```
-<img width="844" height="365" alt="nmap" src="https://github.com/user-attachments/assets/5dc57042-c58e-4c54-bf8b-2ceef4912acf" />
-
-Burada tablo çok basit aslında: tek açık port 80/tcp, üzerinde de nginx 1.14.2 çalışıyor. Diğer portlar kapalı olduğu için saldırı yüzeyi de otomatik olarak tek noktaya indirgeniyor — web servisine. OS tespiti MikroTik/Linux gibi bir şeyler söylüyor ama bu aşamada beni asıl ilgilendiren web tarafı
+<img width="251" height="41" alt="nmap" src="https://github.com/user-attachments/assets/dd88e631-814c-404a-be05-e253b840a837" />
 
 ## Dizin Taraması
 
