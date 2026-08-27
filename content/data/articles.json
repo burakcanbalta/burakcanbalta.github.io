@@ -1,5 +1,21 @@
 [
   {
+    "slug": "Pennyworth",
+    "title": "HackTheBox — Pennyworth Writeup",
+    "date": "2026-08-28",
+    "tags": [
+      "Linux",
+      "Jenkins",
+      "Groovy",
+      "RCE",
+      "Reverse Shell",
+      "Weak Credentials",
+      "Enumeration"
+    ],
+    "excerpt": "Jetty üzerinde çalışan Jenkins 2.289.1 panelinde varsayılan kimlik bilgileriyle (root:password) giriş sağlanması, Script Console üzerinden Groovy reverse shell ile RCE elde edilmesi ve root yetkisiyle çalışan servis üzerinden ana dizindeki flag'in okunması sürecinin teknik incelemesi.",
+    "readTime": "8 dk"
+  },
+  {
     "slug": "Ignition",
     "title": "HackTheBox — Ignition Writeup",
     "date": "2026-08-28",
