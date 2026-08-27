@@ -1,5 +1,20 @@
 [
   {
+    "slug": "Funnel",
+    "title": "HackTheBox — Funnel Writeup",
+    "date": "2026-08-27",
+    "tags": [
+      "Linux",
+      "FTP",
+      "SSH",
+      "PostgreSQL",
+      "Port Forwarding",
+      "Enumeration"
+    ],
+    "excerpt": "Anonim FTP erişimiyle ele geçirilen mail yedeklerinden kullanıcı adları ve varsayılan parolanın tespiti, SSH üzerinde password spraying ile geçerli hesaba ulaşılması, yalnızca localhost'ta dinleyen PostgreSQL servisine SSH local port forwarding ile tünel açılması ve secrets veritabanındaki flag'in okunması sürecinin teknik incelemesi.",
+    "readTime": "8 dk"
+  },
+  {
     "slug": "Explosion",
     "title": "HackTheBox — Explosion Writeup",
     "date": "2026-08-27",
