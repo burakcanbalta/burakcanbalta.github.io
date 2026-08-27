@@ -1,6 +1,6 @@
-İlk olarak nmap taraması atıyoruz
-
 ## Nmap Taraması
+
+İlk olarak nmap taraması atıyoruz
 
 ```
 nmap -sS -A -p- -T5 10.129.1.13
