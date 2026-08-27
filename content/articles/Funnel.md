@@ -142,21 +142,11 @@ Sisteme giriş yaptıktan sonra dinleyen (listening) servisleri kontrol ediyorum
 christine@funnel:~$ ss -tln
 ```
 
-```
-State        Recv-Q       Send-Q             Local Address:Port              Peer Address:Port      Process
-LISTEN       0            4096                   127.0.0.1:33483                  0.0.0.0:*
-LISTEN       0            4096               127.0.0.53%lo:53                     0.0.0.0:*
-LISTEN       0            128                      0.0.0.0:22                     0.0.0.0:*
-LISTEN       0            4096                   127.0.0.1:5432                   0.0.0.0:*
-LISTEN       0            32                             *:21                           *:*
-LISTEN       0            128                         [::]:22                        [::]:*
+```bash
+christine@funnel:~$ ss -tl
 ```
 
 `ss -tl` çıktısında servis isimleri de görünüyor:
-
-```
-127.0.0.1:postgresql
-```
 
 <img width="874" height="252" alt="listelemeport" src="https://github.com/user-attachments/assets/73066490-edf1-412f-9f22-2b562414b684" />
 
