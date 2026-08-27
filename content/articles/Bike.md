@@ -110,7 +110,7 @@ We will contact you at:       e
       root
 ```
 
-En sondaki satırda **`root`** yazıyor — yani `whoami` komutunun çıktısı bu. Web sunucusu (Express uygulaması) **root kullanıcısı** olarak çalışıyormuş. Bu ciddi bir yanlış yapılandırma; normalde web servisleri düşük yetkili bir kullanıcıyla (örn. `www-data`, `node`) çalıştırılmalı.
+En sondaki satırda **`root`** yazıyor — yani `whoami` komutunun çıktısı bu. Web sunucusu (Express uygulaması) **root kullanıcısı** olarak çalışıyormuş.
 
 ---
 
