@@ -8,7 +8,7 @@ nmap -sS -A -p- -T5 10.129.228.30
 <img width="686" height="466" alt="nmap" src="https://github.com/user-attachments/assets/197b53fb-53ab-4260-93a7-6a0aadf6edd0" />
 
 
-İki açık port var: 22'de standart bir SSH servisi, 27017'de ise asıl dikkatimi çeken şey — MongoDB 3.6.8. / MongoDB'ye odaklandım.
+İki açık port var: 22'de standart bir SSH servisi, 27017'de ise MongoDB 3.6.8. / MongoDB'ye odaklandım.
 
 Nmap'in `mongodb-info` script çıktısında sunucunun authentication olmadan ayakta olduğunu gösteren bir detay dikkatimi çekti: `Access control is not enabled for the database` uyarısı loglara zaten yansımıştı, yani kullanıcı adı/parola sormadan direkt bağlanabileceğim bir MongoDB instance'ıyla karşı karşıyaydım. Ayrıca aynı script çıktısında sunucudaki veritabanlarının bir listesi de geliyordu:
 
