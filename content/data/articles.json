@@ -1,5 +1,58 @@
 [
   {
+    "slug": "Explosion",
+    "title": "HackTheBox — Explosion Writeup",
+    "date": "2026-08-27",
+    "tags": [
+      "Windows",
+      "RDP",
+      "Enumeration",
+      "Misconfiguration"
+    ],
+    "excerpt": "Nmap ile RDP servisinin keşfi, xfreerdp kullanılarak administrator hesabına boş parola ile doğrudan masaüstü erişimi sağlanması ve masaüstündeki flag'in ele geçirilmesi sürecinin teknik incelemesi.",
+    "readTime": "6 dk"
+  },
+  {
+    "slug": "Mongod",
+    "title": "HackTheBox — Mongod Writeup",
+    "date": "2026-08-27",
+    "tags": [
+      "Linux",
+      "MongoDB",
+      "NoSQL",
+      "Misconfiguration",
+      "Enumeration"
+    ],
+    "excerpt": "Authentication olmadan dışarıya açık bırakılan MongoDB 3.6.8 instance'ına bağlanılması, veritabanı ve koleksiyonların enumerate edilmesi ve sensitive_information veritabanındaki flag'in okunması sürecinin teknik incelemesi.",
+    "readTime": "7 dk"
+  },
+  {
+    "slug": "PreIgnition",
+    "title": "HackTheBox — PreIgnition Writeup",
+    "date": "2026-08-27",
+    "tags": [
+      "Web",
+      "Directory Brute-forcing",
+      "Weak Credentials",
+      "Enumeration"
+    ],
+    "excerpt": "nginx üzerinde çalışan web servisinde ffuf ile dizin taraması yapılarak admin panelinin keşfedilmesi ve varsayılan admin:admin kimlik bilgileriyle giriş sağlanarak flag'in ele geçirilmesi sürecinin teknik incelemesi.",
+    "readTime": "6 dk"
+  },
+  {
+    "slug": "Synced",
+    "title": "HackTheBox — Synced Writeup",
+    "date": "2026-08-27",
+    "tags": [
+      "Linux",
+      "Rsync",
+      "Misconfiguration",
+      "Enumeration"
+    ],
+    "excerpt": "Anonim erişime açık bırakılan rsync paylaşımının keşfedilmesi, share içeriğinin listelenmesi ve flag dosyasının indirilerek okunması sürecinin teknik incelemesi.",
+    "readTime": "6 dk"
+  },
+  {
     "slug": "Dogcat",
     "title": "TryHackMe — Dogcat Writeup",
     "date": "2026-08-22",
