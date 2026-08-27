@@ -92,13 +92,13 @@ Flag başarıyla elde edildi. 🎉
 
 ## 4.Interaktif Shell İhtimali
 
-Elimde `Administrator` kimlik bilgileri (boş parola) ve `C$` paylaşımına tam erişim olduğu için, aslında burada durmak zorunda değilim. **Impacket** araç setinin parçası olan **`psexec.py`** kullanılarak hedef üzerinde tam interaktif bir shell (SYSTEM yetkisiyle) de elde edilebilir:
+Elimde `Administrator` kimlik bilgileri ve `C$` paylaşımına tam erişim olduğu için, aslında burada durmak zorunda değilim. **Impacket** araç setinin parçası olan **`psexec.py`** kullanılarak hedef üzerinde tam interaktif bir shell de elde edilebilir:
 
 ```bash
 psexec.py Administrator@10.129.184.220
 ```
 
-`psexec.py`, SMB üzerinden hedef sisteme bir servis binary'si yükleyip çalıştırarak (klasik Sysinternals PsExec mantığıyla) uzaktan komut satırı erişimi sağlıyor. Bu makinede flag'e ulaşmak için buna gerek kalmadı, ancak ortamda daha fazla post-exploitation yapılması gerekseydi bu araç bir sonraki doğal adım olurdu.
+`psexec.py`, SMB üzerinden hedef sisteme bir servis binary'si yükleyip çalıştırarak uzaktan komut satırı erişimi sağlıyor. Bu makinede flag'e ulaşmak için buna gerek kalmadı, ancak ortamda daha fazla post-exploitation yapılması gerekseydi bu araç bir sonraki doğal adım olurdu.
 
 ---
 
