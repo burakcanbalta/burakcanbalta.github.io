@@ -1,5 +1,20 @@
 [
   {
+    "slug": "Ignition",
+    "title": "HackTheBox — Ignition Writeup",
+    "date": "2026-08-28",
+    "tags": [
+      "Web",
+      "Magento",
+      "Virtual Host",
+      "Weak Credentials",
+      "Directory Brute-forcing",
+      "Enumeration"
+    ],
+    "excerpt": "Nmap ile tespit edilen tek HTTP portunun ignition.htb sanal sunucusuna yönlendirme yaptığının keşfi, /etc/hosts üzerinden domain çözümlemesi, ffuf ile bulunan Magento admin panelinde 2023'ün en yaygın parolalarından biriyle giriş sağlanması ve panelde bulunan flag'in ele geçirilmesi sürecinin teknik incelemesi.",
+    "readTime": "7 dk"
+  },
+  {
     "slug": "Bike",
     "title": "HackTheBox — Bike Writeup",
     "date": "2026-08-28",
