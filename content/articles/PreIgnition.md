@@ -1,37 +1,13 @@
-# HTB - PreIgnition Box Writeup
-
-**Hedef:** 10.129.184.20
-**Tarih:** 27.08.2026
-
-## Giriş
-
-PreIgnition'a başlarken de her zamanki rutini uyguladım: önce ne var ne yok görmek için tam kapsamlı bir nmap taraması. IP dışında elimde hiçbir bilgi yoktu, o yüzden ilk adım her zaman aynı.
-
 ## Nmap Taraması
 
 ```
 nmap -sS -A -p- 10.129.184.20 -T5
 ```
+<img width="844" height="365" alt="nmap" src="https://github.com/user-attachments/assets/5dc57042-c58e-4c54-bf8b-2ceef4912acf" />
 
-Çıktı şu şekildeydi:
+Burada tablo çok basit aslında: tek açık port 80/tcp, üzerinde de nginx 1.14.2 çalışıyor. Diğer portlar kapalı olduğu için saldırı yüzeyi de otomatik olarak tek noktaya indirgeniyor — web servisine. OS tespiti MikroTik/Linux gibi bir şeyler söylüyor ama bu aşamada beni asıl ilgilendiren web tarafı
 
-```
-PORT   STATE SERVICE VERSION
-80/tcp open  http    nginx 1.14.2
-|_http-title: Welcome to nginx!
-|_http-server-header: nginx/1.14.2
-Device type: general purpose|router
-Running: Linux 5.X, MikroTik RouterOS 7.X
-OS CPE: cpe:/o:linux:linux_kernel:5 cpe:/o:mikrotik:routeros:7 cpe:/o:linux:linux_kernel:5.6.3
-OS details: Linux 5.0 - 5.14, MikroTik RouterOS 7.2 - 7.5 (Linux 5.6.3)
-Network Distance: 2 hops
-```
-
-Burada tablo çok basit aslında: tek açık port 80/tcp, üzerinde de nginx 1.14.2 çalışıyor. Diğer portlar kapalı olduğu için saldırı yüzeyi de otomatik olarak tek noktaya indirgeniyor — web servisine. OS tespiti MikroTik/Linux gibi bir şeyler söylüyor ama bu aşamada beni asıl ilgilendiren web tarafı, ona odaklandım.
-
-Tarayıcıdan siteye gittiğimde varsayılan nginx karşılama sayfasını gördüm, yani içerik anlamında elle gezilebilecek bir şey yok. Bu durumda sırada klasik bir adım var: dizin/dosya keşfi.
-
-## Dizin Taraması (Directory Brute-Forcing)
+## Dizin Taraması
 
 Sayfada görünür bir şey olmadığına göre gizli dosya/dizinleri bulmak için brute-force denemesi yaptım. Ben bu iş için ffuf kullanmayı tercih ediyorum:
 
@@ -47,23 +23,15 @@ admin.php [Status: 200, Size: 999, Words: 132, Lines: 32, Duration: 61ms]
 
 `admin.php` diye bir sayfa var ve 200 dönüyor, yani erişilebilir. Bunu görünce direkt tarayıcıdan `/admin.php` adresine gittim.
 
+<img width="655" height="368" alt="admin" src="https://github.com/user-attachments/assets/40b621db-c736-49f8-a7b6-a674d3d53d6d" />
+
 ## Giriş Sayfası ve Flag
 
 Karşıma bir login formu çıktı. İlk aklıma gelen klasik zayıf kimlik bilgilerini denemek oldu — çoğu zaman böyle basit boxlarda geliştiricinin varsayılan bilgileri değiştirmeyi unutması yaygın bir hata. `admin:admin` ile giriş yaptım ve içeri girdim.
 
 Giriş başarılı olur olmaz flag zaten ekranda karşıma çıktı, ekstra bir işlem yapmama gerek kalmadı.
 
-## Sonuç
-
-PreIgnition, temel keşif adımlarının önemini gösteren güzel bir örnek: tek açık portu bulmak, o portun arkasındaki servisi anlamak, görünürde bir şey yoksa dizin taraması yapmak ve son olarak zayıf/varsayılan kimlik bilgilerini denemek. Karmaşık bir exploit gerekmedi, sadece metodik ilerlemek yeterli oldu.
-
-Gerçek bir ortamda bu tarz bir bulguyu raporlarken şunları vurgulardım:
-
-- Yönetim panelleri asla tahmin edilebilir/varsayılan bir yol üzerinden (`/admin.php` gibi) yayınlanmamalı, en azından ek bir erişim kontrolü (IP whitelist, VPN vs.) olmalı
-- Varsayılan kullanıcı adı/parola kombinasyonları (`admin:admin`) production ortamına asla taşınmamalı
-- Dizin listeleme ve gizli sayfa keşfine karşı sunucu tarafında rate-limiting veya WAF benzeri bir önlem düşünülebilir
-
----
+<img width="637" height="108" alt="flag" src="https://github.com/user-attachments/assets/50c32969-ae53-4b3c-a238-3c455fd057f9" />
 
 ## Görev Soruları ve Cevapları
 
