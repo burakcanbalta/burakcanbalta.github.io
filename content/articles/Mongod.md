@@ -1,4 +1,5 @@
 ## Nmap Taraması
+İlk olarak nmap taraması ile başlıyorum.
 
 ```
 nmap -sS -A -p- -T5 10.129.228.30
