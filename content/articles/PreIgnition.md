@@ -27,7 +27,7 @@ admin.php [Status: 200, Size: 999, Words: 132, Lines: 32, Duration: 61ms]
 
 ## Giriş Sayfası ve Flag
 
-Karşıma bir login formu çıktı. İlk aklıma gelen klasik zayıf kimlik bilgilerini denemek oldu — çoğu zaman böyle basit boxlarda geliştiricinin varsayılan bilgileri değiştirmeyi unutması yaygın bir hata. `admin:admin` ile giriş yaptım ve içeri girdim.
+Karşıma bir login formu çıktı. İlk aklıma gelen klasik zayıf kimlik bilgilerini denemek oldu — böyle basit boxlarda varsayılan bilgileri basit bırakırlar `admin:admin` ile giriş yaptım ve içeri girdim.
 
 Giriş başarılı olur olmaz flag zaten ekranda karşıma çıktı, ekstra bir işlem yapmama gerek kalmadı.
 
