@@ -157,7 +157,7 @@ Görüldüğü üzere **5432 portunda PostgreSQL servisi** çalışıyor, fakat 
 
 ## 6. SSH ile Local Port Forwarding
 
-Servis sadece hedef makinenin localhost'unda dinlediği için, doğrudan bana (saldırgan makineye) bağlantı gelmiyor — ben bağlantıyı hedefe doğru başlatmam gerekiyor. Bu durumda kullanılması gereken doğru yöntem **local port forwarding (yerel port yönlendirme)**'dir; **remote port forwarding değil**, çünkü tünelin amacı benim yerel makinemden hedefin localhost'undaki bir servise erişim sağlamak (`-L` seçeneği).
+Servis sadece hedef makinenin localhost'unda dinlediği için, doğrudan bana (saldırgan makineye) bağlantı gelmiyor — ben bağlantıyı hedefe doğru başlatmam gerekiyor. Bu durumda kullanılması gereken doğru yöntem **local port forwarding (yerel port yönlendirme)**'dir; **remote port forwarding değil**, çünkü tünelin amacı benim yerel makinemden hedefin localhost'undaki bir servise erişim sağlamak.
 
 ```bash
 ssh -L 1234:localhost:5432 christine@10.129.184.109
