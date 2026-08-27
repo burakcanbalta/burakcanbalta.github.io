@@ -31,13 +31,13 @@ smbclient -L //10.129.184.220 -U Administrator
 <img width="739" height="210" alt="smbclient" src="https://github.com/user-attachments/assets/7df1bfd5-9ace-4e06-ac4f-c4a0f9753492" />
 
 
-Şaşırtıcı bir şekilde **boş parola** ile (Enter'a basarak) `Administrator` hesabıyla oturum açabiliyorum ve tüm **Yönetimsel Paylaşımları (Administrative Shares)** görebiliyorum:
+Şaşırtıcı bir şekilde **boş parola** ile `Administrator` hesabıyla oturum açabiliyorum ve tüm **Yönetimsel Paylaşımları** görebiliyorum:
 
 - **`ADMIN$`** — Windows kurulum dizinine (`C:\Windows`) erişim sağlayan yönetimsel paylaşım.
 - **`C$`** — Sunucunun **tüm C: sürücüsüne** erişim sağlayan, kullanıcıların tüm dosya sistemini görüntülemesine olanak tanıyan yönetimsel paylaşım.
 - **`IPC$`** — Süreçler arası iletişim (Inter-Process Communication) için kullanılan özel paylaşım.
 
-Paylaşım adının sonundaki **`$`** karakteri, o paylaşımın gizli bir **yönetimsel paylaşım (administrative share)** olduğunu gösteriyor — normal dosya gezgininde görünmez, sadece tam yolunu bilen ve yeterli yetkiye sahip biri erişebilir.
+Paylaşım adının sonundaki **`$`** karakteri, o paylaşımın gizli bir **yönetimsel paylaşım** olduğunu gösteriyor.
 
 ---
 
@@ -52,7 +52,6 @@ smbclient //10.129.184.220/C$ -U Administrator
 Boş parola ile giriş yapıp `ls` komutuyla kök dizini listeliyorum:
 
 <img width="615" height="289" alt="1" src="https://github.com/user-attachments/assets/ee2a833c-c6c0-4182-a67d-92aeb12e076d" />
-
 
 Standart bir Windows dizin yapısı görüyorum. Kullanıcı profillerinin bulunduğu `Users` dizinine yöneliyorum:
 
