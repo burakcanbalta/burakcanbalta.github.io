@@ -68,7 +68,7 @@ flag
 
 ## Flag'i Okuma
 
-![Uploading flag.png…]()
+<img width="758" height="322" alt="flag" src="https://github.com/user-attachments/assets/9f149c2a-c3c3-451a-b492-413406883a7a" />
 
 Flag bu şekilde elde edildi:
 
