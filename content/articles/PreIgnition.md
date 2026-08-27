@@ -7,7 +7,9 @@ nmap -sS -A -p- 10.129.184.20 -T5
 
 ## Dizin Taraması
 
-Sayfada görünür bir şey olmadığına göre gizli dosya/dizinleri bulmak için brute-force denemesi yaptım. Ben bu iş için ffuf kullanmayı tercih ediyorum:
+<img width="537" height="215" alt="site" src="https://github.com/user-attachments/assets/0fefdc89-05b7-409a-87f1-91e4158cc55f" />
+
+Sayfada görünür bir şey olmadığına göre gizli dosya/dizinleri bulmak için dizin taraması yaptım . Ben bu iş için ffuf kullanmayı tercih ediyorum:
 
 ```
 ffuf -u http://10.129.184.20/FUZZ -w /usr/share/wordlists/dirb/common.txt
