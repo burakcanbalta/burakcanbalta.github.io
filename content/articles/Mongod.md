@@ -88,7 +88,7 @@ MongoDB
 NoSQL
 
 **Görev 4 — Terminalden etkileşimli MongoDB kabuğunu başlatmak için hangi komut kullanılır?**
-`mongo`
+`mongoSH`
 
 **Görev 5 — MongoDB sunucusunda bulunan tüm veritabanlarını listelemek için kullanılan komut nedir?**
 `show dbs`
@@ -98,3 +98,6 @@ NoSQL
 
 **Görev 7 — Belirtilen koleksiyon içindeki tüm belgelerin içeriğini dışa aktarmak için hangi komut kullanılır (`flag`)?**
 `db.flag.find()`
+
+**Görev 8 — Submit the flag located in the database.
+`1b6e6fb359e7c40241b6d431427ba6ea`
