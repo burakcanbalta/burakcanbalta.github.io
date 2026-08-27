@@ -1,5 +1,20 @@
 [
   {
+    "slug": "Bike",
+    "title": "HackTheBox — Bike Writeup",
+    "date": "2026-08-28",
+    "tags": [
+      "Web",
+      "SSTI",
+      "Node.js",
+      "Handlebars",
+      "RCE",
+      "Enumeration"
+    ],
+    "excerpt": "Node.js/Express tabanlı web uygulamasında e-posta input alanı üzerinden Handlebars template motorunda SSTI zafiyetinin tespiti, HackTricks bypass payload'ının Burp Suite Decoder ile URL-encode edilerek gönderilmesi, require yerine process.mainModule.require kullanılarak RCE elde edilmesi ve root kullanıcısının ana dizinindeki flag'in okunması sürecinin teknik incelemesi.",
+    "readTime": "10 dk"
+  },
+  {
     "slug": "Funnel",
     "title": "HackTheBox — Funnel Writeup",
     "date": "2026-08-27",
