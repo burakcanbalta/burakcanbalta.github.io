@@ -31,13 +31,14 @@ Kullanıcı adı: root
 Parola:        password
 ```
  
-ile başarılı bir şekilde giriş yapabiliyorum. Bu, Jenkins panelinin hiç sertleştirilmemiş (hardening yapılmamış), fabrika ayarlarına yakın bırakıldığını gösteriyor — gerçek dünyada da sıkça karşılaşılan bir yanlış yapılandırma türü.
+ile başarılı bir şekilde giriş yapabiliyorum.
  
-Giriş yaptıktan sonra panelin ana ekranında (dashboard) sağ alt köşede sürüm bilgisi karşıma çıkıyor:
+Giriş yaptıktan sonra panelin ana ekranında sağ alt köşede sürüm bilgisi karşıma çıkıyor:
  
 ```
 Jenkins 2.289.1
 ```
+
 <img width="305" height="86" alt="sürüm" src="https://github.com/user-attachments/assets/10549ea2-c1ed-401c-ba6f-89863fb26431" />
  
 Bu bilgiyi not ediyorum.
