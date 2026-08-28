@@ -1,5 +1,21 @@
 [
   {
+    "slug": "Included",
+    "title": "HackTheBox — Included Writeup",
+    "date": "2026-08-28",
+    "tags": [
+      "Linux",
+      "LFI",
+      "TFTP",
+      "RCE",
+      "LXD",
+      "Privilege Escalation",
+      "Enumeration"
+    ],
+    "excerpt": "Apache üzerinde ?file= parametresi ile Local File Inclusion zafiyetinin tespiti, UDP taramasıyla bulunan TFTP servisine reverse shell yüklenip LFI ile çalıştırılarak www-data erişimi elde edilmesi, .htpasswd üzerinden mike kullanıcısına yanal hareket ve lxd grubu istismarıyla ayrıcalıklı bir Alpine konteyneri üzerinden root yetkisine ulaşılması sürecinin teknik incelemesi.",
+    "readTime": "12 dk"
+  },
+  {
     "slug": "Tactics",
     "title": "HackTheBox — Tactics Writeup",
     "date": "2026-08-28",
