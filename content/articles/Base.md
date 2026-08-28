@@ -84,6 +84,9 @@ ffuf -u http://10.129.186.88/FUZZ -w /usr/share/wordlists/dirb/big.txt
 nc -lvnp 4444
 ```
 
+<img width="432" height="225" alt="uploaded" src="https://github.com/user-attachments/assets/3b479d0d-dc90-444f-bd03-6648e62e8e32" />
+
+
 Sonra tarayıcıdan `_uploaded/` dizinine giderek yüklediğim shell dosyasını tetikledim. Bağlantı hemen geldi:
 
 <img width="850" height="211" alt="shell" src="https://github.com/user-attachments/assets/e24e921d-e318-49d7-b552-3325641eab06" />
