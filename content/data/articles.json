@@ -47,6 +47,28 @@
     "readTime": "8 dk"
   },
   {
+    "slug": "Base",
+    "title": "HackTheBox — Base Writeup",
+    "date": "2026-08-28",
+    "tags": [
+      "Linux",
+      "Web",
+      "Nmap",
+      "Source Code Disclosure",
+      "Type Juggling",
+      "Authentication Bypass",
+      "File Upload",
+      "Fuzzing",
+      "Reverse Shell",
+      "SSH",
+      "John the Ripper",
+      "Privilege Escalation",
+      "Enumeration"
+    ],
+    "excerpt": "Nmap ile başlayan enumeration sürecinde .swp dosyası üzerinden kaynak kod sızıntısının keşfedilmesi, strcmp() fonksiyonundaki type juggling zafiyetinin kullanılmasıyla authentication bypass gerçekleştirilmesi, dosya yükleme mekanizmasının istismar edilmesi ve ffuf ile upload dizininin keşfedilerek reverse shell elde edilmesi, config.php içerisinden parola bulunması, SSH üzerinden kullanıcı erişimi sağlanıp John the Ripper ile parola analizi yapılması ve son olarak sudo yetkisine sahip find komutunun istismar edilmesiyle root yetkisine ulaşılması sürecinin teknik incelemesi.",
+    "readTime": "12 dk"
+  },
+  {
     "slug": "Ignition",
     "title": "HackTheBox — Ignition Writeup",
     "date": "2026-08-28",
