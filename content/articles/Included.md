@@ -17,6 +17,7 @@ Requested resource was http://10.129.95.185/?file=home.php
 <img width="444" height="85" alt="site" src="https://github.com/user-attachments/assets/251620c8-610f-48e4-bc27-30b3e0efb05c" />
 
 URL yapısına bakıldığında `?file=` parametresiyle sunucu tarafında bir dosya çağırıldığı belli oluyor
+
 ---
 
 ## 2. Web Uygulamasının İncelenmesi — LFI Tespiti
