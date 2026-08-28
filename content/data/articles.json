@@ -1,5 +1,20 @@
 [
   {
+    "slug": "Tactics",
+    "title": "HackTheBox — Tactics Writeup",
+    "date": "2026-08-28",
+    "tags": [
+      "Windows",
+      "SMB",
+      "Null Session",
+      "Weak Credentials",
+      "Impacket",
+      "Enumeration"
+    ],
+    "excerpt": "ICMP'ye kapalı bir Windows hedefte Nmap -Pn ile port keşfi, anonim SMB oturumunun reddedilmesinin ardından Administrator hesabına boş parola ile erişim sağlanması, C$ yönetimsel paylaşımı üzerinden tüm dosya sistemine ulaşılması ve Administrator masaüstündeki flag'in indirilerek okunması sürecinin teknik incelemesi.",
+    "readTime": "8 dk"
+  },
+  {
     "slug": "Pennyworth",
     "title": "HackTheBox — Pennyworth Writeup",
     "date": "2026-08-28",
