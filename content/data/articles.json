@@ -1,5 +1,31 @@
 [
   {
+    "slug": "Jerry",
+    "title": "Hack The Box — Jerry Writeup",
+    "date": "2026-09-06",
+    "tags": [
+      "Windows",
+      "Tomcat",
+      "Weak Credentials",
+      "WAR Deployment"
+    ],
+    "excerpt": "Apache Tomcat Manager panelinde dökümantasyondan kalma varsayılan kimlik bilgileriyle giriş sağlanması, JSP tabanlı zararlı bir WAR dosyasının deploy edilmesiyle doğrudan NT AUTHORITY\\SYSTEM yetkisinde shell elde edilmesinin teknik incelemesi.",
+    "readTime": "8 dk"
+  },
+  {
+    "slug": "Lame",
+    "title": "Hack The Box — Lame Writeup",
+    "date": "2026-09-05",
+    "tags": [
+      "Linux",
+      "Samba",
+      "CVE-2007-2447",
+      "Command Injection"
+    ],
+    "excerpt": "Samba 3.0.20 üzerindeki 'username map script' command injection zafiyeti (CVE-2007-2447) istismar edilerek kimlik doğrulama gerekmeden doğrudan root yetkisiyle sisteme erişim sağlanmasının teknik incelemesi.",
+    "readTime": "8 dk"
+  },
+  {
     "slug": "Legacy",
     "title": "Hack The Box — Legacy Writeup",
     "date": "2026-09-04",
