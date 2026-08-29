@@ -142,17 +142,6 @@ Root shell'i aldıktan sonra dosya sistemine göz gezdirdim.
 Önce normal kullanıcı klasörlerine baktım:
 
 ```
-pwd
-/
-cd home
-ls
-ftp
-makis
-service
-user
-```
-
-```
 cd makis
 ls
 user.txt
@@ -173,6 +162,7 @@ root.txt
 vnc.log
 cat root.txt
 ad6b459f52fee75d1a23b88bf2df309c
+
 ```
 
 **Root flag** de böylece elimizdeydi.
