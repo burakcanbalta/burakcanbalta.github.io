@@ -2,7 +2,7 @@
 
 ## About
 
-Lame, Hack The Box'ta yayınlanan ilk makine ve uzun süre yeni başlayanların platforma giriş yaptığı ilk hedef oldu. İsmi "kolay" anlamına gelse de, root'a ulaşmak için tek bir exploit yeterli — ama bu exploit'in arkasındaki hikaye aslında oldukça öğretici.
+Lame, Hack The Box'ta yayınlanan ilk makine ve uzun süre yeni başlayanların platforma giriş yaptığı ilk hedef oldu. İsmi "kolay" anlamına gelse de, root'a ulaşmak için tek bir exploit yeterli
 
 ---
 
