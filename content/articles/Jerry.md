@@ -50,6 +50,7 @@ Bu aslında bir "sürüm zafiyeti" değil, bir **yanlış yapılandırma (miscon
 
 <img width="425" height="301" alt="login" src="https://github.com/user-attachments/assets/8036d395-3978-4e70-8654-19778547068f" />
 
+
 ---
 
 ## Exploitation
