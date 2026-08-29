@@ -38,7 +38,7 @@ Bu exploit orijinal olarak NSA tarafından geliştirilmiş, 2017'de Shadow Broke
 - Windows Server 2008 / 2008 R2
 - Windows Server 2012 / 2012 R2
 
-Microsoft, Mart 2017'de MS17-010 güvenlik bülteniyle bu açığı kapatmıştı, ama yamalanmamış makineler yıllar sonra bile hâlâ karşımıza çıkabiliyor — tıpkı bu CTF senaryosunda olduğu gibi.
+Microsoft, Mart 2017'de MS17-010 güvenlik bülteniyle bu açığı kapatmıştı, ama yamalanmamış makineler yıllar sonra bile hâlâ karşımıza çıkabiliyor.
 
 En kritik nokta şu: EternalBlue başarılı şekilde çalıştığında, hedef sistemde authentication'a hiç ihtiyaç duymadan doğrudan **NT AUTHORITY\SYSTEM** yetkisiyle kod çalıştırabiliyorsunuz. Yani normalde bir saldırganın privilege escalation için harcayacağı onca efor, bu zafiyet sayesinde tek adımda, en baştan en yüksek yetkiyle sonuçlanıyor. Bu da onu bu kadar tehlikeli ve popüler yapan asıl sebep.
 
