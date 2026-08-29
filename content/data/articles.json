@@ -1,5 +1,30 @@
 [
   {
+    "slug": "Legacy",
+    "title": "Hack The Box — Legacy Writeup",
+    "date": "2026-09-04",
+    "tags": [
+      "Windows",
+      "SMB",
+      "MS08-067"
+    ],
+    "excerpt": "Windows XP üzerinde SMB servisindeki MS08-067 (Server Service Relative Path Stack Corruption) zafiyeti istismar edilerek kimlik doğrulama gerekmeden Administrator yetkisiyle sisteme erişim sağlanmasının teknik incelemesi.",
+    "readTime": "8 dk"
+  },
+  {
+    "slug": "Blue",
+    "title": "Hack The Box — Blue Writeup",
+    "date": "2026-08-29",
+    "tags": [
+      "Windows",
+      "EternalBlue",
+      "MS17-010",
+      "SMB"
+    ],
+    "excerpt": "MS17-010 (EternalBlue) zafiyeti üzerinden SMBv1 protokolündeki buffer overflow açığı istismar edilerek, herhangi bir kimlik doğrulama gerekmeden doğrudan NT AUTHORITY\\SYSTEM yetkisiyle sisteme erişim sağlanmasının teknik incelemesi.",
+    "readTime": "8 dk"
+  },
+  {
     "slug": "Included",
     "title": "HackTheBox — Included Writeup",
     "date": "2026-08-28",
