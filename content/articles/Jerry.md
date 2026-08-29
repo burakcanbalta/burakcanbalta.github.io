@@ -95,8 +95,6 @@ Shell'i aldıktan sonra Administrator'ın masaüstüne baktım:
 ```
 C:\Users\Administrator\Desktop>dir
 
- Directory of C:\Users\Administrator\Desktop
-
 06/19/2018  07:09 AM    <DIR>          flags
 ```
 
@@ -104,12 +102,10 @@ C:\Users\Administrator\Desktop>dir
 C:\Users\Administrator\Desktop>cd flags
 C:\Users\Administrator\Desktop\flags>dir
 
- Directory of C:\Users\Administrator\Desktop\flags
-
 06/19/2018  07:11 AM                88 2 for the price of 1.txt
 ```
 
-İlginç bir isimlendirme — dosya adı zaten ipucu veriyordu: iki flag tek dosyada.
+iki flag tek dosyada.
 
 ```
 C:\Users\Administrator\Desktop\flags>type "2 for the price of 1.txt"
