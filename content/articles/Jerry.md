@@ -42,7 +42,7 @@ Login popup'ında rastgele bir şeyler denediğimde 403 hatası aldım, ama hata
 
 <img width="1919" height="722" alt="manager" src="https://github.com/user-attachments/assets/fb59dd3f-afb4-4788-a795-6e2abe68f3ec" />
 
-Bu, Tomcat'in resmi dökümantasyonundan alınmış standart bir örnek metin — ama burada asıl önemli olan şey, hedef sistemin bu **örnek** kullanıcı adı/şifre kombinasyonunu (`tomcat` / `s3cret`) hâlâ değiştirmeden, olduğu gibi bırakmış olması ihtimaliydi. Denedim ve gerçekten çalıştı — panele giriş yaptım.
+Bu, Tomcat'in resmi dökümantasyonundan alınmış standart bir örnek metin — ama burada asıl önemli olan şey, hedef sistemin bu **örnek** kullanıcı adı/şifre kombinasyonunu (`tomcat` / `s3cret`) hâlâ değiştirmeden, olduğu gibi bırakmış olması ihtimaliydi. Denedim ve çalıştı — panele giriş yaptım.
 
 Bu noktada karşımdaki zafiyeti şöyle özetleyebilirim: Tomcat Manager arayüzü, `manager-gui` veya `manager-script` rolüne sahip bir kullanıcıya **doğrudan sunucuya WAR (Web Application Archive) dosyası yükleme ve deploy etme** izni veriyor. WAR dosyası aslında bir Java web uygulamasının paketlenmiş hali; Tomcat bunu otomatik olarak açıp çalıştırıyor. Yani eğer bu panele erişebiliyorsanız (zayıf/varsayılan kimlik bilgileriyle ya da CSRF/auth bypass gibi başka bir yöntemle), içine kötü amaçlı bir JSP dosyası gömülü WAR yükleyerek **doğrudan sunucu üzerinde kod çalıştırabilirsiniz**.
 
