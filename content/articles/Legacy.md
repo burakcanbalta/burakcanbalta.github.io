@@ -62,8 +62,8 @@ msf exploit(windows/smb/ms08_067_netapi) > run
 
 <img width="1004" height="724" alt="msfconsoleshell" src="https://github.com/user-attachments/assets/6ba5ed0c-cba9-42ca-8bcb-132d6c8fe574" />
 
-
 Exploit sorunsuz çalıştı ve karşımda bir **Meterpreter oturumu** açıldı.
+
 ---
 
 ## Flag'ler
