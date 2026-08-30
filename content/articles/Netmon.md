@@ -80,8 +80,6 @@ Dosya düz metin XML formatında. İçinde `prtgadmin` kullanıcısına ait paro
 
 `prtgadmin / PrTg@dmin2018` ile web paneline giriş denedim ama başarısız oldu. Buradan çıkardığım sonuç: sistem yöneticisi bu şifreyi periyodik olarak (muhtemelen yıllık) değiştiriyor, ama pattern'i koruyor. Yılı bir sonrakine çevirdim (`PrTg@dmin2019`) ve giriş başarılı oldu.
 
-> **Not:** Bu adım aslında bir "pattern guessing" denemesiydi, doğrudan dosyadan çıkan bir bilgi değildi. Gerçek bir pentest raporunda bunu ayrı bir bulgu (zayıf parola rotasyon politikası) olarak da raporlamak gerekir.
-
 ---
 
 ## 5. Zafiyet Analizi — CVE-2018-9276 (PRTG Authenticated RCE)
