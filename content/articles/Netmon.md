@@ -92,8 +92,6 @@ PRTG Network Monitor, "Notification" (bildirim) özelliği altında bir sensör 
 
 Sorun şu: bu notification objesi **web arayüzü üzerinden `/editsettings` endpoint'ine POST edilen form verisiyle** oluşturuluyor ve sunucu tarafında bu parametreler yeterince temizlenmeden (sanitize edilmeden) **doğrudan işletim sistemi komut satırına** aktarılıyor. Yani kimliği doğrulanmış (authenticated) herhangi bir kullanıcı, "EXE Notification" alanına bir dosya adı + ekstra parametre enjekte ederek, PRTG Core Server servisinin (genellikle **SYSTEM** yetkisiyle çalışır) çalıştırdığı komut satırına kendi komutunu ekleyebiliyor.
 
-Özetle bu bir **command injection** zafiyeti — SQL injection'daki mantığın aynısı, sadece hedef veritabanı sorgusu değil, işletim sistemi shell'i.
-
 ### 5.2 Neden "Authenticated"?
 
 CVE-2018-9276'nın çalışması için geçerli bir PRTG oturumu (login) gerekiyor. Yani bu tek başına bir "unauthenticated RCE" değil — önce bir şekilde credential elde etmemiz lazımdı. Bizim senaryomuzda bu credential'ı FTP üzerinden sızan config dosyasından elde ettik. Gerçek dünyada bu genelde şu yollarla olur:
