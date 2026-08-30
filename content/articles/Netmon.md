@@ -73,9 +73,8 @@ ftp> get "PRTG Configuration.old.bak"
 
 <img width="1067" height="692" alt="get2" src="https://github.com/user-attachments/assets/c13600f5-81b0-4618-a9bd-4300158dac6f" />
 
-Dosya düz metin XML formatında. İçinde `prtgadmin` kullanıcısına ait iki farklı parola kalıntısı buldum:
+Dosya düz metin XML formatında. İçinde `prtgadmin` kullanıcısına ait parola buldum:
 
-**1) Eski/test amaçlı bir alan (`dbpassword`) — düz metin:**
 ```xml
 <dbpassword>
   <!-- User: prtgadmin -->
@@ -84,16 +83,6 @@ Dosya düz metin XML formatında. İçinde `prtgadmin` kullanıcısına ait iki 
 ```
 
 <img width="526" height="402" alt="passwd" src="https://github.com/user-attachments/assets/39676388-1be9-4f47-a910-0e45d6c527a5" />
-
-**2) Asıl kullanıcı hesabına ait şifre — PRTG'ye özgü tersine çevrilebilir "encrypted" formatta:**
-```xml
-<login>prtgadmin</login>
-...
-<password crypt="PRTG">
-  PDWXMOPZT43U2GKGR3YCBILXDMLAUZVBN27KGBOPKXRQ====
-  M24VKFRECBEGN3ZQNGSET723GFIPVHYX
-</password>
-```
 
 `prtgadmin / PrTg@dmin2018` ile web paneline giriş denedim ama başarısız oldu. Buradan çıkardığım sonuç: sistem yöneticisi bu şifreyi periyodik olarak (muhtemelen yıllık) değiştiriyor, ama pattern'i koruyor. Yılı bir sonrakine çevirdim (`PrTg@dmin2019`) ve giriş başarılı oldu.
 
