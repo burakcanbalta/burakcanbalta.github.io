@@ -2,7 +2,7 @@
   {
     "slug": "Netmon",
     "title": "Hack The Box — Netmon Writeup",
-    "date": "2026-09-07",
+    "date": "2026-08-30",
     "tags": [
       "Windows",
       "PRTG",
@@ -17,7 +17,7 @@
   {
     "slug": "Jerry",
     "title": "Hack The Box — Jerry Writeup",
-    "date": "2026-09-06",
+    "date": "2026-08-30",
     "tags": [
       "Windows",
       "Tomcat",
@@ -30,7 +30,7 @@
   {
     "slug": "Lame",
     "title": "Hack The Box — Lame Writeup",
-    "date": "2026-09-05",
+    "date": "2026-08-30",
     "tags": [
       "Linux",
       "Samba",
@@ -43,7 +43,7 @@
   {
     "slug": "Legacy",
     "title": "Hack The Box — Legacy Writeup",
-    "date": "2026-09-04",
+    "date": "2026-08-30",
     "tags": [
       "Windows",
       "SMB",
