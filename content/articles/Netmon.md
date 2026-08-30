@@ -75,14 +75,8 @@ ftp> get "PRTG Configuration.old.bak"
 
 Dosya düz metin XML formatında. İçinde `prtgadmin` kullanıcısına ait parola buldum:
 
-```xml
-<dbpassword>
-  <!-- User: prtgadmin -->
-  PrTg@dmin2018
-</dbpassword>
-```
+<img width="413" height="78" alt="passwd" src="https://github.com/user-attachments/assets/93a022b3-c204-4b3d-90b2-5afc5998ed20" />
 
-<img width="526" height="402" alt="passwd" src="https://github.com/user-attachments/assets/39676388-1be9-4f47-a910-0e45d6c527a5" />
 
 `prtgadmin / PrTg@dmin2018` ile web paneline giriş denedim ama başarısız oldu. Buradan çıkardığım sonuç: sistem yöneticisi bu şifreyi periyodik olarak (muhtemelen yıllık) değiştiriyor, ama pattern'i koruyor. Yılı bir sonrakine çevirdim (`PrTg@dmin2019`) ve giriş başarılı oldu.
 
