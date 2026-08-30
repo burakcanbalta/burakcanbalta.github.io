@@ -1,5 +1,20 @@
 [
   {
+    "slug": "Netmon",
+    "title": "Hack The Box — Netmon Writeup",
+    "date": "2026-09-07",
+    "tags": [
+      "Windows",
+      "PRTG",
+      "CVE-2018-9276",
+      "FTP",
+      "Command Injection",
+      "Weak Credentials"
+    ],
+    "excerpt": "Anonim FTP erişimi üzerinden sızan PRTG Network Monitor konfigürasyon yedeğinden elde edilen kimlik bilgileriyle admin paneline giriş sağlanması, CVE-2018-9276 authenticated command injection zafiyeti istismar edilerek notification mekanizması üzerinden doğrudan NT AUTHORITY\\SYSTEM yetkisinde shell elde edilmesinin teknik incelemesi.",
+    "readTime": "8 dk"
+  },
+  {
     "slug": "Jerry",
     "title": "Hack The Box — Jerry Writeup",
     "date": "2026-09-06",
