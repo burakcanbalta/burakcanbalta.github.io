@@ -47,6 +47,8 @@ ftp> cat user.txt
 5fd6f400bed6b790b89ce473357ff37d
 ```
 
+<img width="314" height="63" alt="userflag" src="https://github.com/user-attachments/assets/cfaa98b7-8f06-459a-ba8c-2a461ab1aa0d" />
+
 İlk kullanıcı flag'i buradan alındı. Aynı klasörde `PRTG Enterprise Console.lnk` ve `PRTG Network Monitor.lnk` dosyaları da vardı; `.lnk` dosyalarını `exiftool` ile inceledim ve bunlar bana hedefte hangi PRTG bileşenlerinin kurulu olduğunu ve kurulum yolunu (`C:\Program Files (x86)\PRTG Network Monitor\`) doğruladı. Buradan `searchsploit` ile PRTG için bilinen exploit'lere baktım ve **CVE-2018-9276 Authenticated RCE**'nin hedefimizdeki sürümü (< 18.2.39) etkilediğini gördüm. Bu exploit'i çalıştırmak için geçerli bir admin credential'ına ihtiyacım vardı.
 
 ---
