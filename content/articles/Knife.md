@@ -54,9 +54,12 @@ Backdoor'un çalışma prensibi çok basit bir **header injection → code execu
 
 ### 3.3 Pratikte İstismar
 
-Bu zafiyeti otomatikleştiren hazır bir PoC var: [flast101/php-8.1.0-dev-backdoor-rce](https://github.com/flast101/php-8.1.0-dev-backdoor-rce)
-
-
+Bu zafiyeti otomatikleştiren hazır bir PoC var:
+ 
+```
+https://github.com/flast101/php-8.1.0-dev-backdoor-rce
+```
+ 
 Script iki dosyadan oluşuyor:
 
 - **`backdoor.py`** — yukarıdaki header injection'ı kullanarak tek komutluk RCE sağlıyor, aynı zamanda basit bir interaktif shell açıyor.
@@ -96,7 +99,7 @@ Bu, hedefte arka planda çalışan PHP interpreter'ına, benim IP/port'uma bağl
 <img width="647" height="105" alt="shell" src="https://github.com/user-attachments/assets/7f243f8a-fa33-4b69-bf81-5deb4dcb474d" />
 
 
-Doğrudan **`james`** kullanıcısı olarak (web servisinin çalıştığı kullanıcı) tam bir shell elde ettim.
+Doğrudan **`james`** kullanıcısı olarak tam bir shell elde ettim.
 
 ---
 
