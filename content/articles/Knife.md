@@ -26,8 +26,7 @@ curl -v 10.129.50.161
 ...
 < X-Powered-By: PHP/8.1.0-dev
 ```
-
-<img width="1189" height="243" alt="burp" src="https://github.com/user-attachments/assets/c1246982-031f-4774-8fe1-d3d150b3955a" />
+<img width="763" height="295" alt="curl" src="https://github.com/user-attachments/assets/2892cc77-8fd2-478e-851d-3848b8b7f828" />
 
 **PHP 8.1.0-dev** — bu sürüm numarası kritik. Normal bir prod ortamında "-dev" etiketli bir PHP sürümü görmek zaten şüphe uyandırmalı; bunun tarihsel bir arka planı var.
 
