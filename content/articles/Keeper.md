@@ -77,7 +77,7 @@ Bu sayfada `lnorgaard` adlı bir kullanıcının kaydını buldum. Sayfanın üs
 <img width="346" height="595" alt="sshşifre" src="https://github.com/user-attachments/assets/b333aae9-2bb0-480d-a64c-b460d3470932" />
 
 
-## 6. SSH ile İlk Erişim (Foothold)
+## 6. SSH ile İlk Erişim
 
 Elimde artık bir kullanıcı adı (`lnorgaard`) ve muhtemel bir parola (`Welcome2023!`) vardı. Nmap taramasında SSH'nin açık olduğunu zaten görmüştüm, o yüzden doğrudan bu bilgilerle SSH bağlantısı denedim:
 
@@ -90,7 +90,7 @@ Parola sorulduğunda `Welcome2023!` girdim ve bağlantı başarılı oldu:
 <img width="480" height="84" alt="userflag" src="https://github.com/user-attachments/assets/b7fa02b8-130e-484b-ab1f-8641051bf2fe" />
 
 
-İlk flag (`user.txt`) elde edildi. Aynı dizinde dikkatimi çeken başka bir dosya daha vardı: **`RT30000.zip`**. İsimlendirmesinden (`RT` öneki) bunun eski bir Request Tracker ticket'ına ait.
+İlk flag elde edildi. Aynı dizinde dikkatimi çeken başka bir dosya daha vardı: **`RT30000.zip`**. İsimlendirmesinden bunun eski bir Request Tracker ticket'ına ait.
 
 Bu dosyayı analiz edebilmek için kendi Kali makineme çektim:
 
