@@ -38,7 +38,7 @@ curl -v 10.129.50.161
 
 28 Mart 2021'de, PHP'nin kendi kaynak kod deposuna (o dönem `git.php.net` üzerinde barındırılıyordu) saldırganlar tarafından yetkisiz iki commit atıldı. Bu commit'ler, PHP'nin çekirdeğine (`zend_object` sınıflarını yönetim katmanına) kötü amaçlı bir kod parçası ekliyordu. Kod, HTTP isteklerinde **`User-Agentt`** (dikkat: normal `User-Agent` değil, sonunda fazladan bir "t" olan sahte bir header) adlı bir header arıyor, bu header'da `zerodium` string'i geçiyorsa header'ın geri kalan kısmını doğrudan `eval()` benzeri bir mekanizmayla PHP kodu olarak çalıştırıyordu.
 
-PHP ekibi olayı hızlıca fark etti, kötü niyetli commit'leri geri aldı ve kaynak kod deposunu tamamen GitHub'a taşıdı. Ancak bu backdoor'un test/geliştirme amaçlı derlenen bazı **PHP 8.1.0-dev** build'lerinde (o dönemin geliştirme dalı) kısa süreliğine gerçekten var olduğu görüldü — CTF makinelerinde de "eski, backdoor'lu bir dev sürümünü hâlâ prod'da unutmuş sistem yöneticisi" senaryosu olarak sıkça kullanılıyor.
+PHP ekibi olayı hızlıca fark etti, kötü niyetli commit'leri geri aldı ve kaynak kod deposunu tamamen GitHub'a taşıdı. Ancak bu backdoor'un test/geliştirme amaçlı derlenen bazı **PHP 8.1.0-dev** build'lerinde (o dönemin geliştirme dalı) kısa süreliğine gerçekten var olduğu görüldü.
 
 ### 3.2 İstismar Mantığı
 
