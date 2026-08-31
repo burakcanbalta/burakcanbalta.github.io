@@ -385,8 +385,6 @@ async def main():
 asyncio.run(main())
 ```
 
-Not: Bu tür otomasyon sadece **yetkilendirilmiş pentest kapsamındaki hedeflerde**, izin verilen kural çerçevesinde ve rate-limit'leri kasıtlı olarak kötüye kullanmadan yürütülmelidir. Yetkisiz sistemlerde toplu ID taraması hem yasal hem etik ihlaldir.
-
 ---
 
 ## Kaynak Kod Analizi (White-Box Pentest)
