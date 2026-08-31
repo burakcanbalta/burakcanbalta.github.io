@@ -356,25 +356,6 @@ Bu yüzden IDOR testinde sadece görünen uç noktayı değil, **aynı kaynağa 
 
 ---
 
-## Otomasyon ve Araç Uzmanlığı
-
-### Burp Suite ile Otomatik Yetki Testi
-
-**Autorize** eklentisi, düşük yetkili bir kullanıcının session'ını alıp, yüksek yetkili bir kullanıcının isteklerini otomatik olarak bu session ile tekrar gönderir ve yanıtları karşılaştırır. Böylece manuel olarak her isteği tekrar denemek yerine, Burp proxy trafiği akarken arka planda IDOR taraması yapılmış olur.
-
-Tipik kurulum mantığı:
-
-1. Düşük yetkili kullanıcı (User B) olarak giriş yap, Authorization header'ını Autorize'a tanımla
-2. Yüksek yetkili kullanıcı (User A / Admin) olarak normal şekilde uygulamada gezin
-3. Autorize, her isteği otomatik olarak User B kimliğiyle tekrarlar
-4. Yanıt kodları ve içerik uzunlukları karşılaştırılır — "Bypassed!" işaretlenen istekler incelenmeye değerdir
-
-**Match and Replace** kuralları ile Authorization header'ı veya cookie'yi otomatik değiştirip, tüm Repeater/Intruder trafiğinde farklı kullanıcı kimlikleriyle toplu test yapılabilir.
-
-**AutoRepeater**, aynı isteği birden fazla oturum/token seti ile paralel olarak tekrar gönderip sonuçları yan yana karşılaştırmak için kullanılır — özellikle çoklu rol testlerinde (user / manager / admin) zaman kazandırır.
-
----
-
 ### Özel Script ile Ölçekli IDOR Testi
 
 Büyük ID aralıklarını manuel test etmek pratik değildir. Rate-limit'lere takılmadan, asenkron ve çok iş parçacıklı bir tarama scripti yazmak IDOR testinde standart bir yaklaşımdır.
