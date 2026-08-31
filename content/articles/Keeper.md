@@ -184,13 +184,13 @@ Veritabanına eriştikten sonra içindeki kayıtları incelemeye başladım. Bir
 
 `.ppk` (PuTTY Private Key), Windows dünyasında yaygın kullanılan **PuTTY** SSH istemcisinin kendi özel private key formatıdır. OpenSSH dünyasının standart PEM/OpenSSH formatlarından farklı bir yapıya sahiptir — Windows kullanıcıları genelde OpenSSH ile üretilen `id_rsa` gibi anahtarları `puttygen` aracıyla `.ppk` formatına çevirip PuTTY/WinSCP gibi araçlarda kullanır.
 
-Formatın kendisinde bir "zafiyet" yok; PPK v3 (bu writeup'taki format), önceki PPK v2'ye göre parola türetme fonksiyonunu Argon2'ye yükselterek aslında **daha güvenli** hale getirilmiş bir versiyondur (bu değişiklik 2021'de PuTTY 0.75 ile geldi, çünkü PPK v2'nin kullandığı eski anahtar türetme fonksiyonu modern brute-force saldırılarına karşı yetersiz kalıyordu).
+Formatın kendisinde bir "zafiyet" yok, önceki PPK v2'ye göre parola türetme fonksiyonunu Argon2'ye yükselterek aslında **daha güvenli** hale getirilmiş bir versiyondur (bu değişiklik 2021'de PuTTY 0.75 ile geldi, çünkü PPK v2'nin kullandığı eski anahtar türetme fonksiyonu modern brute-force saldırılarına karşı yetersiz kalıyordu).
 
-**Buradaki gerçek sorun format değil, saklama şekli:** Bu writeup'taki key `Encryption: none` ile, yani **şifrelenmemiş** olarak bir KeePass notu içine düz metin şeklinde yapıştırılmış. Normalde bir private key ya disk üzerinde parola korumalı tutulur ya da hiç KeePass gibi bir "notes" alanına gömülmez — KeePass'in asıl amacı yapılandırılmış credential (kullanıcı adı/şifre/URL) saklamaktır, keyfi metin notları için tasarlanmış olsa da bir private key'in ham haliyle burada durması, veritabanına erişen herkesin doğrudan root'un SSH anahtarını ele geçirmesi anlamına geliyor. Yani bu bir **hatalı credential/secret yönetimi** pratiği — teknik bir CVE değil, operasyonel bir güvenlik zafiyeti.
+**Buradaki gerçek sorun format değil, saklama şekli:** Bu writeup'taki key `Encryption: none` ile, yani **şifrelenmemiş** olarak bir KeePass notu içine düz metin şeklinde yapıştırılmış. Normalde bir private key ya disk üzerinde parola korumalı tutulur ya da hiç KeePass gibi bir "notes" alanına gömülmez — KeePass'in asıl amacı yapılandırılmış credential (kullanıcı adı/şifre/URL) saklamaktır, keyfi metin notları için tasarlanmış olsa da bir private key'in ham haliyle burada durması, veritabanına erişen herkesin doğrudan root'un SSH anahtarını ele geçirmesi anlamına geliyor.
 
 ### 8.2 Anahtarı Kullanılabilir Hale Getirme
 
-Bu notu olduğu gibi kopyaladım ve `keeper.ppk` adıyla bir dosyaya kaydettim. Ancak makinemdeki `ssh` istemcisi (OpenSSH) doğrudan `.ppk` formatını okuyamıyor — bu format sadece PuTTY ailesi araçlarınca native olarak destekleniyor. Bu yüzden `puttygen` aracıyla anahtarı OpenSSH formatına çevirdim:
+Bu notu olduğu gibi kopyaladım ve `keeper.ppk` adıyla bir dosyaya kaydettim. Ancak makinemdeki `ssh` istemcisi (OpenSSH) doğrudan `.ppk` formatını okuyamıyor. Bu yüzden `puttygen` aracıyla anahtarı OpenSSH formatına çevirdim:
 
 ```
 puttygen keeper.ppk -O private-openssh-new -o keeper
