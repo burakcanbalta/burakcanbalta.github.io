@@ -1,5 +1,21 @@
 [
   {
+    "slug": "Keeper",
+    "title": "Hack The Box — Keeper Writeup",
+    "date": "2026-09-01",
+    "tags": [
+      "Linux",
+      "Request Tracker",
+      "Default Credentials",
+      "KeePass",
+      "CVE-2023-32784",
+      "PuTTY",
+      "Privilege Escalation"
+    ],
+    "excerpt": "Request Tracker destek biletleme sisteminde varsayılan kimlik bilgileriyle admin paneline erişim sağlanması, panelde sızmış bir kullanıcı parolasıyla SSH foothold elde edilmesi, ele geçirilen KeePass memory dump dosyasından CVE-2023-32784 zafiyeti istismar edilerek master parolanın kurtarılması ve veritabanında şifrelenmemiş halde bulunan root'a ait PuTTY private key ile doğrudan root shell elde edilmesinin teknik incelemesi.",
+    "readTime": "10 dk"
+  },
+  {
     "slug": "Knife",
     "title": "Hack The Box — Knife Writeup",
     "date": "2026-08-31",
@@ -615,7 +631,7 @@
   },
   {
     "slug": "sql-injection-101",
-    "title": "SQL Injection 101: Temelden İleri Seviyeye",
+    "title": "SQL Injection 101",
     "date": "2026-08-10",
     "tags": [
       "Web",
@@ -627,7 +643,7 @@
   },
   {
     "slug": "xss-101",
-    "title": "Cross-Site Scripting (XSS) 101",
+    "title": "Cross-Site Scripting 101",
     "date": "2026-08-18",
     "tags": [
       "Web",
