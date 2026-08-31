@@ -1,3 +1,5 @@
+<img width="1600" height="917" alt="api" src="https://github.com/user-attachments/assets/1ef1e7b0-05ef-4fcc-beb6-c9403dcbb0c5" />
+
 **API Security**, klasik web uygulaması güvenliğinden farklı bir disiplindir. Bir web sayfası kullanıcıya sınırlı bir arayüz sunarken, bir API genellikle **her fonksiyonu, her veri modelini ve her iş akışını doğrudan dışarıya açar**. Bu yüzden API'lerde saldırı yüzeyi çok daha geniştir ve hatalar çok daha kolay istismar edilebilir hale gelir.
 
 OWASP, bu farkı gözeterek **API Security Top 10**'u klasik OWASP Top 10'dan ayrı bir liste olarak yayınlar. 2023 revizyonu, 2019 listesine göre önemli değişiklikler içerir: bazı kategoriler birleştirilmiş (Excessive Data Exposure + Mass Assignment → Broken Object Property Level Authorization), bazıları tamamen yeni eklenmiştir (Unrestricted Resource Consumption, Unrestricted Access to Sensitive Business Flows, Unsafe Consumption of APIs).
