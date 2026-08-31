@@ -37,7 +37,7 @@ ana sayfa  beni **`tickets.keeper.htb`** adında ayrı bir subdomain'e yönlendi
 10.129.229.41   tickets.keeper.htb
 ```
 
-<img width="471" height="214" alt="site2" src="https://github.com/user-attachments/assets/c39ae47e-da11-4bdc-8fec-20b8bac9586f" />
+<img width="546" height="171" alt="site1" src="https://github.com/user-attachments/assets/0cd16f8f-13b2-430a-8542-199fc8b9ac07" />
 
 
 ## 4. Request Tracker (RT) — Varsayılan Kimlik Bilgileri Arayışı
