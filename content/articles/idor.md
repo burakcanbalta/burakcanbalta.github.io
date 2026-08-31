@@ -547,6 +547,92 @@ rules:
 * Deny-by-default yaklaşımı: açıkça izin verilmemiş her erişim reddedilir
 * Otomatik testler (integration test) ile "kullanıcı B, kullanıcı A'nın kaydına erişemez" senaryolarının CI/CD'ye eklenmesi
 
+---
+
+### 🚑 Firmada IDOR Bulunduysa: Mimariyi Değiştirmeden Uygulanabilecek Hızlı Çözümler
+
+Gerçek dünyada çoğu zaman "doğru" çözüm (merkezi yetkilendirme katmanı, DTO'lar, resource-based authorization) hazır ama **hemen o gün devreye alınacak bir yama** gerekir. Aşağıdaki 5 yöntem, mevcut kod tabanına dokunmadan, sadece ilgili endpoint(ler)e eklenerek **saatler içinde** riski büyük ölçüde azaltır. Bunlar kalıcı çözüm değildir — asıl amaç kanamayı durdurup, doğru fix'e zaman kazandırmaktır.
+
+**1. İşlem Bazlı Nonce/Random Token (Tek Kullanımlık Referans)**
+
+Kaynağa doğrudan `id` ile değil, sadece o istemciye/oturuma özel, kısa ömürlü ve tek kullanımlık bir `nonce` ile erişilmesini zorunlu kılın. Saldırgan `id`'yi tahmin etse bile, geçerli bir `nonce` olmadan istek reddedilir.
+
+```python
+# İlgili kaynağı görüntülerken bir nonce üretilip cache'e (Redis) yazılır
+nonce = secrets.token_urlsafe(16)
+redis.setex(f"nonce:{nonce}", 300, f"{request.user.id}:{invoice_id}")
+
+# Sonraki istekte nonce doğrulanır, eşleşmezse veya süresi geçmişse reddedilir
+owner = redis.get(f"nonce:{req.args['nonce']}")
+if not owner or owner != f"{request.user.id}:{invoice_id}":
+    return abort(403)
+```
+
+**2. ID'yi HMAC ile İmzalama (Signed Reference)**
+
+Kaynağa erişim linki/parametresi, sunucu tarafı gizli anahtarla imzalanır. Saldırgan ID'yi tahmin etse bile, geçerli bir imza üretemediği için erişemez. Uygulama mantığına dokunmadan, sadece link üretim ve doğrulama noktasına eklenir.
+
+```python
+import hmac, hashlib
+
+def sign_id(resource_id, user_id):
+    msg = f"{resource_id}:{user_id}".encode()
+    return hmac.new(SECRET_KEY, msg, hashlib.sha256).hexdigest()[:16]
+
+# Doğrulama: gelen sig, beklenen sig ile eşleşmiyorsa reddet
+expected = sign_id(invoice_id, request.user.id)
+if not hmac.compare_digest(request.args.get("sig", ""), expected):
+    return abort(403)
+```
+
+**3. Geçici Middleware/Interceptor ile "Hızlı Yama" (Quick-Patch Guard)**
+
+Kod tabanının tamamını değiştirmeden, sadece etkilenen route grubunun önüne **tek bir kontrol noktası** eklenir. Bu, kalıcı çözüme geçilene kadar tüm ilgili endpoint'leri tek satırda korur.
+
+```javascript
+// Tüm /api/v1/invoices/:id rotalarının önüne eklenen geçici guard
+app.use('/api/v1/invoices/:id', async (req, res, next) => {
+  const invoice = await Invoice.findById(req.params.id);
+  if (!invoice || invoice.ownerId !== req.user.id) return res.status(403).end();
+  next();
+});
+```
+
+**4. Response'u Owner Kontrolüyle Filtreleme (Fail-Safe Post-Check)**
+
+Sorgu tarafını değiştirmeye vakit yoksa, en azından **veri döndürülmeden hemen önce** son bir sahiplik kontrolü eklenir. Sorgu yanlış tasarlanmış olsa bile, yanlış kullanıcıya veri gitmesini bu son adım engeller.
+
+```python
+invoice = get_invoice_by_id(invoice_id)  # mevcut, değiştirilmeyen sorgu
+if invoice.owner_id != current_user.id:
+    log.warning(f"IDOR denemesi: user={current_user.id} target={invoice_id}")
+    return abort(403)
+return jsonify(invoice)
+```
+
+**5. Şüpheli ID Taramasını Log + Alarm ile Yakalama (Geçici Tespit Katmanı)**
+
+Fix devreye girene kadar, aynı kullanıcının kısa sürede çok sayıda farklı ID denediği durumlar (klasik IDOR tarama davranışı) tespit edilip otomatik olarak engellenir/alarm üretir. Bu bir "önleme" değil ama **istismarı gerçek zamanlı durdurur**.
+
+```python
+key = f"id_attempts:{current_user.id}"
+attempts = redis.incr(key)
+redis.expire(key, 60)
+if attempts > 20:  # 60 saniyede 20'den fazla farklı ID denemesi şüpheli
+    alert_security_team(current_user.id)
+    return abort(429)
+```
+
+**Dikkat edilmesi gerekenler:**
+
+* Bu 5 yöntem **geçicidir** — asıl çözüm hâlâ resource-level yetki kontrolünün merkezi katmanda kalıcı olarak eklenmesidir.
+* Nonce/imza tabanlı çözümler **yeni bir bypass yüzeyi** açmamalı: secret key'in güvenli saklanması, nonce'ların gerçekten tek kullanımlık ve kısa ömürlü olması şarttır.
+* Log + alarm katmanı tek başına savunma değildir; sadece **zaman kazandırır**, saldırgan yavaşlatılmış bir tarama ile hâlâ başarılı olabilir.
+* Yama sonrası mutlaka **etkilenen tüm endpoint'ler** (export, archive, internal, bulk gibi alternatif yollar dahil) taranıp aynı kontrolün eklendiğinden emin olunmalı.
+* Geçici çözüm production'a alındıktan sonra, kalıcı fix (merkezi middleware/guard + DTO + owner filtresi ORM seviyesinde) backlog'a değil, **aynı sprint'e** yazılmalıdır — aksi halde "geçici" çözüm kalıcılaşır.
+
+---
+
 ### ❌ Ne İşe Yaramaz
 
 * Sadece ID'yi UUID yapmak (yetki kontrolü hâlâ yoksa fark etmez)
@@ -554,7 +640,7 @@ rules:
 * Sadece belirli uç noktalara yetki eklemek, alternatif/export/archive uç noktalarını unutmak
 * Rate-limit'e güvenmek (yavaş da olsa saldırgan yine de tüm ID uzayını tarayabilir)
 
-**Gerçek çözüm, her kaynağa erişimin "bu istek sahibi bu kaynağın sahibi/yetkilisi mi?" sorusunu backend'de, merkezi ve tutarlı şekilde sormasıdır.**
+**Gerçek çözüm, her kaynağa erişimin "bu istek sahibi bu kaynağın sahibi/yetkilisi mi?" sorusunu backend'de, merkezi ve tutarlı şekilde sormasıdır. Yukarıdaki hızlı çözümler bu soruya kalıcı cevap verilene kadar riski azaltmak içindir.**
 
 ---
 
@@ -571,8 +657,5 @@ rules:
 
 * Toplu veri sızdırma (JSON dizi manipülasyonu)
   `POST /api/v1/documents/bulk-download { "ids": [4471, 9981, 9982] }`
-
-* İkinci derece IDOR (arka plan işleminde tetiklenen)
-  Rapor talebi → kuyruk → PDF servisi → yetki kontrolü atlanmış çıktı
 
 ---
