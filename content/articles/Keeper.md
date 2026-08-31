@@ -135,36 +135,14 @@ dotnet run -- KeePassDumpFull.dmp
 
 Çıktı, her karakter pozisyonu için olası adayları listeledi:
 
-```
-1.: ●
-2.: ø, Ï, ,, l, `, -, ', ], §, A, I, :, =, _, c, M
-3.: d
-4.: g
-5.: r
-6.: ø
-7.: d
-8.: [boşluk]
-9.: m
-10.: e
-11.: d
-12.: [boşluk]
-13.: f
-14.: l
-15.: ø
-16.: d
-17.: e
+<img width="625" height="385" alt="şifre" src="https://github.com/user-attachments/assets/c9d74078-0d07-448b-9cec-d6bd7b652e0b" />
 
-Combined: ●{ø, Ï, ,, l, `, -, ', ], §, A, I, :, =, _, c, M}dgrød med fløde
-```
 
 İlk karakter belirsizdi, ikinci karakter için birkaç aday vardı, ama geri kalan tüm karakterler nettti. `dgrød med fløde` kısmı bana Danca bir tatlı adına (**rødgrød med fløde**) çok benziyor geldi — bu bağlamsal ipucuyla ilk iki karakteri tamamladığımda parolanın şu olması gerektiğini düşündüm:
 
 ```
 rødgrød med fløde
 ```
-
-<img width="625" height="385" alt="şifre" src="https://github.com/user-attachments/assets/c9d74078-0d07-448b-9cec-d6bd7b652e0b" />
-
 
 Bu tahminle veritabanını açmayı denedim:
 
