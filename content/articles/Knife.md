@@ -17,12 +17,6 @@ nmap -sS -A -p- -T5 10.129.50.161
 
 Web sitesine göz attım, sayfa içeriğinde ve kaynak kodda (`view-source`) dikkat çekici bir şey yoktu. `ffuf` ile dizin taraması denedim ama anlamlı bir sonuç çıkmadı. Bu noktada isteği Burp Suite ile yakalayıp response header'larına baktım
 
-```
-HTTP/1.1 200 OK
-Server: Apache/2.4.41 (Ubuntu)
-X-Powered-By: PHP/8.1.0-dev
-```
-
 <img width="1189" height="243" alt="burp" src="https://github.com/user-attachments/assets/6b4d325d-4949-4e48-bf7a-0c385c9da3c0" />
 
 Aynı bilgiyi `curl -v` ile de doğrulayabiliriz:
@@ -35,7 +29,7 @@ curl -v 10.129.50.161
 
 <img width="1189" height="243" alt="burp" src="https://github.com/user-attachments/assets/c1246982-031f-4774-8fe1-d3d150b3955a" />
 
-**PHP 8.1.0-dev** — bu sürüm numarası kritik. Normal bir prod ortamında "-dev" etiketli bir PHP sürümü görmek zaten şüphe uyandırmalı; bunun tarihsel bir arka planı var (aşağıda anlatıyorum).
+**PHP 8.1.0-dev** — bu sürüm numarası kritik. Normal bir prod ortamında "-dev" etiketli bir PHP sürümü görmek zaten şüphe uyandırmalı; bunun tarihsel bir arka planı var.
 
 ---
 
