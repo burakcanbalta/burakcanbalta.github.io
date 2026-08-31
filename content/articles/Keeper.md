@@ -61,14 +61,12 @@ Response header'larına baktığımda `Set-Cookie: RT_SID_tickets.keeper.htb.80=
 
 <img width="729" height="275" alt="defaultcredentials" src="https://github.com/user-attachments/assets/0340561e-ac5b-42f6-9b9e-bd8b8c16907e" />
 
-Bu bilgiyle login ekranına geri döndüm ve giriş denedim:
+Bu bilgiyle login ekranına geri döndüm ve giriş denedim
 
-<img width="729" height="275" alt="defaultcredentials" src="https://github.com/user-attachments/assets/3731efbd-fb3f-4362-81c8-cf155fab637c" />
+<img width="1283" height="735" alt="login" src="https://github.com/user-attachments/assets/032aec7f-d515-439d-bd49-1082cee01fa8" />
 
 
 ## 5. Panel İçi Enumerasyon — Sızmış Kullanıcı Parolası
-
-<img width="1283" height="735" alt="login" src="https://github.com/user-attachments/assets/cb2de651-81d2-4bc8-9907-239eb772ee42" />
 
 Admin paneline girdikten sonra amacım daha fazla bilgi toplamaktı — kullanıcı listesi, açık ticket'lar, yapılandırma kayıtları gibi. Panelde gezinirken kullanıcı yönetim ekranına gittim ve URL'yi manuel olarak değiştirerek farklı kullanıcı ID'lerini incelemeye başladım:
 
