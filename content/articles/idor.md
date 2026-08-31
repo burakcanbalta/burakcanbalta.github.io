@@ -1,3 +1,5 @@
+<img width="1024" height="595" alt="idor" src="https://github.com/user-attachments/assets/beb5f124-9082-4c83-b003-8d3a52fff0ed" />
+
 **IDOR (Insecure Direct Object Reference)**, bir web uygulamasının kullanıcıdan gelen bir kimlik/parametre değerine (ID, referans, dosya yolu vb.) dayanarak veri veya işlem sunarken, bu değere erişim yetkisini **doğru şekilde doğrulamaması** sonucu ortaya çıkan kritik bir yetkilendirme (authorization) açığıdır.
 
 Bu açık sayesinde saldırgan:
