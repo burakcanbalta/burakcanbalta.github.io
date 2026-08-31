@@ -1,5 +1,21 @@
 [
   {
+    "slug": "Knife",
+    "title": "Hack The Box — Knife Writeup",
+    "date": "2026-08-31",
+    "tags": [
+      "Linux",
+      "PHP",
+      "Backdoor",
+      "RCE",
+      "Sudo Misconfiguration",
+      "GTFOBins",
+      "Privilege Escalation"
+    ],
+    "excerpt": "Apache üzerinde çalışan PHP 8.1.0-dev sürümüne 2021 PHP git ihlali sırasında enjekte edilmiş backdoor'un header injection ile istismar edilerek foothold elde edilmesi, ardından sudoers üzerinde şifresiz çalıştırma iznine sahip knife aracının exec alt komutu GTFOBins payload'ı ile istismar edilerek doğrudan root shell elde edilmesinin teknik incelemesi.",
+    "readTime": "9 dk"
+  },
+  {
     "slug": "Netmon",
     "title": "Hack The Box — Netmon Writeup",
     "date": "2026-08-30",
