@@ -4,7 +4,65 @@
 
 OWASP, bu farkı gözeterek **API Security Top 10**'u klasik OWASP Top 10'dan ayrı bir liste olarak yayınlar. 2023 revizyonu, 2019 listesine göre önemli değişiklikler içerir: bazı kategoriler birleştirilmiş (Excessive Data Exposure + Mass Assignment → Broken Object Property Level Authorization), bazıları tamamen yeni eklenmiştir (Unrestricted Resource Consumption, Unrestricted Access to Sensitive Business Flows, Unsafe Consumption of APIs).
 
-Bu yazıda listenin her bir maddesini, gerçek payload örnekleri, zafiyetli/güvenli kod karşılaştırmaları ve ileri seviye istismar teknikleriyle birlikte inceleyeceğiz.
+Bu yazıda listenin her bir maddesini gerçek payload örnekleriyle inceleyeceğiz; savunma önerilerini ise tekrarı azaltmak için yazının sonunda tek bir bölümde topluca vereceğiz.
+
+---
+
+## API Mimarileri: REST, SOAP ve GraphQL Hızlı Tanıtım
+
+Payload örneklerine geçmeden önce, üç yaygın API mimarisini kısaca ayırt etmek gerekir — çünkü aynı zafiyet (örn. BOLA), her mimaride **farklı bir yüzeyde** karşımıza çıkar.
+
+### REST (Representational State Transfer)
+
+Bugün en yaygın kullanılan API mimarisidir. Kaynaklar URL yolları üzerinden temsil edilir, HTTP metodları (GET/POST/PUT/DELETE) işlemi belirtir, veri genellikle JSON formatındadır.
+
+```
+GET /api/v1/orders/8841
+POST /api/v1/orders
+DELETE /api/v1/orders/8841
+```
+
+* Her kaynak kendi URL'sine sahiptir → saldırı yüzeyi endpoint sayısı kadar geniştir
+* Durumsuzdur (stateless) → her istekte kimlik doğrulama tekrar taşınır (genellikle token)
+* En çok karşılaşılan zafiyetler: BOLA, BFLA, Mass Assignment
+
+### SOAP (Simple Object Access Protocol)
+
+Daha eski, kurumsal (bankacılık, sigorta, kamu) sistemlerde hâlâ yaygın olan, XML tabanlı katı bir protokoldür. WSDL (Web Services Description Language) dosyası ile servisin tüm işlemleri, parametreleri ve tipleri **önceden tanımlanır**.
+
+```xml
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <GetOrder xmlns="http://target.com/orders">
+      <OrderId>8841</OrderId>
+    </GetOrder>
+  </soap:Body>
+</soap:Envelope>
+```
+
+* XML tabanlı olduğu için klasik **XXE (XML External Entity)** ve XML injection saldırılarına açıktır
+* WSDL dosyası genellikle herkese açık bırakılır (`?wsdl`) ve tüm servis haritasını sızdırır
+* Yetkilendirme genellikle SOAP header'ı içindeki özel token/credential alanlarına dayanır — bu alanlar kontrol edilmezse klasik BOLA/BFLA aynen geçerlidir
+
+### GraphQL
+
+Tek bir endpoint (`/graphql`) üzerinden, istemcinin **tam olarak ihtiyacı olan veriyi** sorgulamasına izin veren esnek bir sorgu dilidir.
+
+```graphql
+query {
+  order(id: 8841) {
+    id
+    total
+    customer { name email }
+  }
+}
+```
+
+* REST'teki "her kaynağın kendi endpoint'i" mantığı yoktur — tüm veri modeli tek noktadan erişilebilir olduğu için yetkilendirme **resolver seviyesinde** (her alan için ayrı ayrı) yapılmak zorundadır
+* Introspection, batching ve iç içe sorgu gibi GraphQL'e özgü ek saldırı yüzeyleri vardır
+* Schema tek bir yerde toplandığı için, tek bir eksik kontrol tüm veri modelini etkileyebilir
+
+> Bu üç mimarinin ortak paydası: **hangi teknoloji kullanılırsa kullanılsın, "bu isteği yapan, bu kaynağa/fonksiyona erişmeye yetkili mi?" sorusu backend'de sorulmuyorsa, zafiyet oluşur.** Aşağıdaki OWASP API Top 10 maddeleri bu ortak kökten türeyen farklı görünümlerdir.
 
 ---
 
@@ -51,23 +109,6 @@ for i in range(1, 100000):
     r = requests.get(f"https://api.target.com/v1/orders/{i}", headers=headers)
     if r.status_code == 200:
         print(f"Erişildi: {i}")
-```
-
-### Savunma
-
-```javascript
-// ❌ Riskli
-app.get('/api/v1/orders/:id', async (req, res) => {
-  const order = await Order.findById(req.params.id);
-  res.json(order);
-});
-
-// ✅ Güvenli — sahiplik kontrolü query'ye dahil
-app.get('/api/v1/orders/:id', async (req, res) => {
-  const order = await Order.findOne({ _id: req.params.id, ownerId: req.user.id });
-  if (!order) return res.status(403).json({ error: 'Yetkisiz erişim' });
-  res.json(order);
-});
 ```
 
 ---
@@ -140,14 +181,6 @@ Authorization code, saldırganın kontrolündeki domaine yönlendirilir ve token
 
 **Authorization Code Interception:** PKCE (Proof Key for Code Exchange) kullanılmıyorsa, mobil/native uygulamalarda code, uygulama içi tarayıcı veya log üzerinden sızabilir; saldırgan bu code'u kendi client'ıyla token'a çevirebilir.
 
-### Savunma
-
-* JWT için `alg` header'ını sunucu tarafında sabitleyip whitelist yapın (`HS256` bekleniyorsa `RS256`/`none` reddedilmeli)
-* `jku`/`jwk` gibi dışarıdan gelen anahtar referanslarını asla doğrulamadan güvenmeyin — sabit, önceden tanımlı key set kullanın
-* OAuth akışlarında `state` zorunlu olsun ve session'a bağlı doğrulansın
-* `redirect_uri` **tam eşleşme (exact match)** ile kontrol edilsin, whitelist dışına asla izin verilmesin
-* Mobil/SPA istemcilerde PKCE zorunlu tutulsun
-
 ---
 
 ## API3:2023 — Broken Object Property Level Authorization
@@ -187,34 +220,6 @@ PUT /api/v1/profile
 
 Backend gelen tüm alanları filtrelemeden nesneye yazıyorsa, saldırgan normalde erişemeyeceği alanları (`is_admin`, `account_balance`) değiştirerek doğrudan yetki yükseltmesi yapar.
 
-### Savunma
-
-```python
-# ❌ Riskli: modelin tamamı response'a dönüyor, gelen tüm alanlar yazılıyor
-@app.route('/api/v1/profile', methods=['PUT'])
-def update_profile():
-    user = User.query.get(current_user.id)
-    for key, value in request.json.items():
-        setattr(user, key, value)
-    db.session.commit()
-    return jsonify(user.__dict__)
-
-# ✅ Güvenli: explicit whitelist — hem input hem output için
-ALLOWED_INPUT = {"name", "email"}
-ALLOWED_OUTPUT = {"id", "name", "email"}
-
-@app.route('/api/v1/profile', methods=['PUT'])
-def update_profile_secure():
-    user = User.query.get(current_user.id)
-    for key, value in request.json.items():
-        if key in ALLOWED_INPUT:
-            setattr(user, key, value)
-    db.session.commit()
-    return jsonify({k: getattr(user, k) for k in ALLOWED_OUTPUT})
-```
-
-Kural basittir: **DTO (Data Transfer Object) kullanın**, backend nesnesini asla doğrudan serialize edip dönmeyin veya doğrudan request body'sinden nesneye map etmeyin.
-
 ---
 
 ## API4:2023 — Unrestricted Resource Consumption
@@ -239,12 +244,6 @@ POST /api/v1/auth/send-otp
 
 Bu istek saniyede yüzlerce kez gönderilebiliyorsa, hem DoS hem de gerçek para maliyeti (SMS başına ücret) oluşur.
 
-### Savunma
-
-* Her endpoint için istek başına kaynak limiti (payload boyutu, sayfalama üst sınırı, timeout) tanımlayın
-* Kullanıcı/IP bazlı rate limiting + maliyetli işlemler için ayrı, daha sıkı limitler uygulayın
-* Üçüncü taraf servis çağıran endpoint'lerde günlük/saatlik kota uygulayın
-
 ---
 
 ## API5:2023 — Broken Function Level Authorization (BFLA)
@@ -268,12 +267,6 @@ veya API dokümantasyonunda/JS bundle'ında referansı bulunan ama frontend'de g
 POST /api/v1/internal/users/44/reset-password
 ```
 
-### Savunma
-
-* Fonksiyon seviyesinde yetkilendirmeyi merkezi bir middleware/guard katmanında zorunlu kılın, controller'a tek tek eklemeyin
-* Rol bazlı erişim kontrolünü (RBAC) deny-by-default mantığıyla kurun: açıkça izin verilmeyen her fonksiyon reddedilsin
-* Admin ve normal kullanıcı endpoint'lerini ayrı route prefix'leri + ayrı middleware zincirleriyle izole edin
-
 ---
 
 ## API6:2023 — Unrestricted Access to Sensitive Business Flows
@@ -287,11 +280,12 @@ Bu kategori, klasik bir "implementasyon hatası" değildir — **iş mantığın
 * **Fiyat kazıma (scraping) + rekabet manipülasyonu:** Bir e-ticaret API'si fiyat bilgisini sınırsız sorgulamaya izin veriyorsa, rakip firmalar fiyatları anlık izleyip otomatik fiyat savaşı başlatabilir.
 * **Hesap oluşturma spam'i:** Kayıt endpoint'i e-posta doğrulaması ve rate limit içermiyorsa, saldırgan binlerce sahte hesap oluşturup promosyon/referral sistemini istismar edebilir.
 
-### Savunma
+```
+POST /api/v1/tickets/purchase
+{ "event_id": 501, "quantity": 50 }
+```
 
-* Kritik iş akışlarını (satın alma, kayıt, oylama) sadece teknik değil **davranışsal** olarak da koruyun: hız, sıklık, cihaz parmak izi (fingerprint) analizleri
-* CAPTCHA, bot tespiti (device fingerprinting, davranış analizi) kritik akışlara entegre edilsin
-* İş biriminden (product/business) "bu fonksiyon otomatik/toplu kullanılırsa ne kaybederiz?" sorusunun güvenlik ekibiyle birlikte cevaplanması gerekir
+Tek bir hesabın tek istekte 50 bilet alabilmesi, saniyede yüzlerce paralel istekle birleştiğinde stokun botlar tarafından anında tüketilmesine yol açar.
 
 ---
 
@@ -316,7 +310,7 @@ GET http://169.254.169.254/latest/meta-data/iam/security-credentials/<role-name>
 
 Dönen yanıt genellikle `AccessKeyId`, `SecretAccessKey` ve `Token` içerir; bu bilgilerle saldırgan AWS CLI üzerinden bulut kaynaklarına doğrudan erişebilir.
 
-**Dosya yükleme üzerinden SSRF:** Bazı API'ler "URL'den resim yükle" gibi bir özellik sunar:
+**Dosya yükleme üzerinden SSRF:**
 
 ```json
 POST /api/v1/avatar/import
@@ -325,12 +319,20 @@ POST /api/v1/avatar/import
 
 Sunucu bu adrese istek atıp içeriği "resim" olarak işlemeye çalışırken, aslında iç ağdaki korumasız bir admin panelinin çıktısını saldırgana (hata mesajı, response süresi farkı vb. yollarla) sızdırabilir.
 
-### Savunma
+**Bulut sağlayıcılara göre metadata endpoint'leri:**
 
-* Kullanıcıdan gelen URL'leri **whitelist** ile sınırlayın (sadece izin verilen domain/protokoller)
-* Private IP aralıklarına (`127.0.0.1`, `169.254.169.254`, `10.0.0.0/8`, `192.168.0.0/16`) giden isteklerin sunucu seviyesinde engellenmesi
-* Bulut ortamlarında IMDSv2 (token tabanlı metadata erişimi) zorunlu kılınmalı — düz IMDSv1 SSRF'e karşı korumasızdır
-* DNS rebinding saldırılarına karşı, doğrulama anındaki IP ile isteğin gerçekten gittiği IP'nin aynı olduğunu teyit edin
+| Bulut Sağlayıcı | Metadata Endpoint |
+|---|---|
+| AWS | `http://169.254.169.254/latest/meta-data/` |
+| Azure | `http://169.254.169.254/metadata/instance?api-version=2021-02-01` |
+| GCP | `http://metadata.google.internal/computeMetadata/v1/` |
+
+```
+GET http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token
+Metadata-Flavor: Google
+```
+
+Azure ve GCP metadata servisleri ek bir header zorunlu kıldığı için (`Metadata: true` / `Metadata-Flavor: Google`), SSRF zafiyeti sadece URL'i kontrol edebiliyorsa ama header ekleyemiyorsa bu sağlayıcılarda daha zor istismar edilir.
 
 ---
 
@@ -342,7 +344,7 @@ API'lerin ve destekleyici altyapının karmaşık yapılandırma seçenekleri, g
 
 * Gereksiz HTTP metodlarının açık bırakılması (`TRACE`, `PUT`, `DELETE` production'da kapatılmamış)
 * Detaylı hata mesajları / stack trace'lerin production'da görünür olması
-* CORS yapılandırmasının aşırı gevşek olması (`Access-Control-Allow-Origin: *` + `Access-Control-Allow-Credentials: true` birlikte kullanımı — kritik bir yanlış yapılandırma)
+* CORS yapılandırmasının aşırı gevşek olması
 * Varsayılan (default) kimlik bilgileriyle açık kalmış admin/monitoring panelleri
 * Güvenlik header'larının eksikliği (`Strict-Transport-Security`, `X-Content-Type-Options`)
 
@@ -353,12 +355,12 @@ Access-Control-Allow-Credentials: true
 
 Bu kombinasyon teorik olarak tarayıcılar tarafından reddedilir, ancak bazı proxy/gateway katmanları veya eski tarayıcı davranışları nedeniyle credential içeren cross-origin isteklerin sızmasına yol açabilecek yapılandırma hataları hâlâ karşımıza çıkar.
 
-### Savunma
+```
+OPTIONS /api/v1/admin/users HTTP/1.1
+Host: target.com
+```
 
-* Konfigürasyonları kod gibi versiyonlayın (Infrastructure as Code) ve otomatik güvenlik taramasından geçirin
-* Production ortamında debug modunu ve detaylı hata çıktısını kesinlikle kapatın
-* CORS politikasını explicit whitelist ile tanımlayın, `*` + credentials kombinasyonundan kaçının
-* Düzenli konfigürasyon denetimi (hardening checklist) sürecini CI/CD'ye entegre edin
+Production'da `TRACE`/`OPTIONS` gibi metodlar açık bırakıldığında, sunucu konfigürasyonu (versiyon, desteklenen metodlar, bazen internal header'lar) response üzerinden sızabilir.
 
 ---
 
@@ -385,14 +387,13 @@ subfinder -d target.com | grep -i api
 grep -rEo '"/api/v[0-9]+/[a-zA-Z0-9_/-]+"' bundle.js | sort -u
 ```
 
-Swagger/OpenAPI dosyalarının erişilebilir bırakılması (`/swagger.json`, `/api-docs`) da tam bir endpoint envanteri sunarak saldırganın işini kolaylaştırır — bu dosyalar production'da ya kapatılmalı ya da kimlik doğrulama arkasına alınmalıdır.
+Swagger/OpenAPI dosyalarının erişilebilir bırakılması (`/swagger.json`, `/api-docs`) da tam bir endpoint envanteri sunarak saldırganın işini kolaylaştırır.
 
-### Savunma
-
-* Merkezi bir API envanteri (host, versiyon, sahip ekip, yetkilendirme modeli) tutun ve düzenli güncelleyin
-* Kullanılmayan/eski API versiyonlarını aktif olarak kapatın, sadece "gizlemeyin"
-* Tüm ortamlar (dev/staging/prod) için erişim kontrolü ve güvenlik standardı aynı seviyede tutulmalı
-* Otomatik API keşif taramalarını (DAST + envanter karşılaştırma) periyodik olarak çalıştırın
+```
+GET /api-docs
+GET /v1/swagger.json
+GET /v2/api-docs
+```
 
 ---
 
@@ -417,31 +418,11 @@ Burada geliştirici "bu veri güvenilir bir partnerden geliyor" varsayımıyla, 
 * Redirect zincirlerinin sınırsız takip edilmesi (üçüncü taraf API'yi taklit eden bir redirect zinciriyle SSRF benzeri sonuçlar)
 * Üçüncü taraf API'den gelen dosya/URL referanslarının doğrudan işlenmesi
 
-### Savunma
-
-```python
-# ✅ Güvenli: gelen veri şema doğrulamasından geçiriliyor, parametrize sorgu kullanılıyor
-import jsonschema
-
-schema = {"type": "object", "properties": {"note": {"type": "string", "maxLength": 200}}}
-response = requests.get("https://partner-api.example.com/user-data", timeout=5)
-data = response.json()
-jsonschema.validate(data, schema)
-
-db.execute("INSERT INTO logs (info) VALUES (%s)", (data["note"],))
-```
-
-* Üçüncü taraf API yanıtlarını **kullanıcı girdisi gibi** ele alın: doğrulayın, sanitize edin, şema kontrolü uygulayın
-* TLS doğrulamasını asla devre dışı bırakmayın, sertifika pinning değerlendirin
-* Redirect takibini sınırlayın ve hedef domaini whitelist ile kontrol edin
-
 ---
 
 ## Mimari ve Protokol Bazlı İleri Seviye Zafiyetler
 
 ### GraphQL Pentest
-
-GraphQL, REST'ten farklı olarak tek bir endpoint (`/graphql`) üzerinden esnek sorgular kabul eder — bu esneklik, klasik REST güvenlik kontrollerinin doğrudan uygulanmasını zorlaştırır.
 
 **Introspection İstismarı:** Production'da introspection kapatılmamışsa, saldırgan tüm şemayı (tip, alan, mutation) tek sorguyla çıkarabilir:
 
@@ -456,9 +437,7 @@ query {
 }
 ```
 
-Bu, saldırgana tüm API yüzeyinin haritasını — gizli mutation'lar, hassas alanlar dahil — sunar.
-
-**Derin/İç İçe Sorgu (Circular Query) DoS:** GraphQL'de ilişkili tipler birbirine referans verebilir. Derinlik sınırı yoksa, saldırgan iç içe geçmiş bir sorgu ile sunucuyu üstel karmaşıklıkta bir işleme zorlayabilir:
+**Derin/İç İçe Sorgu (Circular Query) DoS:**
 
 ```graphql
 query {
@@ -474,7 +453,7 @@ query {
 }
 ```
 
-**Batching ile Rate-Limit Atlatma:** GraphQL, tek HTTP isteğinde birden fazla sorguyu "alias" ile birleştirmeye izin verir. Rate limit istek sayısına göre çalışıyorsa, saldırgan tek istekte yüzlerce login denemesi gönderebilir:
+**Batching ile Rate-Limit Atlatma:**
 
 ```graphql
 query {
@@ -489,38 +468,23 @@ Bu tek bir HTTP isteği olduğu için IP/istek bazlı rate limiter'ı görünür
 
 **GraphQL Injection:** Resolver fonksiyonu, gelen argümanı doğrudan bir veritabanı sorgusuna (SQL/NoSQL) string olarak birleştiriyorsa, klasik injection mantığı GraphQL üzerinden de çalışır.
 
-**Savunma:**
-
-* Production'da introspection kapatılmalı
-* Sorgu derinliği (`max query depth`) ve karmaşıklık (`query cost analysis`) sınırlandırılmalı
-* Rate limiting, HTTP istek sayısı yerine **sorgu/alias sayısına** göre de hesaplanmalı
-* Resolver'larda parametrized query / ORM kullanımı zorunlu tutulmalı
-
----
-
 ### gRPC ve WebSocket Güvenliği
 
-**gRPC:** HTTP/2 üzerinde çalışan, Protobuf (Protocol Buffers) ile serileştirilmiş ikili bir protokoldür. REST'e göre daha az insan-okur formatta olduğu için test araçları (Burp gibi) doğrudan destek vermeyebilir.
-
-Test yaklaşımı:
+**gRPC test yaklaşımı:**
 
 ```bash
 # .proto dosyası biliniyorsa doğrudan kullanılır
 grpcurl -plaintext -d '{"user_id": 1044}' target.com:50051 UserService/GetUser
 ```
 
-`.proto` tanımı elde edilemiyorsa, **server reflection** açıksa servis tanımı doğrudan sorgulanabilir:
-
 ```bash
 grpcurl -plaintext target.com:50051 list
 grpcurl -plaintext target.com:50051 describe UserService
 ```
 
-Reflection kapalıysa, ikili trafik yakalanıp (mitmproxy + gRPC eklentisi) Protobuf mesaj yapısı tersine mühendislikle çıkarılmaya çalışılır — alan numaraları ve wire type'lar analiz edilerek şema kısmen yeniden inşa edilir.
+Reflection kapalıysa, ikili trafik yakalanıp (mitmproxy + gRPC eklentisi) Protobuf mesaj yapısı tersine mühendislikle çıkarılmaya çalışılır.
 
-Yetkilendirme açısından gRPC servisleri de REST kadar BOLA/BFLA'ya açıktır; fark sadece taşıma formatındadır — güvenlik mantığı aynıdır.
-
-**WebSocket:** Kalıcı, çift yönlü bağlantı olduğu için klasik istek/yanıt tabanlı güvenlik kontrolleri (CSRF token, her istekte yeniden authentication) genellikle bağlantı kurulum anında yapılır ve **bağlantı boyunca tekrar doğrulanmaz**.
+**WebSocket üzerinden BOLA:**
 
 ```javascript
 const ws = new WebSocket("wss://target.com/ws?token=" + stolenToken);
@@ -531,25 +495,19 @@ ws.onopen = () => {
 
 Bağlantı bir kez kurulduktan sonra, saldırgan mesaj içindeki `user_id` gibi parametreleri değiştirerek WebSocket üzerinden de BOLA gerçekleştirebilir — çünkü sunucu genellikle her mesajda değil, sadece handshake anında yetki kontrolü yapar.
 
-**Savunma:**
-
-* gRPC'de production'da server reflection kapatılmalı, mTLS ile servisler arası kimlik doğrulama zorunlu tutulmalı
-* WebSocket mesajlarında da **her action için** sunucu tarafı yetki kontrolü yapılmalı, sadece handshake yeterli görülmemeli
-* Her iki protokolde de input validation ve rate limiting, REST kadar titizlikle uygulanmalı
-
 ---
 
 ## Altyapı ve Atlatma (Bypass) Teknikleri
 
 ### API Gateway / WAF Atlatma
 
-**Parametre Kirliliği (HPP):** Gateway ile backend farklı parametre yorumlama mantığına sahipse, WAF ilk değeri kontrol edip backend ikincisini işleyebilir:
+**Parametre Kirliliği (HPP):**
 
 ```
 POST /api/v1/transfer?amount=10&amount=100000
 ```
 
-**HTTP Request Smuggling:** Gateway ve backend sunucu, `Content-Length` ve `Transfer-Encoding` header'larını farklı yorumluyorsa, tek TCP bağlantısında **iki farklı istek** gizlenebilir — biri WAF tarafından görülür ve onaylanır, diğeri backend'e "gizlice" ulaşır.
+**HTTP Request Smuggling:**
 
 ```
 POST /api/v1/data HTTP/1.1
@@ -563,7 +521,7 @@ GET /api/v1/admin/users HTTP/1.1
 Host: target.com
 ```
 
-**Parser Farklılıkları:** WAF JSON body'yi belirli bir şekilde parse edip kontrol ederken, backend farklı bir kütüphane/ayar kullanıyorsa (örn. yinelenen key'lerde WAF ilkini, backend sonuncusunu alıyorsa), zararlı payload ikinci key içine gizlenebilir:
+**Parser Farklılıkları:**
 
 ```json
 { "role": "user", "role": "admin" }
@@ -573,7 +531,7 @@ Host: target.com
 
 ### Rate Limit Atlatma
 
-**Header Manipülasyonu:** Rate limiter, gerçek istemci IP'sini `X-Forwarded-For` header'ından alıyorsa ve bu header doğrulanmıyorsa:
+**Header Manipülasyonu:**
 
 ```
 X-Forwarded-For: 1.2.3.4
@@ -581,9 +539,7 @@ X-Forwarded-For: 5.6.7.8
 X-Real-IP: 9.10.11.12
 ```
 
-Her istekte farklı bir değer göndererek limiter'ın "yeni istemci" sanmasını sağlamak mümkün olabilir.
-
-**Boşluk/Encoding Manipülasyonu:** Bazı rate limiter'lar, endpoint yolunu **birebir string eşleşmesiyle** takip eder. Yol sonuna encode edilmiş boşluk veya farklı case ekleyerek limiter'ın farklı bir endpoint sandığı durumlar oluşabilir:
+**Boşluk/Encoding Manipülasyonu:**
 
 ```
 POST /api/v1/login
@@ -594,41 +550,11 @@ POST /api/v1/login%20
 
 **Login/OTP Mantık Hataları:** OTP doğrulama endpoint'i, deneme sayısını `user_id` yerine `session_id` bazında sayıyorsa, saldırgan her denemede yeni bir session başlatarak deneme sayısı limitini anlamsız hale getirebilir.
 
-### Savunma
-
-* Gateway ve backend'in HTTP parse davranışlarını **standartlaştırın** (aynı kütüphane/versiyon veya sıkı RFC uyumu)
-* Rate limiting'i güvenilmeyen header'lara (`X-Forwarded-For`) değil, TLS bağlantı bilgisi + authenticated user ID'ye göre uygulayın
-* Endpoint normalizasyonunu (trailing slash, case, encoding) gateway seviyesinde tek bir noktada yapın
-* OTP/login deneme sayacını **kullanıcı hesabına** bağlayın, session'a değil
-
----
-
-## SSRF — Bulut Metadata Servisleri Üzerinden Derinlemesine
-
-API7 bölümünde değinilen SSRF'in bulut ortamlarındaki etkisi, API güvenliğinde ayrı bir başlığı hak edecek kadar kritiktir çünkü **doğrudan altyapı kimlik bilgilerinin sızmasına** yol açabilir.
-
-| Bulut Sağlayıcı | Metadata Endpoint |
-|---|---|
-| AWS | `http://169.254.169.254/latest/meta-data/` |
-| Azure | `http://169.254.169.254/metadata/instance?api-version=2021-02-01` |
-| GCP | `http://metadata.google.internal/computeMetadata/v1/` |
-
-Azure ve GCP metadata servisleri ek bir header zorunlu kıldığı için (`Metadata: true` / `Metadata-Flavor: Google`), SSRF zafiyeti sadece URL'i kontrol edebiliyorsa ama header ekleyemiyorsa bu sağlayıcılarda daha zor istismar edilir — bu da SSRF savunmasında "hangi bulutta çalışıyoruz" bilgisinin önemini gösterir.
-
-```
-GET http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token
-Metadata-Flavor: Google
-```
-
-**Savunma:** IMDSv2 (AWS) gibi token-tabanlı, PUT isteğiyle önce token alınmasını zorunlu kılan mekanizmalar, klasik tek-GET-isteği SSRF saldırılarını büyük ölçüde etkisiz hale getirir — bu yüzden IMDSv1'in tamamen kapatılması önerilir.
-
 ---
 
 ## Kod Analizi ve Otomasyon (DevSecOps)
 
 ### White-Box API Pentest
-
-Kaynak koda erişim varsa, rota (route) keşfi ve mantıksal hata tespiti kara kutu teste göre çok daha hızlı ve kapsamlıdır.
 
 **Node.js (Express) route keşfi:**
 
@@ -648,16 +574,12 @@ grep -rEn "\.(GET|POST|PUT|DELETE|PATCH)\(" --include="*.go" .
 grep -rEn "@app\.(route|get|post|put|delete)" .
 ```
 
-Bu şekilde çıkarılan tüm endpoint listesi, ardından her birinin yetkilendirme decorator'ı/middleware'i olup olmadığı kontrol edilerek BFLA/BOLA adayları hızlıca daraltılır:
-
 ```bash
 # Yetki middleware'i olmayan route'ları bulmaya yönelik basit bir ön filtre
 grep -B2 -E "\.(get|post|put|delete)\(" src/routes/*.js | grep -v "authMiddleware\|requireAuth"
 ```
 
 ### Özel Script ile Karmaşık API Akışlarını Simüle Etme
-
-Standart araçlar (Burp, ZAP) çok adımlı, stateful akışları (örn. OAuth login → token alma → nested resource erişimi → sonuç doğrulama) otomatikleştirmekte zorlanabilir. Bu durumda özel script yazmak gerekir.
 
 ```python
 import asyncio
@@ -692,6 +614,93 @@ Go ile yazılan eşdeğerleri, yüksek eşzamanlılık gerektiren büyük ölçe
 
 ---
 
+## Firmada Bu Açıklardan Biri Bulunduysa: Acil Önlemler (Virtual Patch)
+
+Gerçek dünyada "doğru" çözüm (merkezi yetkilendirme katmanı, DTO'lar, resource-based authorization, schema-level GraphQL kontrolleri) hazır olana kadar, ilgili endpoint(ler)e **mimariyi değiştirmeden** uygulanabilecek, saatler içinde devreye alınabilen bir **virtual patch (sanal yama)** gerekir. Amaç kalıcı fix değil, kanamayı hemen durdurmaktır.
+
+**1. Gateway/Proxy Seviyesinde Geçici Yetki Filtresi**
+
+Kod tabanına dokunmadan, API gateway veya reverse proxy seviyesinde ilgili path için ek bir kontrol kuralı eklenir. Bu, saldırının backend'e ulaşmadan durdurulmasını sağlar.
+
+```nginx
+# NGINX örneği: belirli bir path'e sadece belirli claim'e sahip token ile izin ver
+location /api/v1/orders/ {
+    auth_request /_verify_owner;
+    proxy_pass http://backend;
+}
+```
+
+**2. BOLA/BFLA İçin Geçici Middleware Guard**
+
+Etkilenen route grubunun önüne, mevcut kodu değiştirmeden **tek bir kontrol noktası** eklenir.
+
+```javascript
+// Tüm /api/v1/orders/:id rotalarının önüne eklenen geçici guard
+app.use('/api/v1/orders/:id', async (req, res, next) => {
+  const order = await Order.findById(req.params.id);
+  if (!order || order.ownerId !== req.user.id) return res.status(403).end();
+  next();
+});
+```
+
+**3. Mass Assignment İçin Acil Alan Filtreleme (Field Whitelist Patch)**
+
+Backend'in tamamını DTO'ya geçirmeye vakit yoksa, sadece güncelleme endpoint'inin başına 3 satırlık bir filtre eklenir.
+
+```python
+DANGEROUS_FIELDS = {"is_admin", "role", "account_balance", "tenant_id"}
+for field in DANGEROUS_FIELDS:
+    request.json.pop(field, None)  # istekten tehlikeli alanları anında çıkar
+```
+
+**4. Rate Limit / Kaynak Tüketimi İçin Acil Sert Limit**
+
+Gerçek limit mantığı kurulana kadar, saldırıya açık endpoint'e geçici olarak agresif bir sınır konur — kullanıcı deneyimi biraz etkilense de risk anında düşer.
+
+```python
+@limiter.limit("5 per minute")  # kalıcı çözüm gelene kadar geçici sert limit
+@app.route('/api/v1/auth/send-otp', methods=['POST'])
+def send_otp(): ...
+```
+
+**5. SSRF İçin Acil IP/Domain Whitelist**
+
+Webhook/URL-import gibi SSRF'e açık endpoint'lere, mimariyi değiştirmeden sadece bir doğrulama fonksiyonu eklenir.
+
+```python
+import ipaddress, socket
+
+def is_safe_url(url):
+    host = urlparse(url).hostname
+    ip = socket.gethostbyname(host)
+    return not ipaddress.ip_address(ip).is_private  # private/metadata IP'leri anında reddet
+
+if not is_safe_url(request.json["callback_url"]):
+    return abort(400)
+```
+
+**6. GraphQL İçin Acil Introspection Kapatma + Derinlik Sınırı**
+
+Production'da unutulmuş introspection ve derinlik kontrolü, tek satırlık konfigürasyon değişiklikleriyle anında kapatılabilir.
+
+```javascript
+const server = new ApolloServer({
+  schema,
+  introspection: false, // production'da anında kapat
+  validationRules: [depthLimit(5)] // iç içe sorgu DoS'unu anında sınırla
+});
+```
+
+**Dikkat edilmesi gerekenler:**
+
+* Bu yamalar **geçicidir** — asıl çözüm hâlâ merkezi, resource/property/function seviyesinde yetkilendirmenin kod tabanına kalıcı olarak eklenmesidir.
+* Gateway seviyesinde eklenen kurallar, **backend'e doğrudan erişebilen** başka bir yol (internal network, farklı bir gateway, eski API versiyonu) varsa etkisiz kalır — envanteri (API9) mutlaka kontrol edin.
+* Sert rate limit gibi acil önlemler gerçek kullanıcıları da etkileyebilir; izleme (monitoring) ile yan etkiler takip edilmeli.
+* Yama production'a alındıktan sonra, kalıcı fix **backlog'a değil aynı sprint'e** yazılmalı — aksi halde "geçici" çözüm kalıcılaşır ve unutulur.
+* Her virtual patch, ilgili tüm alternatif endpoint'lere (export, internal, v1/v2, bulk) da uygulanmalı; tek bir yol kapatılıp diğerleri unutulursa açık aslında kapanmamış olur.
+
+---
+
 ## Genel Kural
 
 > API güvenliği, tek bir güvenlik duvarı veya tek bir kontrol noktasıyla çözülemez.
@@ -701,6 +710,92 @@ Go ile yazılan eşdeğerleri, yüksek eşzamanlılık gerektiren büyük ölçe
 * Kaynak tüketimi ve iş akışı kötüye kullanımı → teknik kontrol kadar davranışsal/iş mantığı kontrolü de gerektirir
 * SSRF ve üçüncü taraf entegrasyonlar → "dış kaynak" güvenilir değildir, kullanıcı girdisi gibi ele alınmalıdır
 * Envanter ve konfigürasyon → görünmeyen/unutulan API, test edilmeyen API demektir
+
+---
+
+## Savunma — Tüm Kategoriler İçin Kalıcı Çözümler
+
+### API1 — BOLA
+```javascript
+// ✅ sahiplik kontrolü query'ye dahil
+const order = await Order.findOne({ _id: req.params.id, ownerId: req.user.id });
+if (!order) return res.status(403).json({ error: 'Yetkisiz erişim' });
+```
+Nested kaynaklarda **her seviyede** bağlılık doğrulanmalı (department gerçekten o company'ye mi ait, employee gerçekten o department'a mı ait).
+
+### API2 — Broken Authentication
+* JWT `alg` header'ı sunucuda sabitlensin ve whitelist yapılsın (`HS256` bekleniyorsa `RS256`/`none` reddedilmeli)
+* `jku`/`jwk` gibi dışarıdan gelen anahtar referanslarına asla güvenilmesin — sabit, önceden tanımlı key set kullanılsın
+* OAuth akışlarında `state` zorunlu olsun ve session'a bağlı doğrulansın
+* `redirect_uri` **tam eşleşme (exact match)** ile kontrol edilsin
+* Mobil/SPA istemcilerde PKCE zorunlu tutulsun
+
+### API3 — Broken Object Property Level Authorization
+```python
+# ✅ explicit whitelist — hem input hem output için
+ALLOWED_INPUT = {"name", "email"}
+ALLOWED_OUTPUT = {"id", "name", "email"}
+```
+**DTO (Data Transfer Object) kullanın**, backend nesnesini asla doğrudan serialize edip dönmeyin veya doğrudan request body'sinden nesneye map etmeyin.
+
+### API4 — Unrestricted Resource Consumption
+* Her endpoint için istek başına kaynak limiti (payload boyutu, sayfalama üst sınırı, timeout) tanımlayın
+* Kullanıcı/IP bazlı rate limiting + maliyetli işlemler için ayrı, daha sıkı limitler uygulayın
+* Üçüncü taraf servis çağıran endpoint'lerde günlük/saatlik kota uygulayın
+
+### API5 — BFLA
+* Fonksiyon seviyesinde yetkilendirmeyi merkezi bir middleware/guard katmanında zorunlu kılın
+* RBAC'ı deny-by-default mantığıyla kurun
+* Admin ve normal kullanıcı endpoint'lerini ayrı route prefix'leri + ayrı middleware zincirleriyle izole edin
+
+### API6 — Unrestricted Access to Sensitive Business Flows
+* Kritik iş akışlarını (satın alma, kayıt, oylama) hız/sıklık/cihaz parmak izi analizleriyle davranışsal olarak da koruyun
+* CAPTCHA ve bot tespiti kritik akışlara entegre edilsin
+* İş biriminden "bu fonksiyon otomatik/toplu kullanılırsa ne kaybederiz?" sorusu güvenlik ekibiyle birlikte cevaplanmalı
+
+### API7 — SSRF
+* Kullanıcıdan gelen URL'ler **whitelist** ile sınırlandırılsın
+* Private IP aralıklarına (`127.0.0.1`, `169.254.169.254`, `10.0.0.0/8`, `192.168.0.0/16`) giden istekler sunucu seviyesinde engellensin
+* Bulut ortamlarında IMDSv2 zorunlu kılınmalı, IMDSv1 tamamen kapatılmalı
+* DNS rebinding'e karşı, doğrulama anındaki IP ile isteğin gerçekten gittiği IP teyit edilmeli
+
+### API8 — Security Misconfiguration
+* Konfigürasyonlar kod gibi versiyonlanmalı (IaC) ve otomatik güvenlik taramasından geçirilmeli
+* Production'da debug modu ve detaylı hata çıktısı kesinlikle kapatılmalı
+* CORS politikası explicit whitelist ile tanımlanmalı, `*` + credentials kombinasyonundan kaçınılmalı
+* Düzenli konfigürasyon denetimi (hardening checklist) CI/CD'ye entegre edilmeli
+
+### API9 — Improper Inventory Management
+* Merkezi bir API envanteri (host, versiyon, sahip ekip, yetkilendirme modeli) tutulup düzenli güncellenmeli
+* Kullanılmayan/eski API versiyonları aktif olarak kapatılmalı, sadece gizlenmemeli
+* Tüm ortamlar (dev/staging/prod) için erişim kontrolü aynı seviyede tutulmalı
+* Otomatik API keşif taramaları (DAST + envanter karşılaştırma) periyodik çalıştırılmalı
+
+### API10 — Unsafe Consumption of APIs
+```python
+# ✅ gelen veri şema doğrulamasından geçiriliyor, parametrize sorgu kullanılıyor
+jsonschema.validate(data, schema)
+db.execute("INSERT INTO logs (info) VALUES (%s)", (data["note"],))
+```
+* Üçüncü taraf API yanıtlarını **kullanıcı girdisi gibi** ele alın: doğrulayın, sanitize edin, şema kontrolü uygulayın
+* TLS doğrulamasını asla devre dışı bırakmayın, sertifika pinning değerlendirin
+* Redirect takibini sınırlayın ve hedef domaini whitelist ile kontrol edin
+
+### GraphQL
+* Production'da introspection kapatılmalı
+* Sorgu derinliği ve karmaşıklığı sınırlandırılmalı
+* Rate limiting, HTTP istek sayısı yerine **sorgu/alias sayısına** göre de hesaplanmalı
+* Resolver'larda parametrized query / ORM kullanımı zorunlu tutulmalı
+
+### gRPC / WebSocket
+* gRPC'de production'da server reflection kapatılmalı, mTLS zorunlu tutulmalı
+* WebSocket mesajlarında **her action için** sunucu tarafı yetki kontrolü yapılmalı, sadece handshake yeterli görülmemeli
+
+### Gateway/WAF ve Rate Limit Bypass
+* Gateway ve backend'in HTTP parse davranışları standartlaştırılmalı
+* Rate limiting, güvenilmeyen header'lara değil, TLS bağlantı bilgisi + authenticated user ID'ye göre uygulanmalı
+* Endpoint normalizasyonu (trailing slash, case, encoding) gateway seviyesinde tek noktada yapılmalı
+* OTP/login deneme sayacı kullanıcı hesabına bağlanmalı, session'a değil
 
 ---
 
