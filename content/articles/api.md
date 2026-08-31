@@ -614,7 +614,7 @@ Go ile yazılan eşdeğerleri, yüksek eşzamanlılık gerektiren büyük ölçe
 
 ---
 
-## Firmada Bu Açıklardan Biri Bulunduysa: Acil Önlemler (Virtual Patch)
+## Virtual Patch
 
 Gerçek dünyada "doğru" çözüm (merkezi yetkilendirme katmanı, DTO'lar, resource-based authorization, schema-level GraphQL kontrolleri) hazır olana kadar, ilgili endpoint(ler)e **mimariyi değiştirmeden** uygulanabilecek, saatler içinde devreye alınabilen bir **virtual patch (sanal yama)** gerekir. Amaç kalıcı fix değil, kanamayı hemen durdurmaktır.
 
