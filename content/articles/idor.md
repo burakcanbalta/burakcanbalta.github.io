@@ -549,7 +549,7 @@ rules:
 
 ---
 
-### 🚑 Firmada IDOR Bulunduysa: Mimariyi Değiştirmeden Uygulanabilecek Hızlı Çözümler
+### 🚑 Virtual Patch
 
 Gerçek dünyada çoğu zaman "doğru" çözüm (merkezi yetkilendirme katmanı, DTO'lar, resource-based authorization) hazır ama **hemen o gün devreye alınacak bir yama** gerekir. Aşağıdaki 5 yöntem, mevcut kod tabanına dokunmadan, sadece ilgili endpoint(ler)e eklenerek **saatler içinde** riski büyük ölçüde azaltır. Bunlar kalıcı çözüm değildir — asıl amaç kanamayı durdurup, doğru fix'e zaman kazandırmaktır.
 
