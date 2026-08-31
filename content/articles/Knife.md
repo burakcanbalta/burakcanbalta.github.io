@@ -32,15 +32,15 @@ curl -v 10.129.50.161
 
 ---
 
-## 3. Zafiyet Analizi — PHP 8.1.0-dev Backdoor (Mart 2021 PHP Git Olayı)
+## Zafiyet Analizi — PHP 8.1.0-dev Backdoor (Mart 2021 PHP Git Olayı)
 
-### 3.1 Arka Plan
+### Arka Plan
 
 28 Mart 2021'de, PHP'nin kendi kaynak kod deposuna (o dönem `git.php.net` üzerinde barındırılıyordu) saldırganlar tarafından yetkisiz iki commit atıldı. Bu commit'ler, PHP'nin çekirdeğine (`zend_object` sınıflarını yönetim katmanına) kötü amaçlı bir kod parçası ekliyordu. Kod, HTTP isteklerinde **`User-Agentt`** (dikkat: normal `User-Agent` değil, sonunda fazladan bir "t" olan sahte bir header) adlı bir header arıyor, bu header'da `zerodium` string'i geçiyorsa header'ın geri kalan kısmını doğrudan `eval()` benzeri bir mekanizmayla PHP kodu olarak çalıştırıyordu.
 
 PHP ekibi olayı hızlıca fark etti, kötü niyetli commit'leri geri aldı ve kaynak kod deposunu tamamen GitHub'a taşıdı. Ancak bu backdoor'un test/geliştirme amaçlı derlenen bazı **PHP 8.1.0-dev** build'lerinde (o dönemin geliştirme dalı) kısa süreliğine gerçekten var olduğu görüldü.
 
-### 3.2 İstismar Mantığı
+### İstismar Mantığı
 
 Backdoor'un çalışma prensibi çok basit bir **header injection → code execution** zinciri:
 
@@ -52,7 +52,7 @@ Backdoor'un çalışma prensibi çok basit bir **header injection → code execu
 3. Bu header bulunursa ve içeriğinde `zerodium` kelimesi geçiyorsa, header'ın geri kalanı **PHP kodu olarak çalıştırılır** — bu tamamen sunucu tarafında, uygulamanın kendi kodundan bağımsız, doğrudan interpreter seviyesinde gerçekleşen bir RCE'dir.
 4. Yani bu, üstte çalışan web uygulamasının (Emergent Medical Idea sitesi) kodunda hiçbir hata olmasa bile çalışır — çünkü zafiyet uygulamada değil, **PHP interpreter'ının kendisinde**.
 
-### 3.3 Pratikte İstismar
+### Pratikte İstismar
 
 Bu zafiyeti otomatikleştiren hazır bir PoC var:
  
@@ -103,7 +103,7 @@ Doğrudan **`james`** kullanıcısı olarak tam bir shell elde ettim.
 
 ---
 
-## 4. User Flag
+## User Flag
 
 ```
 james@knife:/home$ cd james
@@ -114,9 +114,9 @@ james@knife:~$ cat user.txt
 <img width="296" height="57" alt="flag1" src="https://github.com/user-attachments/assets/1941df43-72a8-478b-b429-a0df994d4b52" />
 
 
-## 5. Privilege Escalation — `sudo knife exec`
+## Privilege Escalation — `sudo knife exec`
 
-### 5.1 Keşif
+### Keşif
 
 Shell aldıktan sonraki standart refleks: `sudo -l`.
 
@@ -133,7 +133,7 @@ Bu çıktı bize şunu söylüyor: `james` kullanıcısı, **şifre girmeden (`N
 
 Bu klasik bir **sudo misconfiguration** — GTFOBins'de `knife` için tam olarak bu senaryo dokümante edilmiş: [gtfobins.github.io/gtfobins/knife](https://gtfobins.github.io/gtfobins/knife/).
 
-### 5.2 GTFOBins Payload'ı ve Tırnak Mantığı
+### GTFOBins Payload'ı ve Tırnak Mantığı
 
 GTFOBins'in önerdiği payload şu:
 
@@ -155,7 +155,7 @@ Ruby'de `exec` çağrısı, mevcut process'in yerini verilen komutla değiştiri
 
 Yani özetle iki farklı dilin (bash ve Ruby) tırnak kuralları iç içe geçiyor: **dıştaki tırnak "bunu bash olarak yorumlama, aynen Ruby yorumlayıcısına ilet" demek, içteki tırnak ise "bu bir Ruby string'i" demek.**
 
-### 5.3 İlk Deneme ve Hata
+### İlk Deneme ve Hata
 
 Yazıda belirttiğim gibi ilk denememde `sudo` eklemeyi unuttum:
 
@@ -165,7 +165,7 @@ knife exec -E "exec '/bin/sh'"
 
 Bu, `knife`'ı **`james` kullanıcısı yetkisiyle** çalıştırdı — yani `/bin/sh`'a geçtim ama hâlâ `james`'tim, root olmadım. Çünkü `sudo -l` çıktısındaki yetki sadece `sudo` üzerinden çalıştırıldığında geçerli; `knife`'ı doğrudan çağırırsam bu SUID bir binary değil, normal kullanıcı yetkimle çalışır.
 
-### 5.4 Doğru Komut ve Root Shell
+### Doğru Komut ve Root Shell
 
 `sudo` eklediğimde:
 
@@ -182,7 +182,7 @@ Bu sefer `knife` süreci **root olarak** başlatıldı (çünkü `sudo` ile ça�
 
 ---
 
-## 6. Root Flag
+##  Root Flag
 
 ```
 # cd /root
