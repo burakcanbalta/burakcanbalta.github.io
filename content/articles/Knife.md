@@ -54,9 +54,7 @@ Backdoor'un çalışma prensibi çok basit bir **header injection → code execu
 
 ### 3.3 Pratikte İstismar
 
-Bu zafiyeti otomatikleştiren hazır bir PoC var:
-
-[flast101/php-8.1.0-dev-backdoor-rce](https://github.com/flast101/php-8.1.0-dev-backdoor-rce)
+Bu zafiyeti otomatikleştiren hazır bir PoC var: [flast101/php-8.1.0-dev-backdoor-rce](https://github.com/flast101/php-8.1.0-dev-backdoor-rce)
 
 
 Script iki dosyadan oluşuyor:
