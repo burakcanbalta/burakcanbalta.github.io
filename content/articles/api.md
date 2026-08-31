@@ -690,8 +690,6 @@ asyncio.run(main())
 
 Go ile yazılan eşdeğerleri, yüksek eşzamanlılık gerektiren büyük ölçekli taramalarda (goroutine'lerin hafifliği sayesinde) genellikle daha performanslıdır ve CI/CD pipeline'larına entegre "sürekli yetkilendirme testi" (continuous authorization testing) adımı olarak eklenebilir.
 
-**Önemli not:** Bu tür özel script'ler yalnızca **yetkilendirilmiş pentest kapsamındaki** hedeflerde, tanımlı kural ve kapsam (scope) dahilinde kullanılmalıdır. İzin alınmamış sistemlerde toplu tarama/istismar denemesi hem yasal hem etik ihlaldir.
-
 ---
 
 ## Genel Kural
