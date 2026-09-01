@@ -85,7 +85,7 @@ LB, `Content-Length: 13` diyerek isteğin `0\r\n\r\n` ile bittiğini düşünür
 
 Tam tersi: LB `Transfer-Encoding`'e, backend `Content-Length`'e göre davranıyorsa, chunk boyutunu yanlış hesaplayarak aynı mantıkla ters yönde bir kaçakçılık gerçekleştirilir.
 
-### TE.TE Saldırısı (Obfuscation)
+### TE.TE Saldırısı
 
 Her iki taraf da `Transfer-Encoding` kullanıyor gibi görünse de, header'ın **yazılış şeklindeki küçük bir bozukluk** (`Transfer-Encoding: chunked` yerine `Transfer-Encoding : chunked` — fazladan boşluk, ya da `Transfer-encoding: xchunked`) bir tarafça geçerli, diğerince geçersiz sayılabilir:
 
@@ -96,7 +96,7 @@ Transfer-Encoding: cow
 
 Bazı parser'lar son değeri, bazıları ilk değeri, bazıları hiçbirini geçerli saymaz — bu üçlü kombinasyon (CL.TE / TE.CL / TE.TE), günümüzde hâlâ en aktif araştırılan web güvenliği konularından biridir.
 
-### HTTP/2 → HTTP/1.1 Downgrade Smuggling (h2c)
+### HTTP/2 → HTTP/1.1 Downgrade Smuggling
 
 Modern LB'ler istemciyle HTTP/2 konuşup backend'e HTTP/1.1 olarak "çevirerek" (downgrade) iletebilir. HTTP/2'de `Content-Length` ve `Transfer-Encoding` karmaşası teorik olarak yoktur (frame tabanlı, uzunluk açıkça belirtilir) — ama **downgrade işlemi sırasında** bu netlik kaybolabilir. LB, HTTP/2 isteğini HTTP/1.1'e çevirirken hatalı bir `Content-Length` hesaplarsa, aynı CL.TE mantığı HTTP/2 dünyasından sızarak yeniden ortaya çıkar. Ayrıca bazı ortamlarda istemcinin `Upgrade: h2c` header'ıyla düz metin HTTP/2'ye geçiş talep etmesi, LB'nin bu upgrade'i doğru şekilde engellememesi durumunda, **backend'e doğrudan protokol karışıklığı enjekte etme** imkânı sunar.
 
