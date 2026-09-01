@@ -1,5 +1,5 @@
 [
-{
+  {
 "slug": "Return",
 "title": "Hack The Box — Return Writeup",
 "date": "2026-09-02",
@@ -15,780 +15,780 @@
 "excerpt": "LDAP kimlik bilgilerini depolayan yazıcı yönetim panelindeki Server Address alanının manipüle edilmesiyle hedef sistemin saldırgan kontrollü LDAP endpoint'ine authentication yapmasının sağlanması, svc-printer hesabına ait credential'ların ele geçirilerek WinRM üzerinden initial access elde edilmesi ve Server Operators üyeliğinin sağladığı servis yönetim yetkileri kullanılarak VMTools servisi üzerinden SYSTEM yetkisine yükselilmesinin teknik incelemesi.",
 "readTime": "10 dk"
 },
-{
-"slug": "load-balancer",
-"title": "Load Balancer Security",
-"date": "2026-09-01",
-"tags": [
-"Network Security",
-"Load Balancer",
-"F5 BIG-IP",
-"Citrix ADC",
-"HTTP Request Smuggling",
-"SSRF",
-"TLS",
-"Reverse Engineering",
-"Fuzzing"
-],
-"excerpt": "L4/L7 dengeleme ve SSL termination temellerinden başlayarak; HTTP başlıkları, cookie imzaları ve zamanlama analiziyle (lbd/halberd) load balancer fingerprinting'in; CL.TE/TE.CL/TE.TE ve HTTP/2 downgrade üzerinden HTTP Request Smuggling'in; F5 BIG-IP kalıcılık cookie'sinin little-endian decode edilerek iç ağ IP/port sızdırılmasının; X-Forwarded-* ve Host header enjeksiyonu ile IP whitelist/iç ağ erişim atlatmanın; path normalization farklarıyla auth bypass (CVE-2020-5902, CVE-2019-19781) ve sızdırılan backend IP'sine doğrudan erişimle WAF bypass'ın; yönetim arayüzü zafiyetlerinin, protokole duyarlı fuzzing ile heap overflow/integer overflow/UAF gibi bellek yolsuzluklarının; firmware çıkarma ve TMM/NSPPE binary tersine mühendisliğinin; iRules/Tcl enjeksiyonu, Lua/Wasm filtre açıklarının (Envoy/Kong); TLS session ticket ve donanım hızlandırıcı (ASIC/FPGA) zafiyetlerinin ve health check üzerinden SSRF'in ele alındığı, virtual patch ve kalıcı çözümlerle tamamlanan uzman seviyesi teknik rehber.",
-"readTime": "24 dk"
-},
-{
-"slug": "Bashed",
-"title": "Hack The Box — Bashed Writeup",
-"date": "2026-09-01",
-"tags": [
-"Linux",
-"Web Fuzzing",
-"phpbash",
-"RCE",
-"Sudo Misconfiguration",
-"Cron",
-"Privilege Escalation"
-],
-"excerpt": "ffuf ile keşfedilen unutulmuş bir /dev dizininde çalışan phpbash web shell'i üzerinden www-data olarak RCE elde edilmesi, sudo -l çıktısındaki aşırı geniş NOPASSWD: ALL kuralıyla scriptmanager kullanıcısına geçilmesi, root'a ait bir cron job tarafından periyodik çalıştırılan yazılabilir /scripts dizinine reverse shell payload'ı bırakılarak root yetkisine ulaşılmasının teknik incelemesi.",
-"readTime": "9 dk"
-},
-{
-"slug": "broken-access-control",
-"title": "Broken Access Control",
-"date": "2026-09-01",
-"tags": [
-"Web",
-"Broken Access Control",
-"OWASP",
-"SSRF",
-"JWT",
-"GraphQL",
-"Race Condition",
-"Microservices",
-"API"
-],
-"excerpt": "Authentication/authorization ayrımı ve yatay/dikey/bağlamsal erişim kontrolü temelleriyle başlayıp; proxy/backend arasındaki path normalization, HTTP method override ve hop-by-hop header enjeksiyonu gibi yönlendirme katmanı çatışmalarının; SSRF ile internal trust istismarı, ID/access token karışıklığı ve service-to-service yetkilendirme eksikliği gibi mikro servis güven ilişkisi açıklarının; JWT JWKS sahteciliği, session puzzling ve zayıf PRNG ile token tahmini gibi kriptografik sabotaj tekniklerinin; negatif/overflow sınır testleri, HTTP/2 üzerinden race condition ve state machine (checkout/payment/success) atlatmanın; GraphQL alias batching, mass assignment+ORM ilişki enjeksiyonu ve NoSQL operatör enjeksiyonu gibi ileri API/veri katmanı sızıntılarının gerçek payload örnekleriyle işlendiği; tespit metodolojisi, saatler içinde uygulanabilecek 8 farklı virtual patch tekniği ve kalıcı mimari çözümlerle tamamlanan kapsamlı OWASP A01:2025 rehberi.",
-"readTime": "22 dk"
-},
-{
-"slug": "api",
-"title": "API Security",
-"date": "2026-09-01",
-"tags": [
-"API",
-"REST",
-"GraphQL",
-"SOAP",
-"OWASP",
-"BOLA",
-"BFLA",
-"SSRF",
-"JWT",
-"Mass Assignment"
-],
-"excerpt": "REST, SOAP ve GraphQL mimarilerinin karşılaştırılmasıyla başlayan, OWASP API Security Top 10 (2023) listesindeki BOLA, Broken Authentication, Broken Object Property Level Authorization, Unrestricted Resource Consumption, BFLA, Unrestricted Access to Sensitive Business Flows, SSRF, Security Misconfiguration, Improper Inventory Management ve Unsafe Consumption of APIs kategorilerinin gerçek payload örnekleriyle işlendiği; JWT alg:none/algoritma karışıklığı/JWKS enjeksiyonu, OAuth redirect_uri ve PKCE zafiyetleri, GraphQL introspection/batching/derin sorgu DoS, gRPC ve WebSocket üzerinden BOLA, gateway/WAF ve rate-limit atlatma teknikleri ile her kategori için virtual patch ve kalıcı çözüm önerilerini içeren kapsamlı API güvenliği rehberi.",
-"readTime": "22 dk"
-},
-{
-"slug": "idor",
-"title": "Insecure Direct Object Reference",
-"date": "2026-09-01",
-"tags": [
-"Web",
-"IDOR",
-"OWASP",
-"Broken Access Control",
-"JWT",
-"Mass Assignment",
-"Multi-Tenancy"
-],
-"excerpt": "IDOR zafiyetinin mantıksal kökenlerinden başlayarak sıralı ID, parametre tabanlı, fonksiyonel (yazma/silme), UUID/GUID tahmini, kriptografik hash'lenmiş ID ve JWT tabanlı IDOR türlerinin; HTTP Parameter Pollution, Mass Assignment, dizi manipülasyonu ve Content-Type değişimi ile filtre atlatma gibi ileri API tekniklerinin; ikinci derece (second-order) IDOR ve çoklu tenant/B2B SaaS senaryolarının; ORM seviyesinde eksik filtreleme ve decorator/annotation eksikliklerine yönelik white-box kod analizi örneklerinin; test metodolojisinin ve kalıcı çözümlerin yanı sıra üretime hızlıca uygulanabilecek 5 farklı virtual patch tekniğinin (nonce, HMAC imzalama, geçici middleware guard, post-check filtreleme, anomali tespiti) ele alındığı kapsamlı teknik rehber.",
-"readTime": "20 dk"
-},
-{
-"slug": "mfa-2fa_bypass",
-"title": "MFA / 2FA Bypass Teknikleri",
-"date": "2026-09-01",
-"tags": [
-"Web",
-"MFA",
-"2FA",
-"Authentication Bypass",
-"AitM",
-"OTP",
-"OAuth",
-"SAML"
-],
-"excerpt": "OTP brute-force ve rate-limit atlatma (IP havuzu, header manipülasyonu, spray attack), response/JWT manipülasyonuyla MFA bayrağının değiştirilmesi, session fixation/token sızıntısı ve race condition (HTTP/2 tek-frame, OTP reentrancy) gibi mantıksal zafiyetlerin; Evilginx/Modlishka tarzı reverse-proxy tabanlı AitM session hijacking ve Conditional Access atlatmanın; SAML assertion injection, OAuth scope downgrade, API versiyon düşürme ve GraphQL batching ile rate-limit atlatmanın; zayıf PRNG ile OTP tahmini, TOTP zaman penceresi istismarı ve tahmin edilebilir seed üretiminin; SMS/e-posta kanalı manipülasyonunun; şifre sıfırlama akışında MFA'nın kasıtsız devre dışı kalmasının ve MFA fatigue (push spam) sosyal mühendislik saldırısının; her kategori için virtual patch ve kalıcı savunma önerileriyle birlikte incelendiği kapsamlı teknik rehber.",
-"readTime": "20 dk"
-},
-{
-"slug": "wifinetic",
-"title": "Hack The Box — Wifinetic Writeup",
-"date": "2026-09-01",
-"tags": [
-"Linux",
-"FTP",
-"OpenWRT",
-"Wireless Security",
-"WPS",
-"Reaver",
-"Password Reuse",
-"Privilege Escalation"
-],
-"excerpt": "Anonim FTP erişimi üzerinden sızan bir OpenWRT konfigürasyon yedeğinden elde edilen kablosuz ağ parolası ve kullanıcı adıyla password reuse saldırısıyla SSH foothold sağlanması, reaver binary'sine tanımlı cap_net_raw capability'si istismar edilerek WPS PIN kaba kuvvet saldırısıyla erişim noktasının WPA-PSK anahtarının kırılması ve aynı parolanın root hesabında tekrar kullanılmasıyla root yetkisine ulaşılmasının teknik incelemesi.",
-"readTime": "10 dk"
-},
-{
-"slug": "Keeper",
-"title": "Hack The Box — Keeper Writeup",
-"date": "2026-09-01",
-"tags": [
-"Linux",
-"Request Tracker",
-"Default Credentials",
-"KeePass",
-"CVE-2023-32784",
-"PuTTY",
-"Privilege Escalation"
-],
-"excerpt": "Request Tracker destek biletleme sisteminde varsayılan kimlik bilgileriyle admin paneline erişim sağlanması, panelde sızmış bir kullanıcı parolasıyla SSH foothold elde edilmesi, ele geçirilen KeePass memory dump dosyasından CVE-2023-32784 zafiyeti istismar edilerek master parolanın kurtarılması ve veritabanında şifrelenmemiş halde bulunan root'a ait PuTTY private key ile doğrudan root shell elde edilmesinin teknik incelemesi.",
-"readTime": "10 dk"
-},
-{
-"slug": "Knife",
-"title": "Hack The Box — Knife Writeup",
-"date": "2026-08-31",
-"tags": [
-"Linux",
-"PHP",
-"Backdoor",
-"RCE",
-"Sudo Misconfiguration",
-"GTFOBins",
-"Privilege Escalation"
-],
-"excerpt": "Apache üzerinde çalışan PHP 8.1.0-dev sürümüne 2021 PHP git ihlali sırasında enjekte edilmiş backdoor'un header injection ile istismar edilerek foothold elde edilmesi, ardından sudoers üzerinde şifresiz çalıştırma iznine sahip knife aracının exec alt komutu GTFOBins payload'ı ile istismar edilerek doğrudan root shell elde edilmesinin teknik incelemesi.",
-"readTime": "9 dk"
-},
-{
-"slug": "Netmon",
-"title": "Hack The Box — Netmon Writeup",
-"date": "2026-08-30",
-"tags": [
-"Windows",
-"PRTG",
-"CVE-2018-9276",
-"FTP",
-"Command Injection",
-"Weak Credentials"
-],
-"excerpt": "Anonim FTP erişimi üzerinden sızan PRTG Network Monitor konfigürasyon yedeğinden elde edilen kimlik bilgileriyle admin paneline giriş sağlanması, CVE-2018-9276 authenticated command injection zafiyeti istismar edilerek notification mekanizması üzerinden doğrudan NT AUTHORITY\SYSTEM yetkisinde shell elde edilmesinin teknik incelemesi.",
-"readTime": "8 dk"
-},
-{
-"slug": "Jerry",
-"title": "Hack The Box — Jerry Writeup",
-"date": "2026-08-30",
-"tags": [
-"Windows",
-"Tomcat",
-"Weak Credentials",
-"WAR Deployment"
-],
-"excerpt": "Apache Tomcat Manager panelinde dökümantasyondan kalma varsayılan kimlik bilgileriyle giriş sağlanması, JSP tabanlı zararlı bir WAR dosyasının deploy edilmesiyle doğrudan NT AUTHORITY\SYSTEM yetkisinde shell elde edilmesinin teknik incelemesi.",
-"readTime": "8 dk"
-},
-{
-"slug": "Lame",
-"title": "Hack The Box — Lame Writeup",
-"date": "2026-08-30",
-"tags": [
-"Linux",
-"Samba",
-"CVE-2007-2447",
-"Command Injection"
-],
-"excerpt": "Samba 3.0.20 üzerindeki 'username map script' command injection zafiyeti (CVE-2007-2447) istismar edilerek kimlik doğrulama gerekmeden doğrudan root yetkisiyle sisteme erişim sağlanmasının teknik incelemesi.",
-"readTime": "8 dk"
-},
-{
-"slug": "Legacy",
-"title": "Hack The Box — Legacy Writeup",
-"date": "2026-08-30",
-"tags": [
-"Windows",
-"SMB",
-"MS08-067"
-],
-"excerpt": "Windows XP üzerinde SMB servisindeki MS08-067 (Server Service Relative Path Stack Corruption) zafiyeti istismar edilerek kimlik doğrulama gerekmeden Administrator yetkisiyle sisteme erişim sağlanmasının teknik incelemesi.",
-"readTime": "8 dk"
-},
-{
-"slug": "Blue",
-"title": "Hack The Box — Blue Writeup",
-"date": "2026-08-29",
-"tags": [
-"Windows",
-"EternalBlue",
-"MS17-010",
-"SMB"
-],
-"excerpt": "MS17-010 (EternalBlue) zafiyeti üzerinden SMBv1 protokolündeki buffer overflow açığı istismar edilerek, herhangi bir kimlik doğrulama gerekmeden doğrudan NT AUTHORITY\SYSTEM yetkisiyle sisteme erişim sağlanmasının teknik incelemesi.",
-"readTime": "8 dk"
-},
-{
-"slug": "Included",
-"title": "HackTheBox — Included Writeup",
-"date": "2026-08-28",
-"tags": [
-"Linux",
-"LFI",
-"TFTP",
-"RCE",
-"LXD",
-"Privilege Escalation",
-"Enumeration"
-],
-"excerpt": "Apache üzerinde ?file= parametresi ile Local File Inclusion zafiyetinin tespiti, UDP taramasıyla bulunan TFTP servisine reverse shell yüklenip LFI ile çalıştırılarak www-data erişimi elde edilmesi, .htpasswd üzerinden mike kullanıcısına yanal hareket ve lxd grubu istismarıyla ayrıcalıklı bir Alpine konteyneri üzerinden root yetkisine ulaşılması sürecinin teknik incelemesi.",
-"readTime": "12 dk"
-},
-{
-"slug": "Tactics",
-"title": "HackTheBox — Tactics Writeup",
-"date": "2026-08-28",
-"tags": [
-"Windows",
-"SMB",
-"Null Session",
-"Weak Credentials",
-"Impacket",
-"Enumeration"
-],
-"excerpt": "ICMP'ye kapalı bir Windows hedefte Nmap -Pn ile port keşfi, anonim SMB oturumunun reddedilmesinin ardından Administrator hesabına boş parola ile erişim sağlanması, C$ yönetimsel paylaşımı üzerinden tüm dosya sistemine ulaşılması ve Administrator masaüstündeki flag'in indirilerek okunması sürecinin teknik incelemesi.",
-"readTime": "8 dk"
-},
-{
-"slug": "Pennyworth",
-"title": "HackTheBox — Pennyworth Writeup",
-"date": "2026-08-28",
-"tags": [
-"Linux",
-"Jenkins",
-"Groovy",
-"RCE",
-"Reverse Shell",
-"Weak Credentials",
-"Enumeration"
-],
-"excerpt": "Jetty üzerinde çalışan Jenkins 2.289.1 panelinde varsayılan kimlik bilgileriyle (root:password) giriş sağlanması, Script Console üzerinden Groovy reverse shell ile RCE elde edilmesi ve root yetkisiyle çalışan servis üzerinden ana dizindeki flag'in okunması sürecinin teknik incelemesi.",
-"readTime": "8 dk"
-},
-{
-"slug": "Base",
-"title": "HackTheBox — Base Writeup",
-"date": "2026-08-28",
-"tags": [
-"Linux",
-"Web",
-"Nmap",
-"Source Code Disclosure",
-"Type Juggling",
-"Authentication Bypass",
-"File Upload",
-"Fuzzing",
-"Reverse Shell",
-"SSH",
-"John the Ripper",
-"Privilege Escalation",
-"Enumeration"
-],
-"excerpt": "Nmap ile başlayan enumeration sürecinde .swp dosyası üzerinden kaynak kod sızıntısının keşfedilmesi, strcmp() fonksiyonundaki type juggling zafiyetinin kullanılmasıyla authentication bypass gerçekleştirilmesi, dosya yükleme mekanizmasının istismar edilmesi ve ffuf ile upload dizininin keşfedilerek reverse shell elde edilmesi, config.php içerisinden parola bulunması, SSH üzerinden kullanıcı erişimi sağlanıp John the Ripper ile parola analizi yapılması ve son olarak sudo yetkisine sahip find komutunun istismar edilmesiyle root yetkisine ulaşılması sürecinin teknik incelemesi.",
-"readTime": "12 dk"
-},
-{
-"slug": "Ignition",
-"title": "HackTheBox — Ignition Writeup",
-"date": "2026-08-28",
-"tags": [
-"Web",
-"Magento",
-"Virtual Host",
-"Weak Credentials",
-"Directory Brute-forcing",
-"Enumeration"
-],
-"excerpt": "Nmap ile tespit edilen tek HTTP portunun ignition.htb sanal sunucusuna yönlendirme yaptığının keşfi, /etc/hosts üzerinden domain çözümlemesi, ffuf ile bulunan Magento admin panelinde 2023'ün en yaygın parolalarından biriyle giriş sağlanması ve panelde bulunan flag'in ele geçirilmesi sürecinin teknik incelemesi.",
-"readTime": "7 dk"
-},
-{
-"slug": "Bike",
-"title": "HackTheBox — Bike Writeup",
-"date": "2026-08-28",
-"tags": [
-"Web",
-"SSTI",
-"Node.js",
-"Handlebars",
-"RCE",
-"Enumeration"
-],
-"excerpt": "Node.js/Express tabanlı web uygulamasında e-posta input alanı üzerinden Handlebars template motorunda SSTI zafiyetinin tespiti, HackTricks bypass payload'ının Burp Suite Decoder ile URL-encode edilerek gönderilmesi, require yerine process.mainModule.require kullanılarak RCE elde edilmesi ve root kullanıcısının ana dizinindeki flag'in okunması sürecinin teknik incelemesi.",
-"readTime": "10 dk"
-},
-{
-"slug": "Funnel",
-"title": "HackTheBox — Funnel Writeup",
-"date": "2026-08-27",
-"tags": [
-"Linux",
-"FTP",
-"SSH",
-"PostgreSQL",
-"Port Forwarding",
-"Enumeration"
-],
-"excerpt": "Anonim FTP erişimiyle ele geçirilen mail yedeklerinden kullanıcı adları ve varsayılan parolanın tespiti, SSH üzerinde password spraying ile geçerli hesaba ulaşılması, yalnızca localhost'ta dinleyen PostgreSQL servisine SSH local port forwarding ile tünel açılması ve secrets veritabanındaki flag'in okunması sürecinin teknik incelemesi.",
-"readTime": "8 dk"
-},
-{
-"slug": "Explosion",
-"title": "HackTheBox — Explosion Writeup",
-"date": "2026-08-27",
-"tags": [
-"Windows",
-"RDP",
-"Enumeration",
-"Misconfiguration"
-],
-"excerpt": "Nmap ile RDP servisinin keşfi, xfreerdp kullanılarak administrator hesabına boş parola ile doğrudan masaüstü erişimi sağlanması ve masaüstündeki flag'in ele geçirilmesi sürecinin teknik incelemesi.",
-"readTime": "6 dk"
-},
-{
-"slug": "Mongod",
-"title": "HackTheBox — Mongod Writeup",
-"date": "2026-08-27",
-"tags": [
-"Linux",
-"MongoDB",
-"NoSQL",
-"Misconfiguration",
-"Enumeration"
-],
-"excerpt": "Authentication olmadan dışarıya açık bırakılan MongoDB 3.6.8 instance'ına bağlanılması, veritabanı ve koleksiyonların enumerate edilmesi ve sensitive_information veritabanındaki flag'in okunması sürecinin teknik incelemesi.",
-"readTime": "7 dk"
-},
-{
-"slug": "PreIgnition",
-"title": "HackTheBox — PreIgnition Writeup",
-"date": "2026-08-27",
-"tags": [
-"Web",
-"Directory Brute-forcing",
-"Weak Credentials",
-"Enumeration"
-],
-"excerpt": "nginx üzerinde çalışan web servisinde ffuf ile dizin taraması yapılarak admin panelinin keşfedilmesi ve varsayılan admin:admin kimlik bilgileriyle giriş sağlanarak flag'in ele geçirilmesi sürecinin teknik incelemesi.",
-"readTime": "6 dk"
-},
-{
-"slug": "Synced",
-"title": "HackTheBox — Synced Writeup",
-"date": "2026-08-27",
-"tags": [
-"Linux",
-"Rsync",
-"Misconfiguration",
-"Enumeration"
-],
-"excerpt": "Anonim erişime açık bırakılan rsync paylaşımının keşfedilmesi, share içeriğinin listelenmesi ve flag dosyasının indirilerek okunması sürecinin teknik incelemesi.",
-"readTime": "6 dk"
-},
-{
-"slug": "Dogcat",
-"title": "TryHackMe — Dogcat Writeup",
-"date": "2026-08-22",
-"tags": [
-"Web",
-"LFI",
-"RCE",
-"Log Poisoning",
-"Docker",
-"Privilege Escalation"
-],
-"excerpt": "PHP tabanlı dogcat uygulamasında LFI ile kaynak kod ve flag okuma, Apache access log zehirlemesiyle RCE elde edilmesi, sudo/env yanlış yapılandırmasıyla root olunması ve son olarak backup script'i üzerinden Docker container'dan host makineye kaçış sürecinin teknik incelemesi.",
-"readTime": "14 dk"
-},
-{
-"slug": "Kiba",
-"title": "TryHackMe — Kiba Writeup",
-"date": "2026-08-22",
-"tags": [
-"Linux",
-"Kibana",
-"Elasticsearch",
-"CVE",
-"RCE",
-"Privilege Escalation"
-],
-"excerpt": "Elasticsearch Kibana 6.5.4 üzerindeki prototype pollution zafiyeti CVE-2019-7609 ile uzaktan kod çalıştırma sağlanması, ardından cap_setuid capability'sine sahip özel bir Python binary'sinin istismar edilerek root yetkisine ulaşılmasının teknik incelemesi.",
-"readTime": "10 dk"
-},
-{
-"slug": "Principal",
-"title": "HackTheBox — Principal Writeup",
-"date": "2026-08-22",
-"tags": [
-"Web",
-"JWT",
-"Cryptography",
-"CVE",
-"SSH",
-"Privilege Escalation"
-],
-"excerpt": "pac4j-jwt kütüphanesindeki CVE-2026-29000 kimlik doğrulama atlatma açığı ile forged JWE/JWT kullanılarak panel erişimi sağlanması, ardından SSH CA sertifika yapılandırmasındaki principal doğrulama eksikliğinin istismar edilerek root yetkisine ulaşılmasının teknik incelemesi.",
-"readTime": "12 dk"
-},
-{
-"slug": "a-bucket-of-phish",
-"title": "TryHackMe — A Bucket of Phish Writeup",
-"date": "2026-08-20",
-"tags": [
-"Cloud",
-"AWS",
-"S3",
-"Phishing",
-"Web",
-"Enumeration"
-],
-"excerpt": "Publicly accessible AWS S3 bucket'ın keşfi, anonim bucket enumeration, exposed web assets ve phishing altyapısının incelenmesi üzerinden gerçekleştirilen TryHackMe A Bucket of Phish çözümünün teknik analizi.",
-"readTime": "10 dk"
-},
-{
-"slug": "RFID",
-"title": "RFID-Based Physical Access Control Security",
-"date": "2026-08-20",
-"tags": [
-"Research",
-"RFID",
-"Physical Security",
-"Access Control",
-"PACS"
-],
-"excerpt": "RFID tabanlı fiziksel erişim kontrol sistemlerinin çalışma mantığı, LF/HF/UHF frekansları, ISO/IEC 14443, MIFARE ve HID kart teknolojileri, PACS mimarisi, Wiegand ve OSDP, AD/IAM/SIEM entegrasyonları, Zero Trust, bulut tabanlı PACS ve mobil kimlik çözümlerinin güvenlik perspektifinden kapsamlı analizi.",
-"readTime": "20 dk"
-},
-{
-"slug": "Lookback",
-"title": "TryHackMe — Lookback Writeup",
-"date": "2026-08-20",
-"tags": [
-"Windows",
-"Active Directory",
-"Exchange",
-"ProxyShell",
-"Command Injection"
-],
-"excerpt": "Unutulmuş bir debug panelinde command injection ile ilk erişim, ardından yamalanmamış Microsoft Exchange üzerinde ProxyShell (CVE-2021-34473) istismarıyla tam yetkili shell alma sürecinin teknik incelemesi.",
-"readTime": "12 dk"
-},
-{
-"slug": "Alfred",
-"title": "TryHackMe — Alfred Writeup",
-"date": "2026-08-18",
-"tags": [
-"Windows",
-"Jenkins",
-"Privilege Escalation"
-],
-"excerpt": "Jenkins Script Console üzerinden Groovy reverse shell ile RCE, SeImpersonatePrivilege ve process migration kullanılarak SYSTEM yetkisine yükselme sürecinin teknik incelemesi.",
-"readTime": "12 dk"
-},
-{
-"slug": "Domino",
-"title": "TryHackMe — Domino Writeup",
-"date": "2026-08-18",
-"tags": [
-"Web",
-"XSS",
-"RCE",
-"IDOR",
-"Privilege Escalation"
-],
-"excerpt": "IDOR, Blind XSS, JWT alg:none bypass, RFI üzerinden RCE, credential reuse ve cron tabanlı privilege escalation tekniklerini içeren Domino çözümü.",
-"readTime": "15 dk"
-},
-{
-"slug": "Drone-C2-Research",
-"title": "Drone C2 Research",
-"date": "2026-08-18",
-"tags": [
-"Research",
-"Drone",
-"C2",
-"Security"
-],
-"excerpt": "Drone communication architectures, command and control systems and security analysis üzerine teknik araştırma.",
-"readTime": "10 dk"
-},
-{
-"slug": "GPS Spoofing",
-"title": "GPS Spoofing Research",
-"date": "2026-08-18",
-"tags": [
-"Research",
-"GPS",
-"Spoofing",
-"Wireless Security"
-],
-"excerpt": "GPS spoofing kavramları, sinyal manipülasyonu ve uydu navigasyon sistemleri üzerindeki güvenlik etkilerinin incelenmesi.",
-"readTime": "10 dk"
-},
-{
-"slug": "Gridloy-News",
-"title": "Hackviser — Gridloy News Writeup",
-"date": "2026-08-18",
-"tags": [
-"WordPress",
-"CVE",
-"File Upload",
-"Privilege Escalation"
-],
-"excerpt": "WordPress enumeration, Royal Elementor Addons üzerindeki CVE-2023-5360 ile unauthenticated file upload, web shell, credential discovery ve privilege escalation adımlarının incelenmesi.",
-"readTime": "12 dk"
-},
-{
-"slug": "IMSI",
-"title": "IMSI Security Research",
-"date": "2026-08-18",
-"tags": [
-"Research",
-"Mobile Security",
-"IMSI"
-],
-"excerpt": "Mobil ağlarda IMSI kimliği, kimlik gizliliği ve IMSI tabanlı güvenlik tehditlerinin teknik analizi.",
-"readTime": "10 dk"
-},
-{
-"slug": "Interceptor",
-"title": "TryHackMe — Interceptor Writeup",
-"date": "2026-08-18",
-"tags": [
-"Web",
-"Pentest",
-"Enumeration"
-],
-"excerpt": "Interceptor makinesinin enumeration, exploitation ve privilege escalation aşamalarını içeren teknik çözüm.",
-"readTime": "12 dk"
-},
-{
-"slug": "Jump",
-"title": "TryHackMe — Jump Writeup",
-"date": "2026-08-18",
-"tags": [
-"Windows",
-"Privilege Escalation"
-],
-"excerpt": "Jump makinesinde enumeration, initial access ve privilege escalation adımlarını içeren teknik çözüm.",
-"readTime": "12 dk"
-},
-{
-"slug": "KEC Card Access Devices",
-"title": "KEC Card Access Devices Security Research",
-"date": "2026-08-18",
-"tags": [
-"Research",
-"RFID",
-"Access Control"
-],
-"excerpt": "Kartlı geçiş sistemleri ve KEC erişim cihazlarının güvenlik mekanizmaları üzerine teknik araştırma.",
-"readTime": "10 dk"
-},
-{
-"slug": "Kenobi",
-"title": "TryHackMe — Kenobi Writeup",
-"date": "2026-08-18",
-"tags": [
-"Linux",
-"SMB",
-"FTP",
-"Privilege Escalation"
-],
-"excerpt": "Nmap enumeration, SMB ve FTP servislerinin keşfi, ProFTPD üzerinden initial access ve SUID tabanlı privilege escalation adımlarının incelenmesi.",
-"readTime": "12 dk"
-},
-{
-"slug": "MrRobot",
-"title": "TryHackMe — Mr Robot Writeup",
-"date": "2026-08-18",
-"tags": [
-"Linux",
-"WordPress",
-"Web",
-"Privilege Escalation"
-],
-"excerpt": "Web enumeration, WordPress keşfi, credential discovery, reverse shell ve SUID üzerinden root privilege escalation adımlarını içeren teknik çözüm.",
-"readTime": "15 dk"
-},
-{
-"slug": "OperationColdstart",
-"title": "TryHackMe — Operation Coldstart Writeup",
-"date": "2026-08-18",
-"tags": [
-"Windows",
-"Red Team",
-"Privilege Escalation"
-],
-"excerpt": "Operation Coldstart makinesinde gerçekleştirilen enumeration, exploitation ve privilege escalation sürecinin teknik incelemesi.",
-"readTime": "12 dk"
-},
-{
-"slug": "OperationPromotion",
-"title": "TryHackMe — Operation Promotion Writeup",
-"date": "2026-08-18",
-"tags": [
-"Windows",
-"Active Directory",
-"Red Team",
-"Privilege Escalation"
-],
-"excerpt": "Windows ve Active Directory ortamının keşfi, saldırı yollarının belirlenmesi ve privilege escalation adımlarını içeren teknik çözüm.",
-"readTime": "15 dk"
-},
-{
-"slug": "Recruit",
-"title": "TryHackMe — Recruit Writeup",
-"date": "2026-08-18",
-"tags": [
-"Web",
-"LFI",
-"SQL Injection"
-],
-"excerpt": "Recruitment portalında LFI ve SQL Injection zafiyetlerinin kullanılmasıyla gerçekleştirilen uçtan uca makine çözümü.",
-"readTime": "10 dk"
-},
-{
-"slug": "SilentMonitor",
-"title": "TryHackMe — Silent Monitor Writeup",
-"date": "2026-08-18",
-"tags": [
-"Linux",
-"SQL Injection",
-"Command Injection",
-"Privilege Escalation"
-],
-"excerpt": "SQL Injection ile internal portala erişim, command injection üzerinden credential discovery, SSH erişimi, KeePass veritabanının incelenmesi ve root erişimi.",
-"readTime": "15 dk"
-},
-{
-"slug": "Support",
-"title": "TryHackMe — Support Writeup",
-"date": "2026-08-18",
-"tags": [
-"Web",
-"LFI",
-"IDOR",
-"Command Injection"
-],
-"excerpt": "Kurumsal helpdesk panelinde zayıf kimlik doğrulama, LFI, IDOR ve Command Injection zafiyetlerinin kullanıldığı teknik çözüm.",
-"readTime": "12 dk"
-},
-{
-"slug": "Tesla Key Fob",
-"title": "Tesla Key Fob Security Analysis",
-"date": "2026-08-18",
-"tags": [
-"Research",
-"Automotive Security",
-"Keyless Entry"
-],
-"excerpt": "Keyless entry sistemleri ve otomotiv erişim teknolojilerinin güvenlik perspektifinden teknik analizi.",
-"readTime": "10 dk"
-},
-{
-"slug": "Thompson",
-"title": "TryHackMe — Thompson Writeup",
-"date": "2026-08-18",
-"tags": [
-"Linux",
-"Tomcat",
-"Ghostcat",
-"CVE",
-"Privilege Escalation"
-],
-"excerpt": "Apache Tomcat ve AJP servisi üzerinden Ghostcat CVE-2020-1938 istismarı, credential discovery, Tomcat Manager üzerinden reverse shell ve cron tabanlı privilege escalation.",
-"readTime": "15 dk"
-},
-{
-"slug": "WindowsJump",
-"title": "TryHackMe — Windows Jump Writeup",
-"date": "2026-08-18",
-"tags": [
-"Windows",
-"Privilege Escalation",
-"Red Team"
-],
-"excerpt": "Guest seviyesinden başlayarak farklı Windows hesapları üzerinden ilerleyip SYSTEM yetkisine ulaşma sürecinin teknik incelemesi.",
-"readTime": "12 dk"
-},
-{
-"slug": "bettercaphelptr",
-"title": "Bettercap Help & Network Analysis",
-"date": "2026-08-18",
-"tags": [
-"Network Security",
-"Bettercap",
-"Pentest",
-"Network Analysis"
-],
-"excerpt": "Bettercap kullanımı, ağ analizi, MITM teknikleri ve penetration testing süreçlerinde kullanılan temel komutların teknik incelemesi.",
-"readTime": "8 dk"
-},
-{
-"slug": "nmap-cheatsheet-tr",
-"title": "Nmap Cheat Sheet — Türkçe",
-"date": "2026-08-18",
-"tags": [
-"Pentest",
-"Nmap",
-"Enumeration"
-],
-"excerpt": "Penetration testing süreçlerinde kullanılan Nmap komutları ve enumeration teknikleri için Türkçe referans.",
-"readTime": "8 dk"
-},
-{
-"slug": "pfsense-network-lab",
-"title": "pfSense Network Security Lab",
-"date": "2026-08-18",
-"tags": [
-"Network Security",
-"pfSense",
-"Firewall",
-"Segmentation"
-],
-"excerpt": "Firewall mimarisi, network segmentation ve altyapı güvenliği üzerine pfSense laboratuvar çalışması.",
-"readTime": "10 dk"
-},
-{
-"slug": "sql-injection-101",
-"title": "SQL Injection 101",
-"date": "2026-08-10",
-"tags": [
-"Web",
-"Pentest",
-"OWASP"
-],
-"excerpt": "SQL Injection saldırılarının çalışma mantığı, tespit yöntemleri, Union-based, Blind ve Time-based teknikler ile savunma yöntemleri.",
-"readTime": "8 dk"
-},
-{
-"slug": "xss-101",
-"title": "Cross-Site Scripting 101",
-"date": "2026-08-18",
-"tags": [
-"Web",
-"XSS",
-"OWASP",
-"Pentest"
-],
-"excerpt": "Reflected, Stored ve DOM-based XSS türleri, payload mantığı, tespit yöntemleri ve savunma tekniklerini anlatan kapsamlı giriş rehberi.",
-"readTime": "8 dk"
-}
+  {
+    "slug": "load-balancer",
+    "title": "Load Balancer Security",
+    "date": "2026-09-01",
+    "tags": [
+      "Network Security",
+      "Load Balancer",
+      "F5 BIG-IP",
+      "Citrix ADC",
+      "HTTP Request Smuggling",
+      "SSRF",
+      "TLS",
+      "Reverse Engineering",
+      "Fuzzing"
+    ],
+    "excerpt": "L4/L7 dengeleme ve SSL termination temellerinden başlayarak; HTTP başlıkları, cookie imzaları ve zamanlama analiziyle (lbd/halberd) load balancer fingerprinting'in; CL.TE/TE.CL/TE.TE ve HTTP/2 downgrade üzerinden HTTP Request Smuggling'in; F5 BIG-IP kalıcılık cookie'sinin little-endian decode edilerek iç ağ IP/port sızdırılmasının; X-Forwarded-* ve Host header enjeksiyonu ile IP whitelist/iç ağ erişim atlatmanın; path normalization farklarıyla auth bypass (CVE-2020-5902, CVE-2019-19781) ve sızdırılan backend IP'sine doğrudan erişimle WAF bypass'ın; yönetim arayüzü zafiyetlerinin, protokole duyarlı fuzzing ile heap overflow/integer overflow/UAF gibi bellek yolsuzluklarının; firmware çıkarma ve TMM/NSPPE binary tersine mühendisliğinin; iRules/Tcl enjeksiyonu, Lua/Wasm filtre açıklarının (Envoy/Kong); TLS session ticket ve donanım hızlandırıcı (ASIC/FPGA) zafiyetlerinin ve health check üzerinden SSRF'in ele alındığı, virtual patch ve kalıcı çözümlerle tamamlanan uzman seviyesi teknik rehber.",
+    "readTime": "24 dk"
+  },
+  {
+    "slug": "Bashed",
+    "title": "Hack The Box — Bashed Writeup",
+    "date": "2026-09-01",
+    "tags": [
+      "Linux",
+      "Web Fuzzing",
+      "phpbash",
+      "RCE",
+      "Sudo Misconfiguration",
+      "Cron",
+      "Privilege Escalation"
+    ],
+    "excerpt": "ffuf ile keşfedilen unutulmuş bir /dev dizininde çalışan phpbash web shell'i üzerinden www-data olarak RCE elde edilmesi, sudo -l çıktısındaki aşırı geniş NOPASSWD: ALL kuralıyla scriptmanager kullanıcısına geçilmesi, root'a ait bir cron job tarafından periyodik çalıştırılan yazılabilir /scripts dizinine reverse shell payload'ı bırakılarak root yetkisine ulaşılmasının teknik incelemesi.",
+    "readTime": "9 dk"
+  },
+  {
+    "slug": "broken-access-control",
+    "title": "Broken Access Control",
+    "date": "2026-09-01",
+    "tags": [
+      "Web",
+      "Broken Access Control",
+      "OWASP",
+      "SSRF",
+      "JWT",
+      "GraphQL",
+      "Race Condition",
+      "Microservices",
+      "API"
+    ],
+    "excerpt": "Authentication/authorization ayrımı ve yatay/dikey/bağlamsal erişim kontrolü temelleriyle başlayıp; proxy/backend arasındaki path normalization, HTTP method override ve hop-by-hop header enjeksiyonu gibi yönlendirme katmanı çatışmalarının; SSRF ile internal trust istismarı, ID/access token karışıklığı ve service-to-service yetkilendirme eksikliği gibi mikro servis güven ilişkisi açıklarının; JWT JWKS sahteciliği, session puzzling ve zayıf PRNG ile token tahmini gibi kriptografik sabotaj tekniklerinin; negatif/overflow sınır testleri, HTTP/2 üzerinden race condition ve state machine (checkout/payment/success) atlatmanın; GraphQL alias batching, mass assignment+ORM ilişki enjeksiyonu ve NoSQL operatör enjeksiyonu gibi ileri API/veri katmanı sızıntılarının gerçek payload örnekleriyle işlendiği; tespit metodolojisi, saatler içinde uygulanabilecek 8 farklı virtual patch tekniği ve kalıcı mimari çözümlerle tamamlanan kapsamlı OWASP A01:2025 rehberi.",
+    "readTime": "22 dk"
+  },
+  {
+    "slug": "api",
+    "title": "API Security",
+    "date": "2026-09-01",
+    "tags": [
+      "API",
+      "REST",
+      "GraphQL",
+      "SOAP",
+      "OWASP",
+      "BOLA",
+      "BFLA",
+      "SSRF",
+      "JWT",
+      "Mass Assignment"
+    ],
+    "excerpt": "REST, SOAP ve GraphQL mimarilerinin karşılaştırılmasıyla başlayan, OWASP API Security Top 10 (2023) listesindeki BOLA, Broken Authentication, Broken Object Property Level Authorization, Unrestricted Resource Consumption, BFLA, Unrestricted Access to Sensitive Business Flows, SSRF, Security Misconfiguration, Improper Inventory Management ve Unsafe Consumption of APIs kategorilerinin gerçek payload örnekleriyle işlendiği; JWT alg:none/algoritma karışıklığı/JWKS enjeksiyonu, OAuth redirect_uri ve PKCE zafiyetleri, GraphQL introspection/batching/derin sorgu DoS, gRPC ve WebSocket üzerinden BOLA, gateway/WAF ve rate-limit atlatma teknikleri ile her kategori için virtual patch ve kalıcı çözüm önerilerini içeren kapsamlı API güvenliği rehberi.",
+    "readTime": "22 dk"
+  },
+  {
+    "slug": "idor",
+    "title": "Insecure Direct Object Reference",
+    "date": "2026-09-01",
+    "tags": [
+      "Web",
+      "IDOR",
+      "OWASP",
+      "Broken Access Control",
+      "JWT",
+      "Mass Assignment",
+      "Multi-Tenancy"
+    ],
+    "excerpt": "IDOR zafiyetinin mantıksal kökenlerinden başlayarak sıralı ID, parametre tabanlı, fonksiyonel (yazma/silme), UUID/GUID tahmini, kriptografik hash'lenmiş ID ve JWT tabanlı IDOR türlerinin; HTTP Parameter Pollution, Mass Assignment, dizi manipülasyonu ve Content-Type değişimi ile filtre atlatma gibi ileri API tekniklerinin; ikinci derece (second-order) IDOR ve çoklu tenant/B2B SaaS senaryolarının; ORM seviyesinde eksik filtreleme ve decorator/annotation eksikliklerine yönelik white-box kod analizi örneklerinin; test metodolojisinin ve kalıcı çözümlerin yanı sıra üretime hızlıca uygulanabilecek 5 farklı virtual patch tekniğinin (nonce, HMAC imzalama, geçici middleware guard, post-check filtreleme, anomali tespiti) ele alındığı kapsamlı teknik rehber.",
+    "readTime": "20 dk"
+  },
+  {
+    "slug": "mfa-2fa_bypass",
+    "title": "MFA / 2FA Bypass Teknikleri",
+    "date": "2026-09-01",
+    "tags": [
+      "Web",
+      "MFA",
+      "2FA",
+      "Authentication Bypass",
+      "AitM",
+      "OTP",
+      "OAuth",
+      "SAML"
+    ],
+    "excerpt": "OTP brute-force ve rate-limit atlatma (IP havuzu, header manipülasyonu, spray attack), response/JWT manipülasyonuyla MFA bayrağının değiştirilmesi, session fixation/token sızıntısı ve race condition (HTTP/2 tek-frame, OTP reentrancy) gibi mantıksal zafiyetlerin; Evilginx/Modlishka tarzı reverse-proxy tabanlı AitM session hijacking ve Conditional Access atlatmanın; SAML assertion injection, OAuth scope downgrade, API versiyon düşürme ve GraphQL batching ile rate-limit atlatmanın; zayıf PRNG ile OTP tahmini, TOTP zaman penceresi istismarı ve tahmin edilebilir seed üretiminin; SMS/e-posta kanalı manipülasyonunun; şifre sıfırlama akışında MFA'nın kasıtsız devre dışı kalmasının ve MFA fatigue (push spam) sosyal mühendislik saldırısının; her kategori için virtual patch ve kalıcı savunma önerileriyle birlikte incelendiği kapsamlı teknik rehber.",
+    "readTime": "20 dk"
+  },
+  {
+    "slug": "wifinetic",
+    "title": "Hack The Box — Wifinetic Writeup",
+    "date": "2026-09-01",
+    "tags": [
+      "Linux",
+      "FTP",
+      "OpenWRT",
+      "Wireless Security",
+      "WPS",
+      "Reaver",
+      "Password Reuse",
+      "Privilege Escalation"
+    ],
+    "excerpt": "Anonim FTP erişimi üzerinden sızan bir OpenWRT konfigürasyon yedeğinden elde edilen kablosuz ağ parolası ve kullanıcı adıyla password reuse saldırısıyla SSH foothold sağlanması, reaver binary'sine tanımlı cap_net_raw capability'si istismar edilerek WPS PIN kaba kuvvet saldırısıyla erişim noktasının WPA-PSK anahtarının kırılması ve aynı parolanın root hesabında tekrar kullanılmasıyla root yetkisine ulaşılmasının teknik incelemesi.",
+    "readTime": "10 dk"
+  },
+  {
+    "slug": "Keeper",
+    "title": "Hack The Box — Keeper Writeup",
+    "date": "2026-09-01",
+    "tags": [
+      "Linux",
+      "Request Tracker",
+      "Default Credentials",
+      "KeePass",
+      "CVE-2023-32784",
+      "PuTTY",
+      "Privilege Escalation"
+    ],
+    "excerpt": "Request Tracker destek biletleme sisteminde varsayılan kimlik bilgileriyle admin paneline erişim sağlanması, panelde sızmış bir kullanıcı parolasıyla SSH foothold elde edilmesi, ele geçirilen KeePass memory dump dosyasından CVE-2023-32784 zafiyeti istismar edilerek master parolanın kurtarılması ve veritabanında şifrelenmemiş halde bulunan root'a ait PuTTY private key ile doğrudan root shell elde edilmesinin teknik incelemesi.",
+    "readTime": "10 dk"
+  },
+  {
+    "slug": "Knife",
+    "title": "Hack The Box — Knife Writeup",
+    "date": "2026-08-31",
+    "tags": [
+      "Linux",
+      "PHP",
+      "Backdoor",
+      "RCE",
+      "Sudo Misconfiguration",
+      "GTFOBins",
+      "Privilege Escalation"
+    ],
+    "excerpt": "Apache üzerinde çalışan PHP 8.1.0-dev sürümüne 2021 PHP git ihlali sırasında enjekte edilmiş backdoor'un header injection ile istismar edilerek foothold elde edilmesi, ardından sudoers üzerinde şifresiz çalıştırma iznine sahip knife aracının exec alt komutu GTFOBins payload'ı ile istismar edilerek doğrudan root shell elde edilmesinin teknik incelemesi.",
+    "readTime": "9 dk"
+  },
+  {
+    "slug": "Netmon",
+    "title": "Hack The Box — Netmon Writeup",
+    "date": "2026-08-30",
+    "tags": [
+      "Windows",
+      "PRTG",
+      "CVE-2018-9276",
+      "FTP",
+      "Command Injection",
+      "Weak Credentials"
+    ],
+    "excerpt": "Anonim FTP erişimi üzerinden sızan PRTG Network Monitor konfigürasyon yedeğinden elde edilen kimlik bilgileriyle admin paneline giriş sağlanması, CVE-2018-9276 authenticated command injection zafiyeti istismar edilerek notification mekanizması üzerinden doğrudan NT AUTHORITY\\SYSTEM yetkisinde shell elde edilmesinin teknik incelemesi.",
+    "readTime": "8 dk"
+  },
+  {
+    "slug": "Jerry",
+    "title": "Hack The Box — Jerry Writeup",
+    "date": "2026-08-30",
+    "tags": [
+      "Windows",
+      "Tomcat",
+      "Weak Credentials",
+      "WAR Deployment"
+    ],
+    "excerpt": "Apache Tomcat Manager panelinde dökümantasyondan kalma varsayılan kimlik bilgileriyle giriş sağlanması, JSP tabanlı zararlı bir WAR dosyasının deploy edilmesiyle doğrudan NT AUTHORITY\\SYSTEM yetkisinde shell elde edilmesinin teknik incelemesi.",
+    "readTime": "8 dk"
+  },
+  {
+    "slug": "Lame",
+    "title": "Hack The Box — Lame Writeup",
+    "date": "2026-08-30",
+    "tags": [
+      "Linux",
+      "Samba",
+      "CVE-2007-2447",
+      "Command Injection"
+    ],
+    "excerpt": "Samba 3.0.20 üzerindeki 'username map script' command injection zafiyeti (CVE-2007-2447) istismar edilerek kimlik doğrulama gerekmeden doğrudan root yetkisiyle sisteme erişim sağlanmasının teknik incelemesi.",
+    "readTime": "8 dk"
+  },
+  {
+    "slug": "Legacy",
+    "title": "Hack The Box — Legacy Writeup",
+    "date": "2026-08-30",
+    "tags": [
+      "Windows",
+      "SMB",
+      "MS08-067"
+    ],
+    "excerpt": "Windows XP üzerinde SMB servisindeki MS08-067 (Server Service Relative Path Stack Corruption) zafiyeti istismar edilerek kimlik doğrulama gerekmeden Administrator yetkisiyle sisteme erişim sağlanmasının teknik incelemesi.",
+    "readTime": "8 dk"
+  },
+  {
+    "slug": "Blue",
+    "title": "Hack The Box — Blue Writeup",
+    "date": "2026-08-29",
+    "tags": [
+      "Windows",
+      "EternalBlue",
+      "MS17-010",
+      "SMB"
+    ],
+    "excerpt": "MS17-010 (EternalBlue) zafiyeti üzerinden SMBv1 protokolündeki buffer overflow açığı istismar edilerek, herhangi bir kimlik doğrulama gerekmeden doğrudan NT AUTHORITY\\SYSTEM yetkisiyle sisteme erişim sağlanmasının teknik incelemesi.",
+    "readTime": "8 dk"
+  },
+  {
+    "slug": "Included",
+    "title": "HackTheBox — Included Writeup",
+    "date": "2026-08-28",
+    "tags": [
+      "Linux",
+      "LFI",
+      "TFTP",
+      "RCE",
+      "LXD",
+      "Privilege Escalation",
+      "Enumeration"
+    ],
+    "excerpt": "Apache üzerinde ?file= parametresi ile Local File Inclusion zafiyetinin tespiti, UDP taramasıyla bulunan TFTP servisine reverse shell yüklenip LFI ile çalıştırılarak www-data erişimi elde edilmesi, .htpasswd üzerinden mike kullanıcısına yanal hareket ve lxd grubu istismarıyla ayrıcalıklı bir Alpine konteyneri üzerinden root yetkisine ulaşılması sürecinin teknik incelemesi.",
+    "readTime": "12 dk"
+  },
+  {
+    "slug": "Tactics",
+    "title": "HackTheBox — Tactics Writeup",
+    "date": "2026-08-28",
+    "tags": [
+      "Windows",
+      "SMB",
+      "Null Session",
+      "Weak Credentials",
+      "Impacket",
+      "Enumeration"
+    ],
+    "excerpt": "ICMP'ye kapalı bir Windows hedefte Nmap -Pn ile port keşfi, anonim SMB oturumunun reddedilmesinin ardından Administrator hesabına boş parola ile erişim sağlanması, C$ yönetimsel paylaşımı üzerinden tüm dosya sistemine ulaşılması ve Administrator masaüstündeki flag'in indirilerek okunması sürecinin teknik incelemesi.",
+    "readTime": "8 dk"
+  },
+  {
+    "slug": "Pennyworth",
+    "title": "HackTheBox — Pennyworth Writeup",
+    "date": "2026-08-28",
+    "tags": [
+      "Linux",
+      "Jenkins",
+      "Groovy",
+      "RCE",
+      "Reverse Shell",
+      "Weak Credentials",
+      "Enumeration"
+    ],
+    "excerpt": "Jetty üzerinde çalışan Jenkins 2.289.1 panelinde varsayılan kimlik bilgileriyle (root:password) giriş sağlanması, Script Console üzerinden Groovy reverse shell ile RCE elde edilmesi ve root yetkisiyle çalışan servis üzerinden ana dizindeki flag'in okunması sürecinin teknik incelemesi.",
+    "readTime": "8 dk"
+  },
+  {
+    "slug": "Base",
+    "title": "HackTheBox — Base Writeup",
+    "date": "2026-08-28",
+    "tags": [
+      "Linux",
+      "Web",
+      "Nmap",
+      "Source Code Disclosure",
+      "Type Juggling",
+      "Authentication Bypass",
+      "File Upload",
+      "Fuzzing",
+      "Reverse Shell",
+      "SSH",
+      "John the Ripper",
+      "Privilege Escalation",
+      "Enumeration"
+    ],
+    "excerpt": "Nmap ile başlayan enumeration sürecinde .swp dosyası üzerinden kaynak kod sızıntısının keşfedilmesi, strcmp() fonksiyonundaki type juggling zafiyetinin kullanılmasıyla authentication bypass gerçekleştirilmesi, dosya yükleme mekanizmasının istismar edilmesi ve ffuf ile upload dizininin keşfedilerek reverse shell elde edilmesi, config.php içerisinden parola bulunması, SSH üzerinden kullanıcı erişimi sağlanıp John the Ripper ile parola analizi yapılması ve son olarak sudo yetkisine sahip find komutunun istismar edilmesiyle root yetkisine ulaşılması sürecinin teknik incelemesi.",
+    "readTime": "12 dk"
+  },
+  {
+    "slug": "Ignition",
+    "title": "HackTheBox — Ignition Writeup",
+    "date": "2026-08-28",
+    "tags": [
+      "Web",
+      "Magento",
+      "Virtual Host",
+      "Weak Credentials",
+      "Directory Brute-forcing",
+      "Enumeration"
+    ],
+    "excerpt": "Nmap ile tespit edilen tek HTTP portunun ignition.htb sanal sunucusuna yönlendirme yaptığının keşfi, /etc/hosts üzerinden domain çözümlemesi, ffuf ile bulunan Magento admin panelinde 2023'ün en yaygın parolalarından biriyle giriş sağlanması ve panelde bulunan flag'in ele geçirilmesi sürecinin teknik incelemesi.",
+    "readTime": "7 dk"
+  },
+  {
+    "slug": "Bike",
+    "title": "HackTheBox — Bike Writeup",
+    "date": "2026-08-28",
+    "tags": [
+      "Web",
+      "SSTI",
+      "Node.js",
+      "Handlebars",
+      "RCE",
+      "Enumeration"
+    ],
+    "excerpt": "Node.js/Express tabanlı web uygulamasında e-posta input alanı üzerinden Handlebars template motorunda SSTI zafiyetinin tespiti, HackTricks bypass payload'ının Burp Suite Decoder ile URL-encode edilerek gönderilmesi, require yerine process.mainModule.require kullanılarak RCE elde edilmesi ve root kullanıcısının ana dizinindeki flag'in okunması sürecinin teknik incelemesi.",
+    "readTime": "10 dk"
+  },
+  {
+    "slug": "Funnel",
+    "title": "HackTheBox — Funnel Writeup",
+    "date": "2026-08-27",
+    "tags": [
+      "Linux",
+      "FTP",
+      "SSH",
+      "PostgreSQL",
+      "Port Forwarding",
+      "Enumeration"
+    ],
+    "excerpt": "Anonim FTP erişimiyle ele geçirilen mail yedeklerinden kullanıcı adları ve varsayılan parolanın tespiti, SSH üzerinde password spraying ile geçerli hesaba ulaşılması, yalnızca localhost'ta dinleyen PostgreSQL servisine SSH local port forwarding ile tünel açılması ve secrets veritabanındaki flag'in okunması sürecinin teknik incelemesi.",
+    "readTime": "8 dk"
+  },
+  {
+    "slug": "Explosion",
+    "title": "HackTheBox — Explosion Writeup",
+    "date": "2026-08-27",
+    "tags": [
+      "Windows",
+      "RDP",
+      "Enumeration",
+      "Misconfiguration"
+    ],
+    "excerpt": "Nmap ile RDP servisinin keşfi, xfreerdp kullanılarak administrator hesabına boş parola ile doğrudan masaüstü erişimi sağlanması ve masaüstündeki flag'in ele geçirilmesi sürecinin teknik incelemesi.",
+    "readTime": "6 dk"
+  },
+  {
+    "slug": "Mongod",
+    "title": "HackTheBox — Mongod Writeup",
+    "date": "2026-08-27",
+    "tags": [
+      "Linux",
+      "MongoDB",
+      "NoSQL",
+      "Misconfiguration",
+      "Enumeration"
+    ],
+    "excerpt": "Authentication olmadan dışarıya açık bırakılan MongoDB 3.6.8 instance'ına bağlanılması, veritabanı ve koleksiyonların enumerate edilmesi ve sensitive_information veritabanındaki flag'in okunması sürecinin teknik incelemesi.",
+    "readTime": "7 dk"
+  },
+  {
+    "slug": "PreIgnition",
+    "title": "HackTheBox — PreIgnition Writeup",
+    "date": "2026-08-27",
+    "tags": [
+      "Web",
+      "Directory Brute-forcing",
+      "Weak Credentials",
+      "Enumeration"
+    ],
+    "excerpt": "nginx üzerinde çalışan web servisinde ffuf ile dizin taraması yapılarak admin panelinin keşfedilmesi ve varsayılan admin:admin kimlik bilgileriyle giriş sağlanarak flag'in ele geçirilmesi sürecinin teknik incelemesi.",
+    "readTime": "6 dk"
+  },
+  {
+    "slug": "Synced",
+    "title": "HackTheBox — Synced Writeup",
+    "date": "2026-08-27",
+    "tags": [
+      "Linux",
+      "Rsync",
+      "Misconfiguration",
+      "Enumeration"
+    ],
+    "excerpt": "Anonim erişime açık bırakılan rsync paylaşımının keşfedilmesi, share içeriğinin listelenmesi ve flag dosyasının indirilerek okunması sürecinin teknik incelemesi.",
+    "readTime": "6 dk"
+  },
+  {
+    "slug": "Dogcat",
+    "title": "TryHackMe — Dogcat Writeup",
+    "date": "2026-08-22",
+    "tags": [
+      "Web",
+      "LFI",
+      "RCE",
+      "Log Poisoning",
+      "Docker",
+      "Privilege Escalation"
+    ],
+    "excerpt": "PHP tabanlı dogcat uygulamasında LFI ile kaynak kod ve flag okuma, Apache access log zehirlemesiyle RCE elde edilmesi, sudo/env yanlış yapılandırmasıyla root olunması ve son olarak backup script'i üzerinden Docker container'dan host makineye kaçış sürecinin teknik incelemesi.",
+    "readTime": "14 dk"
+  },
+  {
+    "slug": "Kiba",
+    "title": "TryHackMe — Kiba Writeup",
+    "date": "2026-08-22",
+    "tags": [
+      "Linux",
+      "Kibana",
+      "Elasticsearch",
+      "CVE",
+      "RCE",
+      "Privilege Escalation"
+    ],
+    "excerpt": "Elasticsearch Kibana 6.5.4 üzerindeki prototype pollution zafiyeti CVE-2019-7609 ile uzaktan kod çalıştırma sağlanması, ardından cap_setuid capability'sine sahip özel bir Python binary'sinin istismar edilerek root yetkisine ulaşılmasının teknik incelemesi.",
+    "readTime": "10 dk"
+  },
+  {
+    "slug": "Principal",
+    "title": "HackTheBox — Principal Writeup",
+    "date": "2026-08-22",
+    "tags": [
+      "Web",
+      "JWT",
+      "Cryptography",
+      "CVE",
+      "SSH",
+      "Privilege Escalation"
+    ],
+    "excerpt": "pac4j-jwt kütüphanesindeki CVE-2026-29000 kimlik doğrulama atlatma açığı ile forged JWE/JWT kullanılarak panel erişimi sağlanması, ardından SSH CA sertifika yapılandırmasındaki principal doğrulama eksikliğinin istismar edilerek root yetkisine ulaşılmasının teknik incelemesi.",
+    "readTime": "12 dk"
+  },
+  {
+    "slug": "a-bucket-of-phish",
+    "title": "TryHackMe — A Bucket of Phish Writeup",
+    "date": "2026-08-20",
+    "tags": [
+      "Cloud",
+      "AWS",
+      "S3",
+      "Phishing",
+      "Web",
+      "Enumeration"
+    ],
+    "excerpt": "Publicly accessible AWS S3 bucket'ın keşfi, anonim bucket enumeration, exposed web assets ve phishing altyapısının incelenmesi üzerinden gerçekleştirilen TryHackMe A Bucket of Phish çözümünün teknik analizi.",
+    "readTime": "10 dk"
+  },
+  {
+    "slug": "RFID",
+    "title": "RFID-Based Physical Access Control Security",
+    "date": "2026-08-20",
+    "tags": [
+      "Research",
+      "RFID",
+      "Physical Security",
+      "Access Control",
+      "PACS"
+    ],
+    "excerpt": "RFID tabanlı fiziksel erişim kontrol sistemlerinin çalışma mantığı, LF/HF/UHF frekansları, ISO/IEC 14443, MIFARE ve HID kart teknolojileri, PACS mimarisi, Wiegand ve OSDP, AD/IAM/SIEM entegrasyonları, Zero Trust, bulut tabanlı PACS ve mobil kimlik çözümlerinin güvenlik perspektifinden kapsamlı analizi.",
+    "readTime": "20 dk"
+  },
+  {
+    "slug": "Lookback",
+    "title": "TryHackMe — Lookback Writeup",
+    "date": "2026-08-20",
+    "tags": [
+      "Windows",
+      "Active Directory",
+      "Exchange",
+      "ProxyShell",
+      "Command Injection"
+    ],
+    "excerpt": "Unutulmuş bir debug panelinde command injection ile ilk erişim, ardından yamalanmamış Microsoft Exchange üzerinde ProxyShell (CVE-2021-34473) istismarıyla tam yetkili shell alma sürecinin teknik incelemesi.",
+    "readTime": "12 dk"
+  },
+  {
+    "slug": "Alfred",
+    "title": "TryHackMe — Alfred Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "Windows",
+      "Jenkins",
+      "Privilege Escalation"
+    ],
+    "excerpt": "Jenkins Script Console üzerinden Groovy reverse shell ile RCE, SeImpersonatePrivilege ve process migration kullanılarak SYSTEM yetkisine yükselme sürecinin teknik incelemesi.",
+    "readTime": "12 dk"
+  },
+  {
+    "slug": "Domino",
+    "title": "TryHackMe — Domino Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "Web",
+      "XSS",
+      "RCE",
+      "IDOR",
+      "Privilege Escalation"
+    ],
+    "excerpt": "IDOR, Blind XSS, JWT alg:none bypass, RFI üzerinden RCE, credential reuse ve cron tabanlı privilege escalation tekniklerini içeren Domino çözümü.",
+    "readTime": "15 dk"
+  },
+  {
+    "slug": "Drone-C2-Research",
+    "title": "Drone C2 Research",
+    "date": "2026-08-18",
+    "tags": [
+      "Research",
+      "Drone",
+      "C2",
+      "Security"
+    ],
+    "excerpt": "Drone communication architectures, command and control systems and security analysis üzerine teknik araştırma.",
+    "readTime": "10 dk"
+  },
+  {
+    "slug": "GPS Spoofing",
+    "title": "GPS Spoofing Research",
+    "date": "2026-08-18",
+    "tags": [
+      "Research",
+      "GPS",
+      "Spoofing",
+      "Wireless Security"
+    ],
+    "excerpt": "GPS spoofing kavramları, sinyal manipülasyonu ve uydu navigasyon sistemleri üzerindeki güvenlik etkilerinin incelenmesi.",
+    "readTime": "10 dk"
+  },
+  {
+    "slug": "Gridloy-News",
+    "title": "Hackviser — Gridloy News Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "WordPress",
+      "CVE",
+      "File Upload",
+      "Privilege Escalation"
+    ],
+    "excerpt": "WordPress enumeration, Royal Elementor Addons üzerindeki CVE-2023-5360 ile unauthenticated file upload, web shell, credential discovery ve privilege escalation adımlarının incelenmesi.",
+    "readTime": "12 dk"
+  },
+  {
+    "slug": "IMSI",
+    "title": "IMSI Security Research",
+    "date": "2026-08-18",
+    "tags": [
+      "Research",
+      "Mobile Security",
+      "IMSI"
+    ],
+    "excerpt": "Mobil ağlarda IMSI kimliği, kimlik gizliliği ve IMSI tabanlı güvenlik tehditlerinin teknik analizi.",
+    "readTime": "10 dk"
+  },
+  {
+    "slug": "Interceptor",
+    "title": "TryHackMe — Interceptor Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "Web",
+      "Pentest",
+      "Enumeration"
+    ],
+    "excerpt": "Interceptor makinesinin enumeration, exploitation ve privilege escalation aşamalarını içeren teknik çözüm.",
+    "readTime": "12 dk"
+  },
+  {
+    "slug": "Jump",
+    "title": "TryHackMe — Jump Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "Windows",
+      "Privilege Escalation"
+    ],
+    "excerpt": "Jump makinesinde enumeration, initial access ve privilege escalation adımlarını içeren teknik çözüm.",
+    "readTime": "12 dk"
+  },
+  {
+    "slug": "KEC Card Access Devices",
+    "title": "KEC Card Access Devices Security Research",
+    "date": "2026-08-18",
+    "tags": [
+      "Research",
+      "RFID",
+      "Access Control"
+    ],
+    "excerpt": "Kartlı geçiş sistemleri ve KEC erişim cihazlarının güvenlik mekanizmaları üzerine teknik araştırma.",
+    "readTime": "10 dk"
+  },
+  {
+    "slug": "Kenobi",
+    "title": "TryHackMe — Kenobi Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "Linux",
+      "SMB",
+      "FTP",
+      "Privilege Escalation"
+    ],
+    "excerpt": "Nmap enumeration, SMB ve FTP servislerinin keşfi, ProFTPD üzerinden initial access ve SUID tabanlı privilege escalation adımlarının incelenmesi.",
+    "readTime": "12 dk"
+  },
+  {
+    "slug": "MrRobot",
+    "title": "TryHackMe — Mr Robot Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "Linux",
+      "WordPress",
+      "Web",
+      "Privilege Escalation"
+    ],
+    "excerpt": "Web enumeration, WordPress keşfi, credential discovery, reverse shell ve SUID üzerinden root privilege escalation adımlarını içeren teknik çözüm.",
+    "readTime": "15 dk"
+  },
+  {
+    "slug": "OperationColdstart",
+    "title": "TryHackMe — Operation Coldstart Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "Windows",
+      "Red Team",
+      "Privilege Escalation"
+    ],
+    "excerpt": "Operation Coldstart makinesinde gerçekleştirilen enumeration, exploitation ve privilege escalation sürecinin teknik incelemesi.",
+    "readTime": "12 dk"
+  },
+  {
+    "slug": "OperationPromotion",
+    "title": "TryHackMe — Operation Promotion Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "Windows",
+      "Active Directory",
+      "Red Team",
+      "Privilege Escalation"
+    ],
+    "excerpt": "Windows ve Active Directory ortamının keşfi, saldırı yollarının belirlenmesi ve privilege escalation adımlarını içeren teknik çözüm.",
+    "readTime": "15 dk"
+  },
+  {
+    "slug": "Recruit",
+    "title": "TryHackMe — Recruit Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "Web",
+      "LFI",
+      "SQL Injection"
+    ],
+    "excerpt": "Recruitment portalında LFI ve SQL Injection zafiyetlerinin kullanılmasıyla gerçekleştirilen uçtan uca makine çözümü.",
+    "readTime": "10 dk"
+  },
+  {
+    "slug": "SilentMonitor",
+    "title": "TryHackMe — Silent Monitor Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "Linux",
+      "SQL Injection",
+      "Command Injection",
+      "Privilege Escalation"
+    ],
+    "excerpt": "SQL Injection ile internal portala erişim, command injection üzerinden credential discovery, SSH erişimi, KeePass veritabanının incelenmesi ve root erişimi.",
+    "readTime": "15 dk"
+  },
+  {
+    "slug": "Support",
+    "title": "TryHackMe — Support Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "Web",
+      "LFI",
+      "IDOR",
+      "Command Injection"
+    ],
+    "excerpt": "Kurumsal helpdesk panelinde zayıf kimlik doğrulama, LFI, IDOR ve Command Injection zafiyetlerinin kullanıldığı teknik çözüm.",
+    "readTime": "12 dk"
+  },
+  {
+    "slug": "Tesla Key Fob",
+    "title": "Tesla Key Fob Security Analysis",
+    "date": "2026-08-18",
+    "tags": [
+      "Research",
+      "Automotive Security",
+      "Keyless Entry"
+    ],
+    "excerpt": "Keyless entry sistemleri ve otomotiv erişim teknolojilerinin güvenlik perspektifinden teknik analizi.",
+    "readTime": "10 dk"
+  },
+  {
+    "slug": "Thompson",
+    "title": "TryHackMe — Thompson Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "Linux",
+      "Tomcat",
+      "Ghostcat",
+      "CVE",
+      "Privilege Escalation"
+    ],
+    "excerpt": "Apache Tomcat ve AJP servisi üzerinden Ghostcat CVE-2020-1938 istismarı, credential discovery, Tomcat Manager üzerinden reverse shell ve cron tabanlı privilege escalation.",
+    "readTime": "15 dk"
+  },
+  {
+    "slug": "WindowsJump",
+    "title": "TryHackMe — Windows Jump Writeup",
+    "date": "2026-08-18",
+    "tags": [
+      "Windows",
+      "Privilege Escalation",
+      "Red Team"
+    ],
+    "excerpt": "Guest seviyesinden başlayarak farklı Windows hesapları üzerinden ilerleyip SYSTEM yetkisine ulaşma sürecinin teknik incelemesi.",
+    "readTime": "12 dk"
+  },
+  {
+    "slug": "bettercaphelptr",
+    "title": "Bettercap Help & Network Analysis",
+    "date": "2026-08-18",
+    "tags": [
+      "Network Security",
+      "Bettercap",
+      "Pentest",
+      "Network Analysis"
+    ],
+    "excerpt": "Bettercap kullanımı, ağ analizi, MITM teknikleri ve penetration testing süreçlerinde kullanılan temel komutların teknik incelemesi.",
+    "readTime": "8 dk"
+  },
+  {
+    "slug": "nmap-cheatsheet-tr",
+    "title": "Nmap Cheat Sheet — Türkçe",
+    "date": "2026-08-18",
+    "tags": [
+      "Pentest",
+      "Nmap",
+      "Enumeration"
+    ],
+    "excerpt": "Penetration testing süreçlerinde kullanılan Nmap komutları ve enumeration teknikleri için Türkçe referans.",
+    "readTime": "8 dk"
+  },
+  {
+    "slug": "pfsense-network-lab",
+    "title": "pfSense Network Security Lab",
+    "date": "2026-08-18",
+    "tags": [
+      "Network Security",
+      "pfSense",
+      "Firewall",
+      "Segmentation"
+    ],
+    "excerpt": "Firewall mimarisi, network segmentation ve altyapı güvenliği üzerine pfSense laboratuvar çalışması.",
+    "readTime": "10 dk"
+  },
+  {
+    "slug": "sql-injection-101",
+    "title": "SQL Injection 101",
+    "date": "2026-08-10",
+    "tags": [
+      "Web",
+      "Pentest",
+      "OWASP"
+    ],
+    "excerpt": "SQL Injection saldırılarının çalışma mantığı, tespit yöntemleri, Union-based, Blind ve Time-based teknikler ile savunma yöntemleri.",
+    "readTime": "8 dk"
+  },
+  {
+    "slug": "xss-101",
+    "title": "Cross-Site Scripting 101",
+    "date": "2026-08-18",
+    "tags": [
+      "Web",
+      "XSS",
+      "OWASP",
+      "Pentest"
+    ],
+    "excerpt": "Reflected, Stored ve DOM-based XSS türleri, payload mantığı, tespit yöntemleri ve savunma tekniklerini anlatan kapsamlı giriş rehberi.",
+    "readTime": "8 dk"
+  }
 ]
