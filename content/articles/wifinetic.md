@@ -43,7 +43,7 @@ Beş dosyanın tamamı indi. Sıradaki adım bunları tek tek analiz etmek
 
 **`MigrateOpenWrt.txt`** — OpenWRT'den Debian'a geçiş sürecini adım adım özetleyen bir plan/checklist. Doğrudan bir kimlik bilgisi içermiyor ama önemli bir bağlam veriyor: şirket, OpenWRT tabanlı bir ağ cihazından bahsediyor ve geçiş sürecinde "Reaver aracıyla güvenlik testi yapılacak" notu düşülmüş — bu, ilerleyen aşamalarda karşımıza çıkacak `reaver` binary'sinin neden orada olduğuna dair erken bir sinyal.
 
-**`employees_wellness.pdf`** ve **`ProjectOpenWRT.pdf`** — İçerik olarak İK duyurusu ve proje teklifi; teknik açıdan doğrudan bir zafiyet sunmuyorlar ama iki isim ve e-posta adresi not almaya değer: *Samantha Wood* (`samantha.wood93@wifinetic.htb`) ve *Oliver Walker* (`olivia.walker17@wifinetic.htb`, unvanı "Wireless Network Administrator"). İkinci kişinin unvanı, makinenin kablosuz ağ temasıyla doğrudan örtüşüyor — muhtemel bir kullanıcı adı/parola sözlüğü oluşturulacaksa bu isimler faydalı olabilir, ama bu senaryoda asıl kırılma noktası başka bir yerden geliyor.
+**`employees_wellness.pdf`** ve **`ProjectOpenWRT.pdf`** — İçerik olarak İK duyurusu ve proje teklifi; teknik açıdan doğrudan bir zafiyet sunmuyorlar ama iki isim ve e-posta adresi not almaya değer: *Samantha Wood* (`samantha.wood93@wifinetic.htb`) ve *Oliver Walker* (`olivia.walker17@wifinetic.htb`, unvanı "Wireless Network Administrator"). İkinci kişinin unvanı, makinenin kablosuz ağ temasıyla doğrudan örtüşüyor.
 
 **`backup-OpenWrt-2023-07-26.tar`** — İsminden de anlaşılacağı gibi bu, gerçek altın madeni. Açalım:
 
