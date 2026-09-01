@@ -66,6 +66,9 @@ Ele geçirilen credential'ların gerçekten geçerli olup olmadığını önce S
 
 ```bash
 nxc smb 10.129.51.69 -u 'svc-printer' -p '1edFg43012!!'
+
+nxc winrm 10.129.51.69 -u 'svc-printer' -p '1edFg43012!!'
+
 ```
 
 <img width="1440" height="505" alt="nxc" src="https://github.com/user-attachments/assets/404dced4-d191-4b3a-9ec5-6e798f4a1aa3" />
