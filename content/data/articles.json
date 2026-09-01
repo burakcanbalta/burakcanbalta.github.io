@@ -1,5 +1,57 @@
 [
   {
+    "slug": "api",
+    "title": "API Security — OWASP API Top 10 Kapsamlı Teknik İnceleme",
+    "date": "2026-09-01",
+    "tags": [
+      "API",
+      "REST",
+      "GraphQL",
+      "SOAP",
+      "OWASP",
+      "BOLA",
+      "BFLA",
+      "SSRF",
+      "JWT",
+      "Mass Assignment"
+    ],
+    "excerpt": "REST, SOAP ve GraphQL mimarilerinin karşılaştırılmasıyla başlayan, OWASP API Security Top 10 (2023) listesindeki BOLA, Broken Authentication, Broken Object Property Level Authorization, Unrestricted Resource Consumption, BFLA, Unrestricted Access to Sensitive Business Flows, SSRF, Security Misconfiguration, Improper Inventory Management ve Unsafe Consumption of APIs kategorilerinin gerçek payload örnekleriyle işlendiği; JWT alg:none/algoritma karışıklığı/JWKS enjeksiyonu, OAuth redirect_uri ve PKCE zafiyetleri, GraphQL introspection/batching/derin sorgu DoS, gRPC ve WebSocket üzerinden BOLA, gateway/WAF ve rate-limit atlatma teknikleri ile her kategori için virtual patch ve kalıcı çözüm önerilerini içeren kapsamlı API güvenliği rehberi.",
+    "readTime": "22 dk"
+  },
+  {
+    "slug": "idor",
+    "title": "IDOR (Insecure Direct Object Reference) — Kapsamlı Teknik İnceleme",
+    "date": "2026-09-01",
+    "tags": [
+      "Web",
+      "IDOR",
+      "OWASP",
+      "Broken Access Control",
+      "JWT",
+      "Mass Assignment",
+      "Multi-Tenancy"
+    ],
+    "excerpt": "IDOR zafiyetinin mantıksal kökenlerinden başlayarak sıralı ID, parametre tabanlı, fonksiyonel (yazma/silme), UUID/GUID tahmini, kriptografik hash'lenmiş ID ve JWT tabanlı IDOR türlerinin; HTTP Parameter Pollution, Mass Assignment, dizi manipülasyonu ve Content-Type değişimi ile filtre atlatma gibi ileri API tekniklerinin; ikinci derece (second-order) IDOR ve çoklu tenant/B2B SaaS senaryolarının; ORM seviyesinde eksik filtreleme ve decorator/annotation eksikliklerine yönelik white-box kod analizi örneklerinin; test metodolojisinin ve kalıcı çözümlerin yanı sıra üretime hızlıca uygulanabilecek 5 farklı virtual patch tekniğinin (nonce, HMAC imzalama, geçici middleware guard, post-check filtreleme, anomali tespiti) ele alındığı kapsamlı teknik rehber.",
+    "readTime": "20 dk"
+  },
+  {
+    "slug": "mfa-2fa_bypass",
+    "title": "MFA / 2FA Bypass Teknikleri — Kapsamlı Teknik Analiz",
+    "date": "2026-09-01",
+    "tags": [
+      "Web",
+      "MFA",
+      "2FA",
+      "Authentication Bypass",
+      "AitM",
+      "OTP",
+      "OAuth",
+      "SAML"
+    ],
+    "excerpt": "OTP brute-force ve rate-limit atlatma (IP havuzu, header manipülasyonu, spray attack), response/JWT manipülasyonuyla MFA bayrağının değiştirilmesi, session fixation/token sızıntısı ve race condition (HTTP/2 tek-frame, OTP reentrancy) gibi mantıksal zafiyetlerin; Evilginx/Modlishka tarzı reverse-proxy tabanlı AitM session hijacking ve Conditional Access atlatmanın; SAML assertion injection, OAuth scope downgrade, API versiyon düşürme ve GraphQL batching ile rate-limit atlatmanın; zayıf PRNG ile OTP tahmini, TOTP zaman penceresi istismarı ve tahmin edilebilir seed üretiminin; SMS/e-posta kanalı manipülasyonunun; şifre sıfırlama akışında MFA'nın kasıtsız devre dışı kalmasının ve MFA fatigue (push spam) sosyal mühendislik saldırısının; her kategori için virtual patch ve kalıcı savunma önerileriyle birlikte incelendiği kapsamlı teknik rehber.",
+    "readTime": "20 dk"
+  },
+  {
     "slug": "Keeper",
     "title": "Hack The Box — Keeper Writeup",
     "date": "2026-09-01",
