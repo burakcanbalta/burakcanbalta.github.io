@@ -18,11 +18,11 @@ Uygulama katmanında (HTTP/HTTPS) çalışır. HTTP başlıkları, cookie'ler, U
 
 ### SSL/TLS Termination
 
-Şifreli (HTTPS) trafik LB üzerinde çözülür ve arkadaki sunuculara genellikle **şifresiz (HTTP)** olarak iletilir — bu, "SSL offloading" olarak bilinir ve performans için yapılır (şifre çözme işlemi CPU-yoğundur, LB'nin bunu özel donanımla yapması arkadaki sunucuları rahatlatır). Pentester açısından bu, **iki farklı protokol yorumunun aynı istekte devreye girdiği** anlamına gelir — ve az sonra göreceğimiz gibi, bu fark tam olarak sömürülecek noktadır.
+Şifreli (HTTPS) trafik LB üzerinde çözülür ve arkadaki sunuculara genellikle **şifresiz (HTTP)** olarak iletilir — bu, "SSL offloading" olarak bilinir ve performans için yapılır (şifre çözme işlemi CPU-yoğundur, LB'nin bunu özel donanımla yapması arkadaki sunucuları rahatlatır). Pentester açısından bu, **iki farklı protokol yorumunun aynı istekte devreye girdiği** anlamına gelir.
 
 ---
 
-## 2. Keşif (Reconnaissance) ve Fingerprinting
+## 2. Reconnaissance ve Fingerprinting
 
 Bir hedefte load balancer olduğunu ve markasını tespit etmek, saldırı stratejisini doğrudan belirler — çünkü F5 BIG-IP'ye özel bir teknik, HAProxy'de işe yaramaz.
 
