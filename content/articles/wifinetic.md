@@ -1,16 +1,10 @@
-# HTB Wifinetic — Writeup
+<img width="1280" height="720" alt="maxresdefault" src="https://github.com/user-attachments/assets/43bfdd2a-00cd-4017-86b8-294cdc72d3e3" />
 
-**Zorluk:** Easy | **OS:** Linux | **Platform:** HackTheBox
+## About
+Wifinetic is an easy difficulty Linux machine which presents an intriguing network challenge, focusing on wireless security and network monitoring. An exposed FTP service has anonymous authentication enabled which allows us to download available files. One of the file being an OpenWRT backup which contains Wireless Network configuration that discloses an Access Point password. The contents of shadow or passwd files further disclose usernames on the server. With this information, a password reuse attack can be carried out on the SSH service, allowing us to gain a foothold as the netadmin user. Using standard tools and with the provided wireless interface in monitoring mode, we can brute force the WPS PIN for the Access Point to obtain the pre-shared key ( PSK ). The pass phrase can be reused on SSH service to obtain root access on the server.
 
-## Özet
 
-Wifinetic, kablosuz ağ güvenliği ve ağ izleme konularına odaklanan, kolay seviyeli ama öğretici bir Linux makinesi. Kutunun hikâyesi klasik bir "bilgi sızıntısı zinciri" üzerine kurulu: anonim erişime açık bir FTP servisi, içinde barındırdığı bir OpenWRT yedeğiyle bize kablosuz ağın PSK'sini ve sistem kullanıcı listesini veriyor. Buradan elde edilen kimlik bilgileriyle SSH üzerinden `netadmin` kullanıcısı olarak foothold sağlanıyor. Privilege escalation tarafında ise makinenin gerçek teması devreye giriyor: `reaver` binary'sine tanımlanmış `cap_net_raw` capability'si sayesinde WPS PIN'i kaba kuvvetle kırıp erişim noktasının WPA parolasını elde ediyoruz — ki bu parola aynı zamanda `root` kullanıcısının şifresiyle aynı çıkıyor.
-
-Bu writeup'ta izlediğim adımları, neden o adımı attığımı ve hangi detayın bir sonraki adıma nasıl kapı açtığını sırasıyla anlatıyorum.
-
----
-
-## 1. Keşif (Reconnaissance)
+# 1. Keşif
 
 İlk adım her zaman olduğu gibi kapsamlı bir Nmap taraması:
 
@@ -18,25 +12,7 @@ Bu writeup'ta izlediğim adımları, neden o adımı attığımı ve hangi detay
 nmap -sS -A -T5 -p- 10.129.229.90
 ```
 
-Sonuçlar:
-
-```
-21/tcp open  ftp        vsftpd 3.0.3
-| ftp-anon: Anonymous FTP login allowed (FTP code 230)
-| -rw-r--r--    1 ftp      ftp          4434 Jul 31  2023 MigrateOpenWrt.txt
-| -rw-r--r--    1 ftp      ftp       2501210 Jul 31  2023 ProjectGreatMigration.pdf
-| -rw-r--r--    1 ftp      ftp         60857 Jul 31  2023 ProjectOpenWRT.pdf
-| -rw-r--r--    1 ftp      ftp         40960 Sep 11  2023 backup-OpenWrt-2023-07-26.tar
-|_-rw-r--r--    1 ftp      ftp         52946 Jul 31  2023 employees_wellness.pdf
-22/tcp open  ssh        OpenSSH 8.2p1 Ubuntu 4ubuntu0.9 (Ubuntu Linux; protocol 2.0)
-53/tcp open  tcpwrapped
-```
-
-Üç şey hemen dikkat çekiyor:
-
-1. **FTP'de anonim giriş açık** — klasik ama hâlâ çok işe yarayan bir başlangıç noktası.
-2. **53/tcp `tcpwrapped`** olarak görünüyor; Nmap'in OS tahmini bu portu ve genel imzayı MikroTik RouterOS / gömülü Linux ile ilişkilendiriyor — makinenin bir ağ cihazı/router temalı olduğuna dair ilk ipucu.
-3. Dosya isimleri (`MigrateOpenWrt.txt`, `ProjectOpenWRT.pdf`, `backup-OpenWrt-2023-07-26.tar`) doğrudan bir **OpenWRT** temasına işaret ediyor.
+<img width="989" height="596" alt="nmap" src="https://github.com/user-attachments/assets/6f370232-98ac-4a37-8a24-adf857a58fde" />
 
 Bu noktada plan netleşiyor: önce FTP'yi boşaltıp içerikleri analiz edeceğim, ardından muhtemelen bir yapılandırma/yedek dosyasından kimlik bilgisi çıkaracağım.
 
@@ -58,7 +34,10 @@ ftp> get ProjectOpenWRT.pdf
 ftp> get employees_wellness.pdf
 ```
 
-Beş dosyanın tamamı indi. Sıradaki adım bunları tek tek analiz etmek — HTB makinelerinde genellikle "gürültü" dosyaları (sosyal mühendislik amaçlı, doğrudan teknik değer taşımayan) ile gerçek ipucu barındıran dosyalar karışık verilir, bu yüzden her birine göz atmak gerekiyor.
+<img width="972" height="684" alt="ftp" src="https://github.com/user-attachments/assets/94a16497-6854-4bdf-a75c-2d05df41a841" />
+
+Beş dosyanın tamamı indi. Sıradaki adım bunları tek tek analiz etmek
+
 
 ### Dosyaların Değerlendirilmesi
 
@@ -72,6 +51,8 @@ Beş dosyanın tamamı indi. Sıradaki adım bunları tek tek analiz etmek — H
 tar -xf backup-OpenWrt-2023-07-26.tar
 ```
 
+<img width="1210" height="138" alt="tar" src="https://github.com/user-attachments/assets/0a661401-989f-44db-a413-fb1c23eab10e" />
+
 Arşiv, klasik bir OpenWRT `/etc` dizin yapısını içeriyor:
 
 ```
@@ -84,18 +65,8 @@ Bu, tam olarak umduğum türden bir bulgu: bir yönlendiricinin/erişim noktası
 cat passwd
 ```
 
-```
-root:x:0:0:root:/root:/bin/ash
-daemon:*:1:1:daemon:/var:/bin/false
-ftp:*:55:55:ftp:/home/ftp:/bin/false
-network:*:101:101:network:/var:/bin/false
-nobody:*:65534:65534:nobody:/var:/bin/false
-ntp:x:123:123:ntp:/var/run/ntp:/bin/false
-dnsmasq:x:453:453:dnsmasq:/var/run/dnsmasq:/bin/false
-logd:x:514:514:logd:/var/run/logd:/bin/false
-ubus:x:81:81:ubus:/var/run/ubus:/bin/false
-netadmin:x:999:999::/home/netadmin:/bin/false
-```
+<img width="1243" height="307" alt="etc" src="https://github.com/user-attachments/assets/247d6ae2-52e7-4652-ba7f-c79fe3db0977" />
+
 
 Burada dikkat çeken satır `netadmin`. Bu, standart OpenWRT sistem kullanıcılarının arasında **sonradan eklenmiş** görünen, isimlendirmesiyle de "ağ yöneticisi" izlenimi veren bir hesap. Shell'i `/bin/false` olduğu için doğrudan interaktif bir OpenWRT oturumu açmaya yaramaz, ama bu bir son değil — asıl soru, bu kullanıcı adının **hedef makinede** (OpenWRT cihazının kendisinde değil, esas HTB kutusunda) SSH için geçerli olup olmadığı.
 
@@ -107,15 +78,8 @@ Backup içindeki `config/wireless` dosyası, bu makinenin en kritik bulgusunu ba
 cat config/wireless
 ```
 
-```
-config wifi-iface 'wifinet0'
-	option device 'radio0'
-	option mode 'ap'
-	option ssid 'OpenWrt'
-	option encryption 'psk'
-	option key 'VeRyUniUqWiFIPasswrd1!'
-	option wps_pushbutton '1'
-```
+<img width="678" height="697" alt="şifre" src="https://github.com/user-attachments/assets/e9a975e8-000c-4696-9378-7cb5d93da1b7" />
+
 
 Erişim noktasının WPA-PSK anahtarı düz metin olarak konfigürasyon dosyasında duruyor: `VeRyUniUqWiFIPasswrd1!`. Bu, kablosuz ağ için bir parola — ama pratikte kurumsal ortamlarda **parola tekrar kullanımı (password reuse)** o kadar yaygın bir alışkanlıktır ki, bu WiFi parolasını sistem hesaplarında da denemek her zaman ilk aklıma gelen adımdır. Elimde hem bir kullanıcı adı adayı (`netadmin`) hem de bir parola adayı (`VeRyUniUqWiFIPasswrd1!`) var; sırada bunları SSH'a karşı test etmek var.
 
@@ -136,7 +100,10 @@ netadmin@wifinetic:~$ cat user.txt
 1a05d1770d7267a601aadda4c66fd8db
 ```
 
-`netadmin` hesabı, `/bin/false` kısıtlaması OpenWRT yedeğindeki tanıma aitti — asıl HTB makinesinde bu kullanıcı normal bir shell'e sahip. Password reuse varsayımı doğrulandı: OpenWRT cihazının WiFi parolası, aynı zamanda ana sistemdeki `netadmin` kullanıcısının SSH parolasıyla birebir aynı. User flag'i elimde.
+<img width="377" height="77" alt="usertxt" src="https://github.com/user-attachments/assets/56ac8948-86be-4c63-ae78-7c9a3cafa778" />
+
+
+`netadmin` hesabı, `/bin/false` kısıtlaması OpenWRT yedeğindeki tanıma aitti — asıl HTB makinesinde bu kullanıcı normal bir shell'e sahip. Password reuse varsayımı doğrulandı: OpenWRT cihazının WiFi parolası, aynı zamanda ana sistemdeki `netadmin` kullanıcısının SSH parolasıyla birebir aynı.
 
 ---
 
@@ -155,16 +122,12 @@ chmod +x linpeas.sh
 ./linpeas.sh
 ```
 
+<img width="1262" height="522" alt="linpeas" src="https://github.com/user-attachments/assets/6b5a1f5a-7154-47e9-a6de-2ce4393f90e9" />
+
 Çıktının en dikkat çekici kısmı **capability** taraması altında geliyor:
 
-```
-Files with capabilities (limited to 50):
-/usr/lib/x86_64-linux-gnu/gstreamer1.0/gstreamer-1.0/gst-ptp-helper = cap_net_bind_service,cap_net_admin+ep
-/usr/bin/ping = cap_net_raw+ep
-/usr/bin/mtr-packet = cap_net_raw+ep
-/usr/bin/traceroute6.iputils = cap_net_raw+ep
-/usr/bin/reaver = cap_net_raw+ep
-```
+<img width="939" height="121" alt="reaver" src="https://github.com/user-attachments/assets/c0042728-f1cb-42fb-b112-1968535b269f" />
+
 
 `reaver` burada listenin geri kalanına göre bağlamdan tamamen kopuk duruyor — `ping`, `mtr-packet`, `traceroute6` gibi araçlarda `cap_net_raw` beklenen bir şeydir (ham soket erişimi gerektirirler), ama `reaver`'ın burada bulunması **kasıtlı bir tasarım**. `reaver`, WPS (WiFi Protected Setup) protokolündeki PIN doğrulama zaafını kullanarak bir erişim noktasının WPA/WPA2 pre-shared key'ini kurtarmak için tasarlanmış, ham 802.11 frame'leriyle çalışan bir araçtır. Normalde `root` yetkisi gerektirir çünkü kablosuz arayüzü monitor moda alıp ham paket enjeksiyonu/dinlemesi yapması gerekir; burada `cap_net_raw` capability'si sayesinde bu işlemi `root` olmadan, sadece bu binary özelinde gerçekleştirebiliyoruz.
 
@@ -174,32 +137,25 @@ Bu tespit, önceki adımlardaki tüm ipuçlarını (OpenWRT teması, `MigrateOpe
 
 ## 5. Kablosuz Arayüzlerin Tespiti
 
+<img width="983" height="797" alt="reaverhelp" src="https://github.com/user-attachments/assets/7c690407-33c7-4499-9161-b9f447fd2ae3" />
+
 `reaver`'ı çalıştırabilmek için önce doğru arayüzü ve hedef BSSID'yi belirlemem gerekiyor:
 
 ```bash
 iwconfig
 ```
 
-```
-wlan0     IEEE 802.11  Mode:Master  Tx-Power=20 dBm
-hwsim0    no wireless extensions.
-lo        no wireless extensions.
-wlan2     IEEE 802.11  ESSID:off/any  Mode:Managed  Access Point: Not-Associated
-eth0      no wireless extensions.
-mon0      IEEE 802.11  Mode:Monitor  Tx-Power=20 dBm
-wlan1     IEEE 802.11  ESSID:"OpenWrt"  Mode:Managed  Frequency:2.412 GHz
-          Access Point: 02:00:00:00:00:00
-          Link Quality=70/70  Signal level=-30 dBm
-```
+<img width="647" height="519" alt="iwconfig" src="https://github.com/user-attachments/assets/986da48d-afba-49c0-95d3-386057c23248" />
+
 
 Burada iki kritik bilgi var:
 
 * **`mon0`** zaten monitor moddaki arayüz — `reaver` ham 802.11 frame'leriyle çalıştığı için tam olarak ihtiyacım olan interface bu. (Bu ortam `mac80211_hwsim` ile simüle edilmiş bir kablosuz ortam; gerçek bir donanım gerekmiyor, makine bunu sanal olarak sağlıyor.)
-* **`wlan1`**, `OpenWrt` SSID'li erişim noktasına bağlı görünüyor ve **BSSID: `02:00:00:00:00:00`** bilgisini veriyor — bu, `reaver`'a hedef olarak vereceğim adres.
+* **`wlan1`**, `OpenWrt` SSID'li erişim noktasına bağlı görünüyor ve **BSSID: `02:00:00:00:00:00`** bilgisini veriyor.
 
 ---
 
-## 6. WPS PIN Kaba Kuvvet Saldırısı (Reaver)
+## 6. WPS PIN Kaba Kuvvet Saldırısı
 
 Elimde interface (`mon0`) ve BSSID (`02:00:00:00:00:00`) var; saldırıyı başlatıyorum:
 
@@ -207,29 +163,8 @@ Elimde interface (`mon0`) ve BSSID (`02:00:00:00:00:00`) var; saldırıyı başl
 reaver -i mon0 -b 02:00:00:00:00:00 -vv
 ```
 
-```
-[+] Waiting for beacon from 02:00:00:00:00:00
-[+] Switching mon0 to channel 1
-[+] Received beacon from 02:00:00:00:00:00
-[+] Trying pin "12345670"
-[+] Sending authentication request
-[+] Sending association request
-[+] Associated with 02:00:00:00:00:00 (ESSID: OpenWrt)
-[+] Sending EAPOL START request
-[+] Received identity request
-[+] Sending identity response
-[+] Received M1 message
-[+] Sending M2 message
-[+] Received M3 message
-[+] Sending M4 message
-[+] Received M5 message
-[+] Sending M6 message
-[+] Received M7 message
-[+] Pin cracked in 2 seconds
-[+] WPS PIN: '12345670'
-[+] WPA PSK: 'WhatIsRealAnDWhAtIsNot51121!'
-[+] AP SSID: 'OpenWrt'
-```
+<img width="757" height="549" alt="reaverson" src="https://github.com/user-attachments/assets/4ce276de-ea80-4db9-a869-bc762f59247c" />
+
 
 `12345670` — WPS PIN'in son hanesi bir checksum olduğu için gerçek arama uzayı 8 haneden çok daha küçüktür (10^7 kombinasyon), ve bu ortamda **hiçbir kilitleme (lockout) mekanizması** devrede olmadığı için `reaver` M1–M7 EAPOL mesaj alışverişini tamamlayıp PIN'i saniyeler içinde kırıyor. PIN doğrulandığı anda WPS protokolü, erişim noktasının gerçek WPA pre-shared key'ini de bize teslim ediyor: `WhatIsRealAnDWhAtIsNot51121!`.
 
@@ -252,28 +187,7 @@ root@wifinetic:~# cat root.txt
 849edb23b6855040acf4f9159b9be24c
 ```
 
-Root flag'i elimde. Makine, aynı zayıf alışkanlığı (bir yerde kullanılan bir parolanın başka bir yerde de geçerli olması) iki kez art arda sergileyerek hem foothold hem de privilege escalation için kullanılabilir hale gelmiş.
-
----
-
-## Sonuç ve Değerlendirme
-
-Wifinetic, teknik zorluk seviyesi düşük olsa da güzel bir zincirleme örneği sunuyor:
-
-1. **Bilgi sızıntısı → kimlik bilgisi:** Anonim FTP üzerinden erişilebilen bir konfigürasyon yedeği, hem kullanıcı adı hem de parola adayı sağladı.
-2. **Parola tekrar kullanımı → foothold:** Kablosuz ağ parolası, sistem hesabı parolasıyla aynıydı.
-3. **Aşırı yetkili binary → privesc:** `reaver`'a tanımlanmış gereksiz `cap_net_raw` capability'si, normalde `root` gerektiren bir saldırıyı düşük yetkili kullanıcıya açtı.
-4. **Parola tekrar kullanımı (ikinci kez) → root:** WPS saldırısından elde edilen WPA anahtarı, `root` parolasıyla aynı çıktı.
-
-**Savunma açısından çıkarılacak dersler:**
-
-* FTP gibi servislerde anonim erişim, özellikle konfigürasyon/yedek dosyaları barındırılan dizinlerde kesinlikle kapatılmalı.
-* Ağ cihazı yedekleri gibi hassas dosyalar düz metin parola içermemeli; en azından şifrelenmiş şekilde saklanmalı.
-* Aynı parola, farklı sistemlerde (WiFi PSK, SSH, root) asla tekrar kullanılmamalı — bir katmanın ele geçirilmesi tüm zincirin çökmesine yol açıyor.
-* WPS, mümkünse tamamen devre dışı bırakılmalı; açık tutulması gerekiyorsa PIN kilitleme (lockout) mekanizması mutlaka aktif olmalı.
-* Binary'lere Linux capability atarken (`setcap`), gerçekten ihtiyaç duyulmayan yetkiler asla verilmemeli — `reaver` gibi saldırı amaçlı araçların sistemde bırakılması ve üstüne gereksiz capability tanımlanması, tek başına bir privilege escalation vektörüdür.
-
----
+<img width="336" height="142" alt="roottxt" src="https://github.com/user-attachments/assets/ddd92b04-cb9d-4e47-b926-da57e88123f5" />
 
 **Flag'ler:**
 
