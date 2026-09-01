@@ -104,6 +104,23 @@
     "readTime": "20 dk"
   },
   {
+    "slug": "Wifinetic",
+    "title": "Hack The Box — Wifinetic Writeup",
+    "date": "2026-09-01",
+    "tags": [
+      "Linux",
+      "FTP",
+      "OpenWRT",
+      "Wireless Security",
+      "WPS",
+      "Reaver",
+      "Password Reuse",
+      "Privilege Escalation"
+    ],
+    "excerpt": "Anonim FTP erişimi üzerinden sızan bir OpenWRT konfigürasyon yedeğinden elde edilen kablosuz ağ parolası ve kullanıcı adıyla password reuse saldırısıyla SSH foothold sağlanması, reaver binary'sine tanımlı cap_net_raw capability'si istismar edilerek WPS PIN kaba kuvvet saldırısıyla erişim noktasının WPA-PSK anahtarının kırılması ve aynı parolanın root hesabında tekrar kullanılmasıyla root yetkisine ulaşılmasının teknik incelemesi.",
+    "readTime": "10 dk"
+  },
+  {
     "slug": "Keeper",
     "title": "Hack The Box — Keeper Writeup",
     "date": "2026-09-01",
