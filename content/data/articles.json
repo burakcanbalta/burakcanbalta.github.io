@@ -20,7 +20,7 @@
   },
   {
     "slug": "idor",
-    "title": "IDOR (Insecure Direct Object Reference)",
+    "title": "Insecure Direct Object Reference",
     "date": "2026-09-01",
     "tags": [
       "Web",
