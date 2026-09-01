@@ -352,7 +352,7 @@ for _ in range(50):
 
 ---
 
-## Firmada MFA Bypass Bulunduysa: Acil Önlemler (Virtual Patch)
+## Virtual Patch
 
 Gerçek dünyada kalıcı çözüm (merkezi MFA state yönetimi, backend-only doğrulama, kriptografik olarak güvenli OTP üretimi) hazır olana kadar, ilgili akışa **mimariyi değiştirmeden** uygulanabilecek hızlı yamalar gerekir.
 
