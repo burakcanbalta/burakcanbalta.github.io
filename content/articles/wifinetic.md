@@ -67,7 +67,7 @@ cat passwd
 <img width="1243" height="307" alt="etc" src="https://github.com/user-attachments/assets/247d6ae2-52e7-4652-ba7f-c79fe3db0977" />
 
 
-Burada dikkat çeken satır `netadmin`. Bu, standart OpenWRT sistem kullanıcılarının arasında **sonradan eklenmiş** görünen, isimlendirmesiyle de "ağ yöneticisi" izlenimi veren bir hesap. Shell'i `/bin/false` olduğu için doğrudan interaktif bir OpenWRT oturumu açmaya yaramaz, ama bu bir son değil — asıl soru, bu kullanıcı adının **hedef makinede** (OpenWRT cihazının kendisinde değil, esas HTB kutusunda) SSH için geçerli olup olmadığı.
+Burada dikkat çeken satır `netadmin`. Bu, standart OpenWRT sistem kullanıcılarının arasında **sonradan eklenmiş** görünen, isimlendirmesiyle de "ağ yöneticisi" izlenimi veren bir hesap. Shell'i `/bin/false` olduğu için doğrudan interaktif bir OpenWRT oturumu açmaya yaramaz, ama bu bir son değil.
 
 ### Kablosuz Yapılandırmasında Parolanın Bulunması
 
@@ -80,7 +80,7 @@ cat config/wireless
 <img width="678" height="697" alt="şifre" src="https://github.com/user-attachments/assets/e9a975e8-000c-4696-9378-7cb5d93da1b7" />
 
 
-Erişim noktasının WPA-PSK anahtarı düz metin olarak konfigürasyon dosyasında duruyor: `VeRyUniUqWiFIPasswrd1!`. Bu, kablosuz ağ için bir parola — ama pratikte kurumsal ortamlarda **parola tekrar kullanımı (password reuse)** o kadar yaygın bir alışkanlıktır ki, bu WiFi parolasını sistem hesaplarında da denemek her zaman ilk aklıma gelen adımdır. Elimde hem bir kullanıcı adı adayı (`netadmin`) hem de bir parola adayı (`VeRyUniUqWiFIPasswrd1!`) var; sırada bunları SSH'a karşı test etmek var.
+Erişim noktasının WPA-PSK anahtarı düz metin olarak konfigürasyon dosyasında duruyor: `VeRyUniUqWiFIPasswrd1!`. Sırada bunları SSH'a karşı test etmek var.
 
 ---
 
@@ -101,10 +101,6 @@ netadmin@wifinetic:~$ cat user.txt
 
 <img width="377" height="77" alt="usertxt" src="https://github.com/user-attachments/assets/56ac8948-86be-4c63-ae78-7c9a3cafa778" />
 
-
-`netadmin` hesabı, `/bin/false` kısıtlaması OpenWRT yedeğindeki tanıma aitti — asıl HTB makinesinde bu kullanıcı normal bir shell'e sahip. Password reuse varsayımı doğrulandı: OpenWRT cihazının WiFi parolası, aynı zamanda ana sistemdeki `netadmin` kullanıcısının SSH parolasıyla birebir aynı.
-
----
 
 ## 4. Privilege Escalation Yüzeyinin Belirlenmesi
 
@@ -146,7 +142,6 @@ iwconfig
 
 <img width="647" height="519" alt="iwconfig" src="https://github.com/user-attachments/assets/986da48d-afba-49c0-95d3-386057c23248" />
 
-
 Burada iki kritik bilgi var:
 
 * **`mon0`** zaten monitor moddaki arayüz — `reaver` ham 802.11 frame'leriyle çalıştığı için tam olarak ihtiyacım olan interface bu. (Bu ortam `mac80211_hwsim` ile simüle edilmiş bir kablosuz ortam; gerçek bir donanım gerekmiyor, makine bunu sanal olarak sağlıyor.)
@@ -187,8 +182,3 @@ root@wifinetic:~# cat root.txt
 ```
 
 <img width="336" height="142" alt="roottxt" src="https://github.com/user-attachments/assets/ddd92b04-cb9d-4e47-b926-da57e88123f5" />
-
-**Flag'ler:**
-
-* User: `1a05d1770d7267a601aadda4c66fd8db`
-* Root: `849edb23b6855040acf4f9159b9be24c`
