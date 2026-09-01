@@ -35,7 +35,7 @@
   },
   {
     "slug": "broken-access-control",
-    "title": "Broken Access Control — Sıfırdan İleri Seviye Kapsamlı Teknik İnceleme",
+    "title": "Broken Access Control",
     "date": "2026-09-01",
     "tags": [
       "Web",
@@ -53,7 +53,7 @@
   },
   {
     "slug": "api",
-    "title": "API Security — OWASP API Top 10 Kapsamlı Teknik İnceleme",
+    "title": "API Security",
     "date": "2026-09-01",
     "tags": [
       "API",
@@ -72,7 +72,7 @@
   },
   {
     "slug": "idor",
-    "title": "IDOR (Insecure Direct Object Reference) — Kapsamlı Teknik İnceleme",
+    "title": "Insecure Direct Object Reference",
     "date": "2026-09-01",
     "tags": [
       "Web",
@@ -88,7 +88,7 @@
   },
   {
     "slug": "mfa-2fa_bypass",
-    "title": "MFA / 2FA Bypass Teknikleri — Kapsamlı Teknik Analiz",
+    "title": "MFA / 2FA Bypass Teknikleri",
     "date": "2026-09-01",
     "tags": [
       "Web",
