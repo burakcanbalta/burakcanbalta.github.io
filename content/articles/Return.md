@@ -132,9 +132,6 @@ whoami /groups
 
 Burada `SeBackupPrivilege` doğrudan kullanılabilecek önemli bir privilege olsa da mevcut shell'den root elde etmek için bu yolu tercih etmiyorum. Bunun yerine kullanıcının `Server Operators` üyeliğinin sağladığı servis yönetim yetkilerini incelemek daha doğrudan bir privilege escalation yolu sunuyor.
 
-Bu nedenle bir sonraki adımda sistemde hangi servisler üzerinde kontrol sahibi olduğumu enumerate ediyorum.
-
----
 
 ## Service Enumeration
 
@@ -174,7 +171,6 @@ sc.exe stop VMTools
 <img width="552" height="164" alt="privesc6" src="https://github.com/user-attachments/assets/7e4a859a-fb3d-4f9a-82f1-36ab6ee91a2f" />
 
 <img width="552" height="164" alt="privesc6" src="https://github.com/user-attachments/assets/89c91c78-c982-44f7-b194-0b0ba85db020" />
-
 
 Burada kritik olan yalnızca `stop/start` yetkisi değil. Asıl önemli nokta servis yapılandırmasının değiştirilebilmesi. Bu da `binPath` değerini kontrol ettiğimiz bir executable'a yönlendirme ihtimalini ortaya çıkarıyor.
 
