@@ -151,13 +151,6 @@ Servisin durumunu doğrudan `sc.exe` ile doğruluyorum:
 sc.exe query VMTools
 ```
 
-```text
-SERVICE_NAME: VMTools
-TYPE               : 10  WIN32_OWN_PROCESS
-STATE              : 4  RUNNING
-                     (STOPPABLE, PAUSABLE, ACCEPTS_PRESHUTDOWN)
-```
-
 Servis durdurulabiliyor:
 
 ```powershell
