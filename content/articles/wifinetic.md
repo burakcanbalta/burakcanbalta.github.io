@@ -45,7 +45,7 @@ Beş dosyanın tamamı indi. Sıradaki adım bunları tek tek analiz etmek
 
 **`employees_wellness.pdf`** ve **`ProjectOpenWRT.pdf`** — İçerik olarak İK duyurusu ve proje teklifi; teknik açıdan doğrudan bir zafiyet sunmuyorlar ama iki isim ve e-posta adresi not almaya değer: *Samantha Wood* (`samantha.wood93@wifinetic.htb`) ve *Oliver Walker* (`olivia.walker17@wifinetic.htb`, unvanı "Wireless Network Administrator"). İkinci kişinin unvanı, makinenin kablosuz ağ temasıyla doğrudan örtüşüyor.
 
-**`backup-OpenWrt-2023-07-26.tar`** — İsminden de anlaşılacağı gibi bu, gerçek altın madeni. Açalım:
+**`backup-OpenWrt-2023-07-26.tar`** — Açalım:
 
 ```bash
 tar -xf backup-OpenWrt-2023-07-26.tar
