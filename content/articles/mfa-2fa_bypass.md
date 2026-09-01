@@ -4,8 +4,6 @@
 
 MFA bypass açıkları çoğunlukla **sözdizimsel değil, mantıksaldır**. Kod çalışır, OTP doğru üretilir, SMS/e-posta doğru gönderilir — ama akışın bir adımında "bu kullanıcı gerçekten ikinci faktörü tamamladı mı?" sorusu ya hiç sorulmaz ya da yanlış yerde sorulur. Bu yüzden SAST/DAST araçları bu tür açıkları neredeyse hiç yakalayamaz; mantık hatası, statik kod analizinin doğası gereği görünmezdir. Bulmak, **akışın tamamını uçtan uca takip etmeyi** gerektirir.
 
-Bu yazıda MFA/OTP bypass tekniklerini altı ana başlık altında — brute-force ve mantık hataları, AitM (Adversary-in-the-Middle) saldırıları, protokol seviyesi açıklar, kriptografik zayıflıklar, iletişim kanalı istismarları ve MFA fatigue — gerçek payload örnekleriyle inceleyeceğiz.
-
 ---
 
 ## 1. Mantıksal ve İşlevsel Zafiyetler (Business Logic Flaws)
