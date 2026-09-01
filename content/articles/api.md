@@ -4,8 +4,6 @@
 
 OWASP, bu farkı gözeterek **API Security Top 10**'u klasik OWASP Top 10'dan ayrı bir liste olarak yayınlar. 2023 revizyonu, 2019 listesine göre önemli değişiklikler içerir: bazı kategoriler birleştirilmiş (Excessive Data Exposure + Mass Assignment → Broken Object Property Level Authorization), bazıları tamamen yeni eklenmiştir (Unrestricted Resource Consumption, Unrestricted Access to Sensitive Business Flows, Unsafe Consumption of APIs).
 
-Bu yazıda listenin her bir maddesini gerçek payload örnekleriyle inceleyeceğiz; savunma önerilerini ise tekrarı azaltmak için yazının sonunda tek bir bölümde topluca vereceğiz.
-
 ---
 
 ## API Mimarileri: REST, SOAP ve GraphQL Hızlı Tanıtım
