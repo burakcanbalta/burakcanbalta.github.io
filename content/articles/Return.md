@@ -62,7 +62,7 @@ Administration panelindeki LDAP endpoint'i saldırgan tarafından kontrol edileb
 
 ## Credential Validation
 
-Ele geçirilen credential'ların gerçekten geçerli olup olmadığını önce SMB üzerinden kontrol ediyorum.
+Ele geçirilen credential'ların gerçekten geçerli olup olmadığını önce SMB ve WinRM üzerinden kontrol ediyorum.
 
 ```bash
 nxc smb 10.129.51.69 -u 'svc-printer' -p '1edFg43012!!'
