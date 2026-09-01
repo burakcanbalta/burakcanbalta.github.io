@@ -167,7 +167,7 @@ Bu, WPS'in bilinen ve köklü tasarım zafiyetidir — PIN'in 8 haneli tek parç
 
 ## 7. Root — Yeniden Parola Tekrar Kullanımı
 
-Elimdeki yeni parolayı `netadmin` kullanıcısının `root` olma ihtimaline karşı deniyorum — çünkü bu makinede zaten bir kez parola tekrar kullanımı örüntüsü görmüştüm, aynı örüntünün tekrarlanması sürpriz olmaz:
+Elimdeki parolayı `root` olma ihtimaline karşı deniyorum:
 
 ```bash
 su
