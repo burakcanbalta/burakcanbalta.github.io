@@ -2,7 +2,7 @@
 
 **MFA (Multi-Factor Authentication)**, çoğu güvenlik ekibi tarafından "son savunma hattı" olarak görülür — şifre çalınsa bile ikinci faktör olmadan giriş yapılamayacağı varsayılır. Bu varsayım kısmen doğrudur, ama tehlikeli bir körlük de yaratır: **MFA'nın kendisi de bir yazılımdır, ve her yazılım gibi mantık hataları barındırabilir.**
 
-SQL Injection veya XSS'in aksine, MFA bypass açıkları çoğunlukla **sözdizimsel değil, mantıksaldır**. Kod çalışır, OTP doğru üretilir, SMS/e-posta doğru gönderilir — ama akışın bir adımında "bu kullanıcı gerçekten ikinci faktörü tamamladı mı?" sorusu ya hiç sorulmaz ya da yanlış yerde sorulur. Bu yüzden SAST/DAST araçları bu tür açıkları neredeyse hiç yakalayamaz; mantık hatası, statik kod analizinin doğası gereği görünmezdir. Bulmak, **akışın tamamını uçtan uca takip etmeyi** gerektirir.
+MFA bypass açıkları çoğunlukla **sözdizimsel değil, mantıksaldır**. Kod çalışır, OTP doğru üretilir, SMS/e-posta doğru gönderilir — ama akışın bir adımında "bu kullanıcı gerçekten ikinci faktörü tamamladı mı?" sorusu ya hiç sorulmaz ya da yanlış yerde sorulur. Bu yüzden SAST/DAST araçları bu tür açıkları neredeyse hiç yakalayamaz; mantık hatası, statik kod analizinin doğası gereği görünmezdir. Bulmak, **akışın tamamını uçtan uca takip etmeyi** gerektirir.
 
 Bu yazıda MFA/OTP bypass tekniklerini altı ana başlık altında — brute-force ve mantık hataları, AitM (Adversary-in-the-Middle) saldırıları, protokol seviyesi açıklar, kriptografik zayıflıklar, iletişim kanalı istismarları ve MFA fatigue — gerçek payload örnekleriyle inceleyeceğiz.
 
