@@ -141,6 +141,7 @@ Evil-WinRM içerisinde bulunan `services` fonksiyonu sistemdeki servisleri ve me
 menu
 services
 ```
+
 <img width="642" height="422" alt="privesc4" src="https://github.com/user-attachments/assets/09429dca-77a7-4797-aaeb-36ca1511edda" />
 
 Listeyi burada özellikle belirli bir mantıkla değerlendiriyorum: amaç rastgele bir servis bulmak değil, mevcut hesabın üzerinde operasyon yapabildiği bir servisi tespit etmek. `VMTools` servisi üzerinde gerekli servis kontrol yetkilerinin bulunduğu görülüyor.
@@ -151,17 +152,14 @@ Servisin durumunu doğrudan `sc.exe` ile doğruluyorum:
 sc.exe query VMTools
 ```
 
+<img width="1172" height="494" alt="privesc5" src="https://github.com/user-attachments/assets/490d4935-b949-403d-b763-dce8f270adee" />
+
+
 Servis durdurulabiliyor:
 
 ```powershell
 sc.exe stop VMTools
 ```
-
-```text
-[SC] ControlService SUCCESS
-```
-
-<img width="552" height="164" alt="privesc6" src="https://github.com/user-attachments/assets/7e4a859a-fb3d-4f9a-82f1-36ab6ee91a2f" />
 
 <img width="552" height="164" alt="privesc6" src="https://github.com/user-attachments/assets/89c91c78-c982-44f7-b194-0b0ba85db020" />
 
