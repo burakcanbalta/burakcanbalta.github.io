@@ -1,76 +1,25 @@
-Return HTB Writeup 
+<img width="686" height="386" alt="maxresdefault" src="https://github.com/user-attachments/assets/5892254c-9f8a-416d-bfb1-f5d1c38def97" />
 
 #### About
 
 Return is an easy difficulty Windows machine featuring a network printer administration panel that stores LDAP credentials. These credentials can be captured by inputting a malicious LDAP server which allows obtaining foothold on the server through the WinRM service. User found to be part of a privilege group which further exploited to gain system access.
 
+
 İlk olarak nmap taraması ile başlıyoruz 
 - nmap -sS -A -T5 -p- 10.129.51.69
 
-53/tcp    open  domain        Simple DNS Plus
-80/tcp    open  http          Microsoft IIS httpd 10.0
-|_http-server-header: Microsoft-IIS/10.0
-|_http-title: HTB Printer Admin Panel
-| http-methods: 
-|_  Potentially risky methods: TRACE
-88/tcp    open  kerberos-sec  Microsoft Windows Kerberos (server time: 2026-09-01 20:01:46Z)
-135/tcp   open  msrpc         Microsoft Windows RPC
-139/tcp   open  netbios-ssn   Microsoft Windows netbios-ssn
-389/tcp   open  ldap          Microsoft Windows Active Directory LDAP (Domain: return.local, Site: Default-First-Site-Name)
-445/tcp   open  microsoft-ds?
-464/tcp   open  kpasswd5?
-593/tcp   open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
-636/tcp   open  tcpwrapped
-3268/tcp  open  ldap          Microsoft Windows Active Directory LDAP (Domain: return.local, Site: Default-First-Site-Name)
-3269/tcp  open  tcpwrapped
-5985/tcp  open  http          Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
-|_http-title: Not Found
-|_http-server-header: Microsoft-HTTPAPI/2.0
-9389/tcp  open  mc-nmf        .NET Message Framing
-47001/tcp open  http          Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
-|_http-server-header: Microsoft-HTTPAPI/2.0
-|_http-title: Not Found
-49664/tcp open  msrpc         Microsoft Windows RPC
-49665/tcp open  msrpc         Microsoft Windows RPC
-49666/tcp open  msrpc         Microsoft Windows RPC
-49668/tcp open  msrpc         Microsoft Windows RPC
-49671/tcp open  msrpc         Microsoft Windows RPC
-49674/tcp open  ncacn_http    Microsoft Windows RPC over HTTP 1.0
-49675/tcp open  msrpc         Microsoft Windows RPC
-49676/tcp open  msrpc         Microsoft Windows RPC
-49680/tcp open  msrpc         Microsoft Windows RPC
-49694/tcp open  msrpc         Microsoft Windows RPC
-Device type: general purpose
-Running: Microsoft Windows 2019
-OS CPE: cpe:/o:microsoft:windows_server_2019
-OS details: Microsoft Windows Server 2019
-Network Distance: 2 hops
-Service Info: Host: PRINTER; OS: Windows; CPE: cpe:/o:microsoft:windows
-
-Host script results:
-| smb2-time: 
-|   date: 2026-09-01T20:02:46
-|_  start_date: N/A
-|_clock-skew: 18m38s
-| smb2-security-mode: 
-|   3.1.1: 
-|_    Message signing enabled and required
+<img width="1026" height="727" alt="nmap" src="https://github.com/user-attachments/assets/9d559d3f-1677-4a0b-80f2-82bf9b5ed23b" />
 
 
 İlk olarak 80 portundaki web portuna odaklanalım 
 
-Siteye gidince ##   
-HTB Printer Admin Panel karşımıza çıkıyor ve /setting kısmına gidince de 
-|   |   |
-|---|---|
-|Server Address|| printer.return.local 
-|Server Port|| 389 
-|Username|| svc-printer 
-|Password||****** *************************
-||   |   | değerleri ile oynayabildiğimizi görüyoruz 
+<img width="578" height="499" alt="site1" src="https://github.com/user-attachments/assets/a7efae3b-1fa9-4128-bded-efb7e15c7a18" />
 
+<img width="1232" height="377" alt="site2" src="https://github.com/user-attachments/assets/3cac1152-797d-478c-867d-8b477241caa2" />
 
 şimdi server adress yerine kendi ipmizi yazabiliriz ve 389 portunu dinleyerek gelen giden bilgilere bakabiliriz 
+
+<img width="771" height="352" alt="site3" src="https://github.com/user-attachments/assets/0a141268-a2e0-4e88-94f8-ff124d1af8b0" />
 
 
 ─# rlwrap nc -nvlp 389                                                                                                            
