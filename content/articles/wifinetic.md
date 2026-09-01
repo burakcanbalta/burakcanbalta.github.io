@@ -55,9 +55,8 @@ tar -xf backup-OpenWrt-2023-07-26.tar
 
 Arşiv, klasik bir OpenWRT `/etc` dizin yapısını içeriyor:
 
-```
-config  dropbear  group  hosts  inittab  luci-uploads  nftables.d  opkg  passwd  profile  rc.local  shells  shinit  sysctl.conf  uhttpd.crt  uhttpd.key
-```
+<img width="1224" height="68" alt="etc2" src="https://github.com/user-attachments/assets/cce953bc-cda6-46c4-bd75-a30aa1cf18de" />
+
 
 Bu, tam olarak umduğum türden bir bulgu: bir yönlendiricinin/erişim noktasının konfigürasyon yedeği. `passwd` dosyasına bakıyorum:
 
