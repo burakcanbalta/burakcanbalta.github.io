@@ -1,5 +1,24 @@
 [
   {
+    "slug": "broken-access-control",
+    "title": "Broken Access Control",
+    "date": "2026-09-01",
+    "tags": [
+      "Web",
+      "Broken Access Control",
+      "OWASP",
+      "Authorization",
+      "API",
+      "SSRF",
+      "JWT",
+      "GraphQL",
+      "NoSQL",
+      "Race Condition"
+    ],
+    "excerpt": "OWASP Top 10:2025 A01 kapsamında Broken Access Control zafiyetinin yatay, dikey ve bağlamsal erişim kontrolü açıklarından başlayarak; proxy/backend path normalization uyuşmazlıkları, HTTP method override, hop-by-hop header enjeksiyonu, URI parsing tutarsızlıkları, mikro servislerde internal trust ve SSRF, ID token/access token karışıklığı, JWT JWKS/jku saldırıları, session puzzling, zayıf token üretimi, fail-open authorization, race condition, state machine bypass, GraphQL alias batching, mass assignment ve NoSQL operator injection gibi ileri seviye tekniklerle incelendiği kapsamlı güvenlik rehberi. Tespit metodolojisinin yanı sıra gateway, token doğrulama, fail-closed, distributed lock, state validation, GraphQL limitleri ve input type enforcement gibi acil virtual patch ve kalıcı çözüm yaklaşımları da ele alınmaktadır.",
+    "readTime": "22 dk"
+  },
+  {
     "slug": "api",
     "title": "API Security",
     "date": "2026-09-01",
