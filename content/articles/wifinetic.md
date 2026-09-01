@@ -158,14 +158,10 @@ reaver -i mon0 -b 02:00:00:00:00:00 -vv
 
 <img width="757" height="549" alt="reaverson" src="https://github.com/user-attachments/assets/4ce276de-ea80-4db9-a869-bc762f59247c" />
 
-
 `12345670` — WPS PIN'in son hanesi bir checksum olduğu için gerçek arama uzayı 8 haneden çok daha küçüktür (10^7 kombinasyon), ve bu ortamda **hiçbir kilitleme (lockout) mekanizması** devrede olmadığı için `reaver` M1–M7 EAPOL mesaj alışverişini tamamlayıp PIN'i saniyeler içinde kırıyor. PIN doğrulandığı anda WPS protokolü, erişim noktasının gerçek WPA pre-shared key'ini de bize teslim ediyor: `WhatIsRealAnDWhAtIsNot51121!`.
 
-Bu, WPS'in bilinen ve köklü tasarım zafiyetidir — PIN'in 8 haneli tek parça yerine iki ayrı 4 haneli blok halinde doğrulanması, arama uzayını pratikte çok küçük bir sayıya indirger. Gerçek dünyada bu, WPS'in üretici/kurumsal ortamlarda neden büyük ölçüde devre dışı bırakılması gerektiğinin de temel nedenidir.
 
----
-
-## 7. Root — Yeniden Parola Tekrar Kullanımı
+## 7. Root
 
 Elimdeki parolayı `root` olma ihtimaline karşı deniyorum:
 
