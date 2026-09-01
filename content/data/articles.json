@@ -1,26 +1,59 @@
 [
   {
+    "slug": "load-balancer-security",
+    "title": "Load Balancer Security",
+    "date": "2026-09-01",
+    "tags": [
+      "Network Security",
+      "Load Balancer",
+      "F5 BIG-IP",
+      "Citrix ADC",
+      "HTTP Request Smuggling",
+      "SSRF",
+      "TLS",
+      "Reverse Engineering",
+      "Fuzzing"
+    ],
+    "excerpt": "L4/L7 dengeleme ve SSL termination temellerinden başlayarak; HTTP başlıkları, cookie imzaları ve zamanlama analiziyle (lbd/halberd) load balancer fingerprinting'in; CL.TE/TE.CL/TE.TE ve HTTP/2 downgrade üzerinden HTTP Request Smuggling'in; F5 BIG-IP kalıcılık cookie'sinin little-endian decode edilerek iç ağ IP/port sızdırılmasının; X-Forwarded-* ve Host header enjeksiyonu ile IP whitelist/iç ağ erişim atlatmanın; path normalization farklarıyla auth bypass (CVE-2020-5902, CVE-2019-19781) ve sızdırılan backend IP'sine doğrudan erişimle WAF bypass'ın; yönetim arayüzü zafiyetlerinin, protokole duyarlı fuzzing ile heap overflow/integer overflow/UAF gibi bellek yolsuzluklarının; firmware çıkarma ve TMM/NSPPE binary tersine mühendisliğinin; iRules/Tcl enjeksiyonu, Lua/Wasm filtre açıklarının (Envoy/Kong); TLS session ticket ve donanım hızlandırıcı (ASIC/FPGA) zafiyetlerinin ve health check üzerinden SSRF'in ele alındığı, virtual patch ve kalıcı çözümlerle tamamlanan uzman seviyesi teknik rehber.",
+    "readTime": "24 dk"
+  },
+  {
+    "slug": "Bashed",
+    "title": "Hack The Box — Bashed Writeup",
+    "date": "2026-09-01",
+    "tags": [
+      "Linux",
+      "Web Fuzzing",
+      "phpbash",
+      "RCE",
+      "Sudo Misconfiguration",
+      "Cron",
+      "Privilege Escalation"
+    ],
+    "excerpt": "ffuf ile keşfedilen unutulmuş bir /dev dizininde çalışan phpbash web shell'i üzerinden www-data olarak RCE elde edilmesi, sudo -l çıktısındaki aşırı geniş NOPASSWD: ALL kuralıyla scriptmanager kullanıcısına geçilmesi, root'a ait bir cron job tarafından periyodik çalıştırılan yazılabilir /scripts dizinine reverse shell payload'ı bırakılarak root yetkisine ulaşılmasının teknik incelemesi.",
+    "readTime": "9 dk"
+  },
+  {
     "slug": "broken-access-control",
-    "title": "Broken Access Control",
+    "title": "Broken Access Control (OWASP A01:2025) — Sıfırdan İleri Seviye Kapsamlı Teknik İnceleme",
     "date": "2026-09-01",
     "tags": [
       "Web",
       "Broken Access Control",
       "OWASP",
-      "Authorization",
-      "API",
       "SSRF",
       "JWT",
       "GraphQL",
-      "NoSQL",
-      "Race Condition"
+      "Race Condition",
+      "Microservices",
+      "API"
     ],
-    "excerpt": "OWASP Top 10:2025 A01 kapsamında Broken Access Control zafiyetinin yatay, dikey ve bağlamsal erişim kontrolü açıklarından başlayarak; proxy/backend path normalization uyuşmazlıkları, HTTP method override, hop-by-hop header enjeksiyonu, URI parsing tutarsızlıkları, mikro servislerde internal trust ve SSRF, ID token/access token karışıklığı, JWT JWKS/jku saldırıları, session puzzling, zayıf token üretimi, fail-open authorization, race condition, state machine bypass, GraphQL alias batching, mass assignment ve NoSQL operator injection gibi ileri seviye tekniklerle incelendiği kapsamlı güvenlik rehberi. Tespit metodolojisinin yanı sıra gateway, token doğrulama, fail-closed, distributed lock, state validation, GraphQL limitleri ve input type enforcement gibi acil virtual patch ve kalıcı çözüm yaklaşımları da ele alınmaktadır.",
+    "excerpt": "Authentication/authorization ayrımı ve yatay/dikey/bağlamsal erişim kontrolü temelleriyle başlayıp; proxy/backend arasındaki path normalization, HTTP method override ve hop-by-hop header enjeksiyonu gibi yönlendirme katmanı çatışmalarının; SSRF ile internal trust istismarı, ID/access token karışıklığı ve service-to-service yetkilendirme eksikliği gibi mikro servis güven ilişkisi açıklarının; JWT JWKS sahteciliği, session puzzling ve zayıf PRNG ile token tahmini gibi kriptografik sabotaj tekniklerinin; negatif/overflow sınır testleri, HTTP/2 üzerinden race condition ve state machine (checkout/payment/success) atlatmanın; GraphQL alias batching, mass assignment+ORM ilişki enjeksiyonu ve NoSQL operatör enjeksiyonu gibi ileri API/veri katmanı sızıntılarının gerçek payload örnekleriyle işlendiği; tespit metodolojisi, saatler içinde uygulanabilecek 8 farklı virtual patch tekniği ve kalıcı mimari çözümlerle tamamlanan kapsamlı OWASP A01:2025 rehberi.",
     "readTime": "22 dk"
   },
   {
     "slug": "api",
-    "title": "API Security",
+    "title": "API Security — OWASP API Top 10 Kapsamlı Teknik İnceleme",
     "date": "2026-09-01",
     "tags": [
       "API",
@@ -39,7 +72,7 @@
   },
   {
     "slug": "idor",
-    "title": "Insecure Direct Object Reference",
+    "title": "IDOR (Insecure Direct Object Reference) — Kapsamlı Teknik İnceleme",
     "date": "2026-09-01",
     "tags": [
       "Web",
@@ -55,7 +88,7 @@
   },
   {
     "slug": "mfa-2fa_bypass",
-    "title": "MFA / 2FA Bypass Teknikleri",
+    "title": "MFA / 2FA Bypass Teknikleri — Kapsamlı Teknik Analiz",
     "date": "2026-09-01",
     "tags": [
       "Web",
