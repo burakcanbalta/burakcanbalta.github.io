@@ -126,9 +126,8 @@ chmod +x linpeas.sh
 
 `reaver` burada listenin geri kalanına göre bağlamdan tamamen kopuk duruyor — `ping`, `mtr-packet`, `traceroute6` gibi araçlarda `cap_net_raw` beklenen bir şeydir (ham soket erişimi gerektirirler), ama `reaver`'ın burada bulunması **kasıtlı bir tasarım**. `reaver`, WPS (WiFi Protected Setup) protokolündeki PIN doğrulama zaafını kullanarak bir erişim noktasının WPA/WPA2 pre-shared key'ini kurtarmak için tasarlanmış, ham 802.11 frame'leriyle çalışan bir araçtır. Normalde `root` yetkisi gerektirir çünkü kablosuz arayüzü monitor moda alıp ham paket enjeksiyonu/dinlemesi yapması gerekir; burada `cap_net_raw` capability'si sayesinde bu işlemi `root` olmadan, sadece bu binary özelinde gerçekleştirebiliyoruz.
 
-Bu tespit, önceki adımlardaki tüm ipuçlarını (OpenWRT teması, `MigrateOpenWrt.txt` içindeki "Reaver ile güvenlik testi" notu, kablosuz arayüz konfigürasyonundaki `wps_pushbutton '1'` ayarı) birleştiriyor: makinenin privilege escalation vektörü, gerçek bir WPS PIN brute-force saldırısı.
+Bu tespit, önceki adımlardaki tüm ipuçlarını (OpenWRT teması, `MigrateOpenWrt.txt` içindeki "Reaver ile güvenlik testi" notu, kablosuz arayüz konfigürasyonundaki `wps_pushbutton '1'` ayarı) birleştiriyor.
 
----
 
 ## 5. Kablosuz Arayüzlerin Tespiti
 
