@@ -35,7 +35,7 @@
   },
   {
     "slug": "broken-access-control",
-    "title": "Broken Access Control (OWASP A01:2025) — Sıfırdan İleri Seviye Kapsamlı Teknik İnceleme",
+    "title": "Broken Access Control — Sıfırdan İleri Seviye Kapsamlı Teknik İnceleme",
     "date": "2026-09-01",
     "tags": [
       "Web",
