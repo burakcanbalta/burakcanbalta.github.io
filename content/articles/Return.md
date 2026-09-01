@@ -70,6 +70,8 @@ nxc smb 10.129.51.69 -u 'svc-printer' -p '1edFg43012!!'
 
 <img width="1440" height="505" alt="nxc" src="https://github.com/user-attachments/assets/404dced4-d191-4b3a-9ec5-6e798f4a1aa3" />
 
+<img width="1039" height="88" alt="nxc2" src="https://github.com/user-attachments/assets/4b9aca6b-7bf9-478e-aafe-752651345c16" />
+
 
 SMB tarafında kimlik bilgilerinin kabul edildiğini doğruladıktan sonra erişilebilir share'leri kontrol ediyorum:
 
