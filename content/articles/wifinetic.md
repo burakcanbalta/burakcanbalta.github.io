@@ -14,7 +14,7 @@ nmap -sS -A -T5 -p- 10.129.229.90
 
 <img width="989" height="596" alt="nmap" src="https://github.com/user-attachments/assets/6f370232-98ac-4a37-8a24-adf857a58fde" />
 
-Bu noktada plan netleşiyor: önce FTP'yi boşaltıp içerikleri analiz edeceğim, ardından muhtemelen bir yapılandırma/yedek dosyasından kimlik bilgisi çıkaracağım.
+Bu noktada plan netleşiyor: önce FTP'yi boşaltıp içerikleri analiz edeceğim.
 
 ---
 
