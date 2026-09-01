@@ -67,7 +67,7 @@ cat passwd
 <img width="1243" height="307" alt="etc" src="https://github.com/user-attachments/assets/247d6ae2-52e7-4652-ba7f-c79fe3db0977" />
 
 
-Burada dikkat çeken satır `netadmin`. Bu, standart OpenWRT sistem kullanıcılarının arasında **sonradan eklenmiş** görünen, isimlendirmesiyle de "ağ yöneticisi" izlenimi veren bir hesap. Shell'i `/bin/false` olduğu için doğrudan interaktif bir OpenWRT oturumu açmaya yaramaz, ama bu bir son değil.
+Burada dikkat çeken satır `netadmin`. Bu, standart OpenWRT sistem kullanıcılarının arasında **sonradan eklenmiş** görünen, isimlendirmesiyle de "ağ yöneticisi" izlenimi veren bir hesap. Shell'i `/bin/false` olduğu için doğrudan interaktif bir OpenWRT oturumu açmaya yaramaz.
 
 ### Kablosuz Yapılandırmasında Parolanın Bulunması
 
