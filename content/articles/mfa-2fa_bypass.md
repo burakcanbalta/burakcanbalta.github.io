@@ -140,7 +140,7 @@ Statik OTP kodlarının kendisini kırmak yerine, günümüz saldırılarının 
 
 ### 2.1 Reverse Proxy Tabanlı Session Hijacking
 
-Evilginx3 ve Modlishka gibi araçların (burada exploit kodu değil, kavramsal çalışma mantığı anlatılmaktadır) temel fikri şudur: saldırgan, kurban ile gerçek site arasına **şeffaf bir ters proxy** yerleştirir. Kurban normal şekilde giriş yapar, şifresini ve OTP kodunu girer — proxy bu trafiği gerçek siteye iletir ve gerçek sitenin yanıtını kurbana geri gönderir. Kurban için her şey normal görünür.
+Evilginx3 ve Modlishka gibi araçların temel fikri şudur: saldırgan, kurban ile gerçek site arasına **şeffaf bir ters proxy** yerleştirir. Kurban normal şekilde giriş yapar, şifresini ve OTP kodunu girer — proxy bu trafiği gerçek siteye iletir ve gerçek sitenin yanıtını kurbana geri gönderir. Kurban için her şey normal görünür.
 
 Ancak bu süreçte proxy, gerçek sitenin **MFA sonrası verdiği session cookie'sini** de yakalar. Saldırgan artık şifreye veya OTP'ye ihtiyaç duymadan, çalınan bu cookie ile doğrudan oturumu devralabilir — çünkü MFA zaten tamamlanmış ve sunucu bu oturumu "doğrulanmış" olarak işaretlemiştir.
 
