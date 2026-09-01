@@ -84,7 +84,7 @@ Erişim noktasının WPA-PSK anahtarı düz metin olarak konfigürasyon dosyası
 
 ---
 
-## 3. Foothold — SSH Üzerinden Password Reuse
+## 3. Foothold
 
 ```bash
 ssh netadmin@10.129.229.90
@@ -143,7 +143,7 @@ iwconfig
 
 Burada iki kritik bilgi var:
 
-* **`mon0`** zaten monitor moddaki arayüz — `reaver` ham 802.11 frame'leriyle çalıştığı için tam olarak ihtiyacım olan interface bu. (Bu ortam `mac80211_hwsim` ile simüle edilmiş bir kablosuz ortam; gerçek bir donanım gerekmiyor, makine bunu sanal olarak sağlıyor.)
+* **`mon0`** zaten monitor moddaki arayüz — `reaver` ham 802.11 frame'leriyle çalıştığı için tam olarak ihtiyacım olan interface.
 * **`wlan1`**, `OpenWrt` SSID'li erişim noktasına bağlı görünüyor ve **BSSID: `02:00:00:00:00:00`** bilgisini veriyor.
 
 ---
@@ -158,7 +158,7 @@ reaver -i mon0 -b 02:00:00:00:00:00 -vv
 
 <img width="757" height="549" alt="reaverson" src="https://github.com/user-attachments/assets/4ce276de-ea80-4db9-a869-bc762f59247c" />
 
-`12345670` — WPS PIN'in son hanesi bir checksum olduğu için gerçek arama uzayı 8 haneden çok daha küçüktür (10^7 kombinasyon), ve bu ortamda **hiçbir kilitleme (lockout) mekanizması** devrede olmadığı için `reaver` M1–M7 EAPOL mesaj alışverişini tamamlayıp PIN'i saniyeler içinde kırıyor. PIN doğrulandığı anda WPS protokolü, erişim noktasının gerçek WPA pre-shared key'ini de bize teslim ediyor: `WhatIsRealAnDWhAtIsNot51121!`.
+`12345670` — WPS PIN'in son hanesi bir checksum olduğu için gerçek arama uzayı 8 haneden çok daha küçüktür, ve bu ortamda **hiçbir kilitleme (lockout) mekanizması** devrede olmadığı için `reaver` M1–M7 EAPOL mesaj alışverişini tamamlayıp PIN'i saniyeler içinde kırıyor. PIN doğrulandığı anda WPS protokolü, erişim noktasının gerçek WPA pre-shared key'ini de bize teslim ediyor: `WhatIsRealAnDWhAtIsNot51121!`.
 
 
 ## 7. Root
