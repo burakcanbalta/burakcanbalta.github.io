@@ -1,6 +1,6 @@
-**Load Balancer (Yük Dengeleyici)**, modern altyapının belki de en az sorgulanan bileşenidir. Herkes onu "trafiği dağıtan kutu" olarak bilir, güvenlik ekipleri genellikle onu **savunma hattının bir parçası** sanır — WAF modülü var, SSL'i o çözüyor, arkadaki sunucuları o koruyor... Oysa gerçek şu: load balancer, trafiğin **her baytının** üzerinden geçtiği, genellikle root yetkisiyle çalışan, kapalı kaynaklı ve C/C++ ile yazılmış bir ağ cihazıdır. Yani aslında bu, saldırı yüzeyinin en **kritik ve en az test edilen** noktasıdır — çünkü kimse "zaten güvenlik cihazı" dediği bir şeyi test etmeyi düşünmez.
+<img width="1600" height="963" alt="what-is-a-load-balancer" src="https://github.com/user-attachments/assets/c6a8343d-c896-4c11-85a4-28555bec498c" />
 
-Bu yazı, load balancer'ları sıfırdan (L4/L7 ayrımı, SSL termination) ele alıp, HTTP protokol ayrıştırma farklarından firmware tersine mühendisliğine, bellek yolsuzluklarından TLS donanım hızlandırıcı açıklarına kadar **uzman seviyesinde** bir yolculuk sunuyor. Amaç sadece bilinen CVE'leri saymak değil; bu cihazlarda **0-day mantığının nasıl kurulacağını** anlamak.
+**Load Balancer (Yük Dengeleyici)**, modern altyapının belki de en az sorgulanan bileşenidir. Herkes onu "trafiği dağıtan kutu" olarak bilir, güvenlik ekipleri genellikle onu **savunma hattının bir parçası** sanır — WAF modülü var, SSL'i o çözüyor, arkadaki sunucuları o koruyor... Oysa gerçek şu: load balancer, trafiğin **her baytının** üzerinden geçtiği, genellikle root yetkisiyle çalışan, kapalı kaynaklı ve C/C++ ile yazılmış bir ağ cihazıdır. Yani aslında bu, saldırı yüzeyinin en **kritik ve en az test edilen** noktasıdır — çünkü kimse "zaten güvenlik cihazı" dediği bir şeyi test etmeyi düşünmez.
 
 ---
 
