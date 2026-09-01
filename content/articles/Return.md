@@ -130,7 +130,9 @@ whoami /groups
 
 <img width="671" height="677" alt="privesc3" src="https://github.com/user-attachments/assets/b3d94739-f899-4f02-a8d6-ecb598a3c6b6" />
 
-Burada `Server Operators` üyeliği privilege escalation açısından incelenmeye değer. Bu nedenle servisleri ayrıca kontrol ediyorum.
+Burada `SeBackupPrivilege` doğrudan kullanılabilecek önemli bir privilege olsa da mevcut shell'den root elde etmek için bu yolu tercih etmiyorum. Bunun yerine kullanıcının `Server Operators` üyeliğinin sağladığı servis yönetim yetkilerini incelemek daha doğrudan bir privilege escalation yolu sunuyor.
+
+Bu nedenle bir sonraki adımda sistemde hangi servisler üzerinde kontrol sahibi olduğumu enumerate ediyorum.
 
 ---
 
