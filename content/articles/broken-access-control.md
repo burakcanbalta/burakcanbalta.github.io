@@ -35,7 +35,7 @@ GET /admin/dashboard
 
 Frontend bu linki göstermese bile, backend isteği kontrolsüz işliyorsa erişim sağlanır.
 
-**IDOR (Insecure Direct Object Reference):** Kaynak ID'sinin sahiplik kontrolü yapılmadan servis edilmesi — bu konuyu ayrı ve kapsamlı şekilde [IDOR yazımızda](#) derinlemesine işledik, burada tekrar etmiyoruz.
+**IDOR (Insecure Direct Object Reference):** Kaynak ID'sinin sahiplik kontrolü yapılmadan servis edilmesi — bu konuyu ayrı ve kapsamlı şekilde IDOR yazımızda derinlemesine işledik, burada tekrar etmiyoruz.
 
 **CORS Yanlış Yapılandırması:**
 
