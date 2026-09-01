@@ -334,7 +334,7 @@ for code in range(10000000, 99999999):
 
 Push tabanlı MFA (Duo, Okta Verify, Microsoft Authenticator gibi "onayla/reddet" bildirimleri), OTP girmek zorunda kalmadığı için kullanıcı deneyimi açısından tercih edilir — ama bu kolaylık yeni bir saldırı yüzeyi açar.
 
-**Mekanizma:** Saldırgan, kurbanın çalınmış kullanıcı adı/şifresiyle art arda, kısa aralıklarla giriş denemeleri tetikler. Her deneme, kurbanın telefonuna bir onay bildirimi düşürür. Amaç, kurbanı gece yarısı veya art arda gelen onlarca bildirimle **bıktırıp**, "artık dursun" diyerek yanlışlıkla veya bilinçsizce "Onayla"ya basmasını sağlamaktır. Bu teknik, 2022'de büyük bir teknoloji şirketinde yaşanan gerçek bir sızıntı vakasında da kullanılmıştır: saldırgan defalarca giriş denemiş, ardından kurbanla "IT destek" kimliğine bürünerek iletişime geçip bildirimi onaylamasını istemiştir (sosyal mühendislik ile birleştirilmiş MFA fatigue).
+**Mekanizma:** Saldırgan, kurbanın çalınmış kullanıcı adı/şifresiyle art arda, kısa aralıklarla giriş denemeleri tetikler. Her deneme, kurbanın telefonuna bir onay bildirimi düşürür. Amaç, kurbanı gece yarısı veya art arda gelen onlarca bildirimle **bıktırıp**, "artık dursun" diyerek yanlışlıkla veya bilinçsizce "Onayla"ya basmasını sağlamaktır. Bu teknik, 2022'de büyük bir teknoloji şirketinde yaşanan gerçek bir sızıntı vakasında da kullanılmıştır: saldırgan defalarca giriş denemiş, ardından kurbanla "IT destek" kimliğine bürünerek iletişime geçip bildirimi onaylamasını istemiştir.
 
 ```python
 # Kavramsal örnek: art arda giriş denemesi tetikleyerek push bildirimi yağdırma
