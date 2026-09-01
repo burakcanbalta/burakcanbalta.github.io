@@ -25,13 +25,11 @@ Web servisine eriştiğimde yazıcı yönetimi için kullanılan bir administrat
 
 <img width="578" height="499" alt="site1" src="https://github.com/user-attachments/assets/2cdeaeac-d3ad-4edf-ab06-8c8cbafdaa3d" />
 
-Paneli incelediğimde özellikle **Settings** bölümü dikkat çekiyor. Burada LDAP bağlantısına ait yapılandırmanın bulunduğu bir alan mevcut.
+Paneli incelediğimde özellikle **Settings** bölümüne geliyoruz. Burada LDAP bağlantısına ait yapılandırmanın bulunduğu bir alan mevcut.
 
 <img width="1232" height="377" alt="site2" src="https://github.com/user-attachments/assets/aa0379ec-9fc8-4eb3-b9e5-9e5fb403b4e4" />
 
-Buradaki `Server Address` alanı doğrudan kullanıcı tarafından değiştirilebiliyor. Bu durumda uygulamanın LDAP bağlantısı için güvenilir bir backend yerine bizim belirlediğimiz adresi kullanıp kullanmadığını test etmek mantıklı.
-
-Kendi VPN adresimi LDAP sunucusu olarak tanımlayıp hedefin bu adrese bağlantı kurup kurmadığını dinliyorum.
+Buradaki `Server Address` alanı doğrudan kullanıcı tarafından değiştirilebiliyor. Bu durumda uygulamanın LDAP bağlantısı için güvenilir bir backend yerine bizim IP adresimizi test etmek mantıklı.
 
 <img width="771" height="352" alt="site3" src="https://github.com/user-attachments/assets/a86da2ba-4fc6-4bee-8b45-68ada1c9fb37" />
 
@@ -81,7 +79,6 @@ smbmap -H 10.129.51.69 -u 'svc-printer' -p '1edFg43012!!'
 
 <img width="805" height="491" alt="smbmap" src="https://github.com/user-attachments/assets/72a72066-33c7-4dd7-ab2e-6c2f57673af7" />
 
-
 SMB authentication'ın başarılı olması, credential'ların geçerli olduğunu net şekilde ortaya koyuyor. Bir sonraki adımda bu hesapla uzaktan yönetim erişimi aranabilir.
 
 ---
@@ -95,7 +92,6 @@ evil-winrm -i 10.129.51.69 -u 'svc-printer' -p '1edFg43012!!'
 ```
 
 <img width="1037" height="204" alt="shell" src="https://github.com/user-attachments/assets/aa7c2419-3ae9-46e0-a80b-f976ee64b29b" />
-
 
 Başarılı bağlantı sonrası:
 
@@ -186,7 +182,6 @@ Burada kritik olan yalnızca `stop/start` yetkisi değil. Asıl önemli nokta se
 ```powershell
 upload nc.exe .
 ```
-
 
 Daha sonra `VMTools` servisinin çalıştırdığı binary path'i kendi executable'ımıza çeviriyorum:
 
