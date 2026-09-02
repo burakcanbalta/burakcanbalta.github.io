@@ -105,7 +105,7 @@ Maltrail, ağ trafiğini analiz edip kötü amaçlı (malicious) trafik izlerini
 
 ### 5.1 Zafiyetin Kökeni
 
-Maltrail'in login mekanizması, gelen kullanıcı adı (`username`) parametresini, başarısız girişleri loglamak/işlemek amacıyla arka planda bir sistem komutuna dahil ediyor — ve bu değer **komut satırına aktarılmadan önce temizlenmiyor (sanitize edilmiyor)**. Yani `username` alanına, işletim sistemi komut ayracı karakterleri (`;`, `` ` ``, `$()` gibi) içeren bir payload gönderildiğinde, bu karakterler shell tarafından yorumlanıp **saldırganın kendi komutu** sunucu üzerinde çalıştırılabiliyor. En kritik nokta: bu endpoint **login öncesi**, yani hiçbir kimlik doğrulama gerektirmeden erişilebilir durumda — bu yüzden "unauthenticated RCE".
+Maltrail'in login mekanizması, gelen kullanıcı adı (`username`) parametresini, başarısız girişleri loglamak/işlemek amacıyla arka planda bir sistem komutuna dahil ediyor — ve bu değer **komut satırına aktarılmadan önce temizlenmiyor (sanitize edilmiyor)**. Yani `username` alanına, işletim sistemi komut ayracı karakterleri (`;`, `` ` ``, `$()` gibi) içeren bir payload gönderildiğinde, bu karakterler shell tarafından yorumlanıp **saldırganın kendi komutu** sunucu üzerinde çalıştırılabiliyor. En kritik nokta: bu endpoint **login öncesi**, yani hiçbir kimlik doğrulama gerektirmeden erişilebilir durumda.
 
 ### 5.2 Pratikte İstismar
 
