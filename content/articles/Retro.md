@@ -1,12 +1,3 @@
-# HTB Retro — Writeup
-
-**Zorluk:** Easy
-**OS:** Windows Server 2022 (Active Directory Domain Controller)
-**Hedef IP:** 10.129.51.149
-**Domain:** retro.vl
-
----
-
 #### About
 
 `Retro` is an Easy Windows machine that showcases an Active Directory Domain Controller. Through SMB enumeration and pre-created machine account exploitation, we gain access to the system. Through the exploitation of the Active Directory Certificate Service and specifically by using the `ESC1` attack, which involves exploiting certificate templates to impersonate the Administrative user, privilege escalation is achieved.
