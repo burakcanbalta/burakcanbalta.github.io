@@ -140,7 +140,7 @@ $ whoami
 puma
 ```
 
-`puma` kullanıcısı olarak bir shell elde ettim — bu, Maltrail servisinin çalıştığı kullanıcı hesabı.
+`puma` kullanıcısı olarak bir shell elde ettim
 
 ---
 
