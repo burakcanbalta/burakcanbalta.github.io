@@ -1,3 +1,5 @@
+<img width="1032" height="928" alt="broker" src="https://github.com/user-attachments/assets/70b96d2d-e4ee-4788-ac2c-d29c5c0e32be" />
+
 ### About
 
 Broker is an easy difficulty `Linux` machine hosting a version of `Apache ActiveMQ`. Enumerating the version of `Apache ActiveMQ` shows that it is vulnerable to `Unauthenticated Remote Code Execution`, which is leveraged to gain user access on the target. Post-exploitation enumeration reveals that the system has a `sudo` misconfiguration allowing the `activemq` user to execute `sudo /usr/sbin/nginx`, which is similar to the recent `Zimbra` disclosure and is leveraged to gain `root` access.
@@ -8,26 +10,22 @@ Broker is an easy difficulty `Linux` machine hosting a version of `Apache Active
 nmap -sS -A -T5 -p- 10.129.230.87
 ```
 
-Sonuç oldukça kalabalık — tek bir web portu değil, tam bir ActiveMQ broker altyapısıyla karşı karşıyayız:
+Sonuç oldukça kalabalık 
 
-```
-22/tcp    ssh        OpenSSH 8.9p1
-80/tcp    http       nginx 1.18.0 (ActiveMQRealm basic auth)
-1883/tcp  mqtt
-5672/tcp  amqp
-8161/tcp  http       Jetty 9.4.39 (ActiveMQRealm basic auth)
-61613/tcp stomp      Apache ActiveMQ
-61614/tcp http       Jetty 9.4.39
-61616/tcp apachemq   ActiveMQ OpenWire transport 5.15.15
-```
+<img width="1053" height="832" alt="nmap" src="https://github.com/user-attachments/assets/0d0adaab-cdc1-441b-8329-d411b8ab6df4" />
+
 
 61616'daki `ActiveMQ OpenWire transport 5.15.15` banner'ı tek başına yeterince konuşkan — bu versiyon, bilinen ve kritik bir RCE zincirine sahip.
 
 ### 2. Web Servisi ve ActiveMQ Console
 
+<img width="876" height="441" alt="site1" src="https://github.com/user-attachments/assets/f62d64e8-dd89-4505-9a8f-e000771f0b88" />
+
 80. porta gittiğimizde `ActiveMQRealm` realm'ıyla bir Basic Auth diyaloğu karşılıyor bizi. `admin:admin` deneyip doğrudan içeri giriyoruz — ActiveMQ'nun web konsolunda varsayılan kimlik bilgilerinin değiştirilmemesi, bu box'ta ikinci bir zafiyet gibi dursa da asıl kritik açık zaten kimlik doğrulama gerektirmiyor. Konsol bize broker'ın tam sürümünü (`5.15.15`) doğruluyor.
 
-### 3. Foothold — CVE-2023-46604 (OpenWire Deserialization RCE)
+<img width="680" height="645" alt="site2" src="https://github.com/user-attachments/assets/9be7cf46-0c9e-4aac-9d70-21559f2df31c" />
+
+### 3. Foothold — CVE-2023-46604
 
 61616 portundaki OpenWire protokolü, ActiveMQ'nun kendi ikili (binary) mesajlaşma protokolüdür ve mesajları **marshalling/unmarshalling** ile serileştirir. CVE-2023-46604'ün kökü burada: `BaseDataStreamMarshaller` sınıfı, gelen bir `ExceptionResponse` paketini işlerken, paket içinde taşınan **sınıf ismini reflection ile doğrudan instantiate ediyor** — hangi sınıfın oluşturulacağı sunucu tarafından sabitlenmemiş, saldırganın gönderdiği veriden okunuyor. Kimlik doğrulama katmanı bu noktaya hiç girmiyor, çünkü OpenWire seviyesindeki mesaj işleme, HTTP/Basic Auth'un tamamen dışında, ham TCP soketi üzerinde gerçekleşiyor.
 
