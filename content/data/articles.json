@@ -1,5 +1,23 @@
 [
   {
+  "slug": "Sau",
+  "title": "Hack The Box — Sau Writeup",
+  "date": "2026-09-02",
+  "tags": [
+    "Linux",
+    "Request Baskets",
+    "SSRF",
+    "CVE-2023-27163",
+    "Maltrail",
+    "Command Injection",
+    "RCE",
+    "Sudo Misconfiguration",
+    "Privilege Escalation"
+  ],
+  "excerpt": "Request Baskets 1.2.1 üzerindeki CVE-2023-27163 SSRF zafiyetinin kullanılmasıyla localhost üzerinde çalışan Maltrail 0.53 servisinin keşfedilmesi, Maltrail'deki unauthenticated OS command injection zafiyetinin istismar edilerek puma kullanıcısı olarak reverse shell elde edilmesi ve sudo yetkisine sahip systemctl status trail.service komutunun pager escape tekniğiyle kötüye kullanılması sonucunda root yetkisine ulaşılması sürecinin teknik incelemesi.",
+  "readTime": "12 dk"
+},
+  {
   "slug": "Broker",
   "title": "Hack The Box — Broker Writeup",
   "date": "2026-09-02",
