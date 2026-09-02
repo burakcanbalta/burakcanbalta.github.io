@@ -1,5 +1,23 @@
 [
   {
+  "slug": "Optimum",
+  "title": "Hack The Box — Optimum Writeup",
+  "date": "2026-09-02",
+  "tags": [
+    "Windows",
+    "HttpFileServer",
+    "CVE-2014-6287",
+    "Remote Command Execution",
+    "RCE",
+    "MS16-032",
+    "Secondary Logon",
+    "Privilege Escalation",
+    "Metasploit"
+  ],
+  "excerpt": "Rejetto HttpFileServer 2.3 üzerindeki CVE-2014-6287 remote command execution zafiyetinin Metasploit ile istismar edilerek kostas kullanıcısı olarak meterpreter oturumu elde edilmesi, ardından winPEAS ile tespit edilen eksik Windows yaması sonucunda ortaya çıkan MS16-032 Secondary Logon Handle zafiyetinin kullanılarak NT AUTHORITY\\SYSTEM yetkisine ulaşılması sürecinin teknik incelemesi.",
+  "readTime": "8 dk"
+},
+  {
   "slug": "Sau",
   "title": "Hack The Box — Sau Writeup",
   "date": "2026-09-02",
