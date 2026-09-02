@@ -1,6 +1,5 @@
 <img width="577" height="373" alt="1_DU6hHRbTMZElXONdJf5bXQ" src="https://github.com/user-attachments/assets/086da8bb-1d87-43b1-ab7b-291d6fee4a17" />
 
-
 #### About
 
 Optimum is a beginner-level machine which mainly focuses on enumeration of services with known exploits. Both exploits are easy to obtain and have associated Metasploit modules, making this machine fairly simple to complete.
