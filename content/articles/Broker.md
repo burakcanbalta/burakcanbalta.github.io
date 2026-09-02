@@ -34,7 +34,7 @@ Tarama sonucu oldukça kalabalık — tek bir servis değil, tam bir ActiveMQ br
 
 <img width="876" height="441" alt="site1" src="https://github.com/user-attachments/assets/f62d64e8-dd89-4505-9a8f-e000771f0b88" />
 
-80. porta gittiğimizde `ActiveMQRealm` realm'ıyla bir Basic Auth pop-up'ı karşılıyor bizi. Rastgele `admin:admin` deniyoruz ve doğrudan içeri giriyoruz — ActiveMQ web konsolunda varsayılan kimlik bilgilerinin değiştirilmemiş olması bu box'ta ikinci bir zafiyet gibi dursa da, asıl kritik açık zaten kimlik doğrulama gerektirmiyor.
+80. porta gittiğimizde `ActiveMQRealm` realm'ıyla bir Basic Auth pop-up'ı karşılıyor bizi. Rastgele `admin:admin` deniyoruz ve doğrudan içeri giriyoruz.
 
 <img width="680" height="645" alt="site2" src="https://github.com/user-attachments/assets/9be7cf46-0c9e-4aac-9d70-21559f2df31c" />
 
