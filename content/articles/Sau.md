@@ -48,15 +48,15 @@ Sürüm numarasını gördüğüm anda ilk işim onu araştırmak oldu — `requ
 
 ---
 
-## 4. Zafiyet Analizi — CVE-2023-27163 (Request Baskets SSRF)
+## 3. Zafiyet Analizi — CVE-2023-27163 (Request Baskets SSRF)
 
-### 4.1 Request Baskets Ne Yapar, Zafiyet Nerede?
+### 3.1 Request Baskets Ne Yapar, Zafiyet Nerede?
 
 Request Baskets'in temel özelliği, bir basket oluşturulduğunda bu basket'a **isteğe bağlı bir "forward URL" (proxy hedefi)** atanabilmesidir. Yani basket'a gelen her HTTP isteği hem kaydedilir hem de (eğer forward URL tanımlıysa) sunucunun kendisi tarafından, **sunucunun bulunduğu ağ bağlamından**, o hedef URL'ye yeniden gönderilir.
 
 CVE-2023-27163'ün özü şu: uygulama, kullanıcının basket'a atadığı bu **forward/proxy URL değerini yeterince doğrulamıyor**. Yani teorik olarak sadece dış dünyadaki bir webhook'a yönlendirme yapması beklenen bu alana, saldırgan **kendi seçtiği herhangi bir adresi** (localhost, iç ağdaki başka bir servis, hatta cloud metadata endpoint'i gibi hassas adresler) yazabiliyor. Sunucu bu isteği kendi adına, kendi ağından attığı için, normalde dışarıdan erişilemeyen (localhost'a bind edilmiş ya da firewall arkasında olan) servislere **sunucunun içinden** ulaşılabiliyor. Bu, klasik bir **SSRF (Server-Side Request Forgery)** — "sunucuyu kendi adına, benim istediğim yere istek atmaya zorlamak".
 
-### 4.2 Pratikte İstismar
+### 3.2 Pratikte İstismar
 
 Bu zafiyeti otomatikleştiren bir PoC buldum: [rvzsec/CVE-2023-27163](https://github.com/rvzsec/CVE-2023-27163). Script'in mantığı basit: yeni bir basket oluşturuyor, forward URL'ini saldırganın verdiği hedefe ayarlıyor, sonra o basket'ın public endpoint'ine bir istek atarak sunucunun bu isteği hedefe forward etmesini tetikliyor ve dönen cevabı bize gösteriyor.
 
@@ -76,7 +76,7 @@ Script bir basket oluşturdu (`22469b`), token aldı, sonra basket'ın public pa
 
 ---
 
-## 5. SSRF ile Filtrelenmiş Portların Keşfi
+## 4. SSRF ile Filtrelenmiş Portların Keşfi
 
 SSRF'in çalıştığını doğruladıktan sonra asıl amacım nmap'in "filtered" olarak işaretlediği **80** ve **8338** portlarına, hedef sunucunun kendi bakış açısından (yani `127.0.0.1` üzerinden) ulaşmaktı — çünkü bu portlar dışarıdan filtrelenmiş olsa bile, sunucunun **kendi localhost'undan** bu portlara erişimi muhtemelen açıktı.
 
@@ -97,17 +97,17 @@ Yani **80 numaralı, dışarıya kapalı port**, sunucunun kendi içinde çalı�
 
 ---
 
-## 6. Zafiyet Analizi — Maltrail 0.53 Unauthenticated RCE
+## 5. Zafiyet Analizi — Maltrail 0.53 Unauthenticated RCE
 
 Maltrail, ağ trafiğini analiz edip kötü amaçlı (malicious) trafik izlerini (trail) tespit etmeye yarayan açık kaynaklı bir güvenlik izleme aracı. Sürüm 0.53'ü araştırdığımda **kimlik doğrulama gerektirmeyen bir OS command injection** zafiyetinin bilindiğini gördüm — hazır bir exploit de mevcuttu: [spookier/Maltrail-v0.53-Exploit](https://github.com/spookier/Maltrail-v0.53-Exploit).
 
 <img width="900" height="523" alt="maltrailcve" src="https://github.com/user-attachments/assets/d2caddf8-74c3-407a-9954-593c6b9b2aa2" />
 
-### 6.1 Zafiyetin Kökeni
+### 5.1 Zafiyetin Kökeni
 
 Maltrail'in login mekanizması, gelen kullanıcı adı (`username`) parametresini, başarısız girişleri loglamak/işlemek amacıyla arka planda bir sistem komutuna dahil ediyor — ve bu değer **komut satırına aktarılmadan önce temizlenmiyor (sanitize edilmiyor)**. Yani `username` alanına, işletim sistemi komut ayracı karakterleri (`;`, `` ` ``, `$()` gibi) içeren bir payload gönderildiğinde, bu karakterler shell tarafından yorumlanıp **saldırganın kendi komutu** sunucu üzerinde çalıştırılabiliyor. En kritik nokta: bu endpoint **login öncesi**, yani hiçbir kimlik doğrulama gerektirmeden erişilebilir durumda — bu yüzden "unauthenticated RCE".
 
-### 6.2 Pratikte İstismar
+### 5.2 Pratikte İstismar
 
 Exploit script'ini indirdim:
 
@@ -144,9 +144,9 @@ puma
 
 ---
 
-## 7. Privilege Escalation — Sudo Pager Escape (`systemctl status`)
+## 6. Privilege Escalation — Sudo Pager Escape (`systemctl status`)
 
-### 7.1 Keşif
+### 6.1 Keşif
 
 ```
 $ id
@@ -170,7 +170,7 @@ User puma may run the following commands on sau:
 
 Yani zafiyetin özü: **`sudoers` dosyası sadece `systemctl status trail.service` komutunun kendisine izin veriyor gibi görünse de, bu komutun tetiklediği pager (`less`), kendi içinde tamamen ayrı ve kontrolsüz bir komut çalıştırma kapısı açıyor.** `sudo`, `systemctl`'i çalıştırdıktan sonra onun çağırdığı alt programları ayrıca denetlemez.
 
-### 7.3 Pratikte İstismar
+### 6.3 Pratikte İstismar
 
 ```
 $ sudo systemctl status trail.service
