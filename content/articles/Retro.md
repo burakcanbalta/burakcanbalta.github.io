@@ -1,5 +1,3 @@
-[retro.htm](https://github.com/user-attachments/files/31754492/retro.htm)
-
 #### About
 
 `Retro` is an Easy Windows machine that showcases an Active Directory Domain Controller. Through SMB enumeration and pre-created machine account exploitation, we gain access to the system. Through the exploitation of the Active Directory Certificate Service and specifically by using the `ESC1` attack, which involves exploiting certificate templates to impersonate the Administrative user, privilege escalation is achieved.
