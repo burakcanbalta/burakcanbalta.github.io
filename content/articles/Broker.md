@@ -160,21 +160,7 @@ chmod 600 root_key
 ssh -i root_key root@10.129.230.87
 ```
 
-İlk denemede host key doğrulaması araya giriyor:
-
-```
-The authenticity of host '10.129.230.87 (10.129.230.87)' can't be established.
-ED25519 key fingerprint is: SHA256:TgNhCKF6jUX7MG8TC01/MUj/+u0EBasUVsdSQMHdyfY
-This key is not known by any other names.
-Are you sure you want to continue connecting (yes/no/[fingerprint])?
-Host key verification failed.
-```
-
-`yes` ile onaylayıp tekrar denediğimizde bağlantı sorunsuz kuruluyor ve doğrudan root shell'e düşüyoruz:
-
-```bash
-ssh -i root_key root@10.129.230.87
-```
+`yes` ile onaylayıp doğrudan root shell'e düşüyoruz:
 
 ```
 root@broker:~# ls
