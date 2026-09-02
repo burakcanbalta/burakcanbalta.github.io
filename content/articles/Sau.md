@@ -16,7 +16,6 @@ nmap -sS -A -T5 -p- 10.129.229.26
 
 Buradaki ilk dikkat çekici nokta şu: **80 ve 8338 portları filtrelenmiş** durumda, yani dışarıdan doğrudan erişilemiyor — muhtemelen bir firewall kuralı ya da sadece localhost'a bind edilmiş servisler. Açık olan tek web portu **55555**. Bu port, nmap'in servis parmak izinde `Request Baskets` başlığıyla ve bir Golang HTTP sunucusu olarak tanımlanmış.
 
----
 
 ## 2. Request Baskets Uygulamasına İlk Bakış
 
