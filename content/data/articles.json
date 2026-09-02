@@ -1,5 +1,24 @@
 [
   {
+  "slug": "Retro",
+  "title": "Hack The Box — Retro Writeup",
+  "date": "2026-09-02",
+  "tags": [
+    "Windows",
+    "Active Directory",
+    "SMB",
+    "ADCS",
+    "ESC1",
+    "Certificate Services",
+    "Kerberos",
+    "PKINIT",
+    "Pass-the-Hash",
+    "Privilege Escalation"
+  ],
+  "excerpt": "SMB enumeration üzerinden trainee hesabının keşfedilmesi, Notes paylaşımındaki ipucuyla pre-created BANKING$ bilgisayar hesabının ele geçirilmesi ve SAMR üzerinden parolasının değiştirilmesinin ardından ADCS üzerinde RetroClients şablonundaki ESC1 yanlış yapılandırmasının istismar edilerek Administrator adına sertifika oluşturulması, Kerberos PKINIT ile Administrator NT hash'inin elde edilmesi ve Pass-the-Hash kullanılarak Domain Controller üzerinde SYSTEM yetkisine ulaşılması sürecinin teknik incelemesi.",
+  "readTime": "10 dk"
+},
+  {
   "slug": "Optimum",
   "title": "Hack The Box — Optimum Writeup",
   "date": "2026-09-02",
