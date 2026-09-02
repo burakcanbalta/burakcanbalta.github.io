@@ -93,7 +93,7 @@ Yeni bir basket (`b15f82`) oluşturuldu, forward hedefi `127.0.0.1:80` olarak ay
 Server: Maltrail/0.53
 ```
 
-Yani **80 numaralı, dışarıya kapalı port**, sunucunun kendi içinde çalışan **Maltrail 0.53** adlı bir servise ait. SSRF sayesinde, normalde göremeyeceğim bu servisin varlığını ve tam sürüm bilgisini öğrenmiş oldum — bu bilgi tek başına bile ciddi bir keşif (information disclosure), çünkü Maltrail'in kendisi de ayrı bir saldırı yüzeyi.
+Yani **80 numaralı, dışarıya kapalı port**, sunucunun kendi içinde çalışan **Maltrail 0.53** adlı bir servise ait. SSRF sayesinde, normalde göremeyeceğim bu servisin varlığını ve tam sürüm bilgisini öğrenmiş oldum.
 
 ---
 
