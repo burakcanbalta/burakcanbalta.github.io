@@ -1,11 +1,4 @@
-# HTB Retro — Writeup
-
-**Zorluk:** Easy
-**OS:** Windows Server 2022 (Active Directory Domain Controller)
-**Hedef IP:** 10.129.234.44
-**Domain:** retro.vl
-
----
+[retro.htm](https://github.com/user-attachments/files/31754492/retro.htm)
 
 #### About
 
