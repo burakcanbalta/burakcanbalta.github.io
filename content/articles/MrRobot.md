@@ -267,20 +267,3 @@ cat /root/key-3-of-3.txt
 | Key 3 | `04787ddef27c3dee1ee161b21670b4e4` |
 
 ---
-
-## 🛡️ Alınan Dersler
-
-Bu makine, gerçek dünyada sıkça karşılaşılan birkaç kritik güvenlik zafiyetini bir araya getiriyor:
-
-1. **Hassas dosyaların açıkta bırakılması:** `robots.txt` ve wordlist dosyası gibi bilgiler saldırganlara doğrudan yol gösterdi.
-   - *Öneri:* Hassas veya iç kullanım için hazırlanmış dosyalar asla web kök dizininde bırakılmamalı.
-
-2. **Zayıf/tahmin edilebilir parolalar:** `ER28-0652` gibi bir parola, wordlist saldırısına karşı savunmasız kaldı.
-   - *Öneri:* Güçlü parola politikaları ve MFA (çok faktörlü kimlik doğrulama) zorunlu kılınmalı.
-
-3. **WordPress Tema Editörü'nün açık bırakılması:** Admin panelinden doğrudan PHP dosyası düzenlenebilmesi, RCE'ye doğrudan kapı açtı.
-   - *Öneri:* `DISALLOW_FILE_EDIT` sabiti `wp-config.php` içinde `true` olarak ayarlanmalı, dosya düzenleme yetkisi tamamen kapatılmalı.
-
-4. **Yanlış yapılandırılmış SUID izinleri:** `nmap` gibi bir aracın SUID biti taşıması, kritik bir privilege escalation vektörü oluşturdu.
-   - *Öneri:* SUID biti yalnızca kesinlikle gerekli olan binary'lere verilmeli; düzenli olarak `find / -perm -4000` denetimi yapılmalı.
----
