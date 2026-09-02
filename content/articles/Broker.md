@@ -14,6 +14,7 @@ Sonuç oldukça kalabalık
 
 <img width="1053" height="832" alt="nmap" src="https://github.com/user-attachments/assets/0d0adaab-cdc1-441b-8329-d411b8ab6df4" />
 
+<img width="515" height="26" alt="nmap2" src="https://github.com/user-attachments/assets/8087e835-4c29-45ce-b16e-dba6458ca380" />
 
 61616'daki `ActiveMQ OpenWire transport 5.15.15` banner'ı tek başına yeterince konuşkan — bu versiyon, bilinen ve kritik bir RCE zincirine sahip.
 
