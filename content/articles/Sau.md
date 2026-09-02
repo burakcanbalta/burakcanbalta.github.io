@@ -197,6 +197,17 @@ root@sau:/opt/maltrail#
 
 Root shell elde edildi. Şimdi flagleri alalım 
 
+```
+cat user.txt
+
+7e5956976dcd4516c8d958c93b541308
+```
 <img width="306" height="107" alt="userflag" src="https://github.com/user-attachments/assets/6643519f-0fea-4a92-89ca-c710f908e804" />
+
+```
+cat root.txt
+
+5de9bd51591e6a14aa5f00a64205b632
+```
 
 <img width="642" height="345" alt="ROOTFLAG" src="https://github.com/user-attachments/assets/89914e65-f711-486e-a69f-bf1bdd7f2149" />
