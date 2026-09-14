@@ -1,91 +1,123 @@
 [
   {
-  "slug": "Retro",
-  "title": "Hack The Box — Retro Writeup",
-  "date": "2026-09-02",
-  "tags": [
-    "Windows",
-    "Active Directory",
-    "SMB",
-    "ADCS",
-    "ESC1",
-    "Certificate Services",
-    "Kerberos",
-    "PKINIT",
-    "Pass-the-Hash",
-    "Privilege Escalation"
-  ],
-  "excerpt": "SMB enumeration üzerinden trainee hesabının keşfedilmesi, Notes paylaşımındaki ipucuyla pre-created BANKING$ bilgisayar hesabının ele geçirilmesi ve SAMR üzerinden parolasının değiştirilmesinin ardından ADCS üzerinde RetroClients şablonundaki ESC1 yanlış yapılandırmasının istismar edilerek Administrator adına sertifika oluşturulması, Kerberos PKINIT ile Administrator NT hash'inin elde edilmesi ve Pass-the-Hash kullanılarak Domain Controller üzerinde SYSTEM yetkisine ulaşılması sürecinin teknik incelemesi.",
-  "readTime": "10 dk"
-},
+    "slug": "prototype-pollution",
+    "title": "Prototype Pollution",
+    "date": "2026-09-03",
+    "tags": [
+      "Web",
+      "JavaScript",
+      "Prototype Pollution",
+      "Node.js",
+      "OWASP",
+      "RCE",
+      "V8"
+    ],
+    "excerpt": "JavaScript'in prototip tabanlı kalıtım mimarisinden doğan Prototype Pollution zafiyetinin temelleri; prototip zinciri (prototype chain) ve V8 motor mimarisinin işleyişi, __proto__ anahtarı üzerinden Object.prototype'a kontrolsüz yazma yollarının (merge/extend/clone/assign gadget'ları) analizi, güvenli olmayan JSON/YAML/query string birleştirme senaryolarının istismar teknikleri ve tek bir isteğin tüm uygulama genelinde etkili olmasına yol açan kök nedenlerin ele alındığı kapsamlı teknik rehber.",
+    "readTime": "20 dk"
+  },
   {
-  "slug": "Optimum",
-  "title": "Hack The Box — Optimum Writeup",
-  "date": "2026-09-02",
-  "tags": [
-    "Windows",
-    "HttpFileServer",
-    "CVE-2014-6287",
-    "Remote Command Execution",
-    "RCE",
-    "MS16-032",
-    "Secondary Logon",
-    "Privilege Escalation",
-    "Metasploit"
-  ],
-  "excerpt": "Rejetto HttpFileServer 2.3 üzerindeki CVE-2014-6287 remote command execution zafiyetinin Metasploit ile istismar edilerek kostas kullanıcısı olarak meterpreter oturumu elde edilmesi, ardından winPEAS ile tespit edilen eksik Windows yaması sonucunda ortaya çıkan MS16-032 Secondary Logon Handle zafiyetinin kullanılarak NT AUTHORITY\\SYSTEM yetkisine ulaşılması sürecinin teknik incelemesi.",
-  "readTime": "8 dk"
-},
+    "slug": "oauth-oidc",
+    "title": "OAuth 2.0 / OIDC Security",
+    "date": "2026-09-03",
+    "tags": [
+      "Web",
+      "OAuth",
+      "OIDC",
+      "Authentication",
+      "SSO",
+      "Authorization Bypass",
+      "SSRF"
+    ],
+    "excerpt": "OAuth 1.0'ın HMAC-SHA1 imzalama karmaşıklığı ve mobil/IoT senaryolarındaki yetersizliğinden doğan OAuth 2.0'ın framework mimarisinin (RFC 6749) TLS/HTTPS'e dayalı Bearer Token yaklaşımı, dört temel grant type'ı ve Refresh Token mekanizmasıyla birlikte incelenmesi; protokolün kriptografik imza zorunluluğunu kaldırmasının getirdiği esnekliğin SSRF, token hırsızlığı ve state manipülasyonu gibi gerçek dünya zafiyetlerine nasıl zemin hazırladığının teknik analizi.",
+    "readTime": "17 dk"
+  },
   {
-  "slug": "Sau",
-  "title": "Hack The Box — Sau Writeup",
-  "date": "2026-09-02",
-  "tags": [
-    "Linux",
-    "Request Baskets",
-    "SSRF",
-    "CVE-2023-27163",
-    "Maltrail",
-    "Command Injection",
-    "RCE",
-    "Sudo Misconfiguration",
-    "Privilege Escalation"
-  ],
-  "excerpt": "Request Baskets 1.2.1 üzerindeki CVE-2023-27163 SSRF zafiyetinin kullanılmasıyla localhost üzerinde çalışan Maltrail 0.53 servisinin keşfedilmesi, Maltrail'deki unauthenticated OS command injection zafiyetinin istismar edilerek puma kullanıcısı olarak reverse shell elde edilmesi ve sudo yetkisine sahip systemctl status trail.service komutunun pager escape tekniğiyle kötüye kullanılması sonucunda root yetkisine ulaşılması sürecinin teknik incelemesi.",
-  "readTime": "12 dk"
-},
+    "slug": "Retro",
+    "title": "Hack The Box — Retro Writeup",
+    "date": "2026-09-02",
+    "tags": [
+      "Windows",
+      "Active Directory",
+      "SMB",
+      "ADCS",
+      "ESC1",
+      "Certificate Services",
+      "Kerberos",
+      "PKINIT",
+      "Pass-the-Hash",
+      "Privilege Escalation"
+    ],
+    "excerpt": "SMB enumeration üzerinden trainee hesabının keşfedilmesi, Notes paylaşımındaki ipucuyla pre-created BANKING$ bilgisayar hesabının ele geçirilmesi ve SAMR üzerinden parolasının değiştirilmesinin ardından ADCS üzerinde RetroClients şablonundaki ESC1 yanlış yapılandırmasının istismar edilerek Administrator adına sertifika oluşturulması, Kerberos PKINIT ile Administrator NT hash'inin elde edilmesi ve Pass-the-Hash kullanılarak Domain Controller üzerinde SYSTEM yetkisine ulaşılması sürecinin teknik incelemesi.",
+    "readTime": "10 dk"
+  },
   {
-  "slug": "Broker",
-  "title": "Hack The Box — Broker Writeup",
-  "date": "2026-09-02",
-  "tags": [
-    "Linux",
-    "Apache ActiveMQ",
-    "Remote Code Execution",
-    "RCE",
-    "Sudo Misconfiguration",
-    "NGINX",
-    "Privilege Escalation"
-  ],
-  "excerpt": "Apache ActiveMQ sürümünün enumerate edilmesiyle tespit edilen unauthenticated Remote Code Execution zafiyetinin istismar edilerek activemq kullanıcısı üzerinden initial access elde edilmesi, ardından sudo yapılandırmasındaki /usr/sbin/nginx yetkisinin kötüye kullanılması ve root olarak çalışan özel NGINX konfigürasyonu üzerinden dosya yazma yeteneği elde edilerek SSH authorized_keys manipülasyonu ile root yetkisine ulaşılması sürecinin teknik incelemesi.",
-  "readTime": "10 dk"
-},
+    "slug": "Optimum",
+    "title": "Hack The Box — Optimum Writeup",
+    "date": "2026-09-02",
+    "tags": [
+      "Windows",
+      "HttpFileServer",
+      "CVE-2014-6287",
+      "Remote Command Execution",
+      "RCE",
+      "MS16-032",
+      "Secondary Logon",
+      "Privilege Escalation",
+      "Metasploit"
+    ],
+    "excerpt": "Rejetto HttpFileServer 2.3 üzerindeki CVE-2014-6287 remote command execution zafiyetinin Metasploit ile istismar edilerek kostas kullanıcısı olarak meterpreter oturumu elde edilmesi, ardından winPEAS ile tespit edilen eksik Windows yaması sonucunda ortaya çıkan MS16-032 Secondary Logon Handle zafiyetinin kullanılarak NT AUTHORITY\\SYSTEM yetkisine ulaşılması sürecinin teknik incelemesi.",
+    "readTime": "8 dk"
+  },
   {
-"slug": "Return",
-"title": "Hack The Box — Return Writeup",
-"date": "2026-09-02",
-"tags": [
-"Windows",
-"LDAP",
-"WinRM",
-"Credential Interception",
-"Server Operators",
-"Service Abuse",
-"Privilege Escalation"
-],
-"excerpt": "LDAP kimlik bilgilerini depolayan yazıcı yönetim panelindeki Server Address alanının manipüle edilmesiyle hedef sistemin saldırgan kontrollü LDAP endpoint'ine authentication yapmasının sağlanması, svc-printer hesabına ait credential'ların ele geçirilerek WinRM üzerinden initial access elde edilmesi ve Server Operators üyeliğinin sağladığı servis yönetim yetkileri kullanılarak VMTools servisi üzerinden SYSTEM yetkisine yükselilmesinin teknik incelemesi.",
-"readTime": "10 dk"
-},
+    "slug": "Sau",
+    "title": "Hack The Box — Sau Writeup",
+    "date": "2026-09-02",
+    "tags": [
+      "Linux",
+      "Request Baskets",
+      "SSRF",
+      "CVE-2023-27163",
+      "Maltrail",
+      "Command Injection",
+      "RCE",
+      "Sudo Misconfiguration",
+      "Privilege Escalation"
+    ],
+    "excerpt": "Request Baskets 1.2.1 üzerindeki CVE-2023-27163 SSRF zafiyetinin kullanılmasıyla localhost üzerinde çalışan Maltrail 0.53 servisinin keşfedilmesi, Maltrail'deki unauthenticated OS command injection zafiyetinin istismar edilerek puma kullanıcısı olarak reverse shell elde edilmesi ve sudo yetkisine sahip systemctl status trail.service komutunun pager escape tekniğiyle kötüye kullanılması sonucunda root yetkisine ulaşılması sürecinin teknik incelemesi.",
+    "readTime": "12 dk"
+  },
+  {
+    "slug": "Broker",
+    "title": "Hack The Box — Broker Writeup",
+    "date": "2026-09-02",
+    "tags": [
+      "Linux",
+      "Apache ActiveMQ",
+      "Remote Code Execution",
+      "RCE",
+      "Sudo Misconfiguration",
+      "NGINX",
+      "Privilege Escalation"
+    ],
+    "excerpt": "Apache ActiveMQ sürümünün enumerate edilmesiyle tespit edilen unauthenticated Remote Code Execution zafiyetinin istismar edilerek activemq kullanıcısı üzerinden initial access elde edilmesi, ardından sudo yapılandırmasındaki /usr/sbin/nginx yetkisinin kötüye kullanılması ve root olarak çalışan özel NGINX konfigürasyonu üzerinden dosya yazma yeteneği elde edilerek SSH authorized_keys manipülasyonu ile root yetkisine ulaşılması sürecinin teknik incelemesi.",
+    "readTime": "10 dk"
+  },
+  {
+    "slug": "Return",
+    "title": "Hack The Box — Return Writeup",
+    "date": "2026-09-02",
+    "tags": [
+      "Windows",
+      "LDAP",
+      "WinRM",
+      "Credential Interception",
+      "Server Operators",
+      "Service Abuse",
+      "Privilege Escalation"
+    ],
+    "excerpt": "LDAP kimlik bilgilerini depolayan yazıcı yönetim panelindeki Server Address alanının manipüle edilmesiyle hedef sistemin saldırgan kontrollü LDAP endpoint'ine authentication yapmasının sağlanması, svc-printer hesabına ait credential'ların ele geçirilerek WinRM üzerinden initial access elde edilmesi ve Server Operators üyeliğinin sağladığı servis yönetim yetkileri kullanılarak VMTools servisi üzerinden SYSTEM yetkisine yükselilmesinin teknik incelemesi.",
+    "readTime": "10 dk"
+  },
   {
     "slug": "load-balancer",
     "title": "Load Balancer Security",
